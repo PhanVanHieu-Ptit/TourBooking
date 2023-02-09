@@ -11,6 +11,7 @@ import {
     Button,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import stylesButton from '../../components/general/actionButton/styles';
 import stylesAllTour from '../allTour/style';
 import stylesTour from './styles';
@@ -19,7 +20,9 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import COLOR from '../../res/color';
 import { Checkbox } from 'react-native-paper';
 import DatePicker from 'react-native-neat-date-picker';
+import moment from 'moment';
 
+let nextId = 0;
 function TourScreen({ route, navigation }) {
     const tour = route.params?.tour;
 
@@ -52,9 +55,6 @@ function TourScreen({ route, navigation }) {
         // You should close the modal in here
         setShowDatePicker(false);
         setDate(date);
-
-        // The parameter 'date' is a Date object so that you can use any Date prototype method.
-        console.log(date.getDate());
     };
 
     const [selected, setSelected] = useState('');
@@ -70,9 +70,12 @@ function TourScreen({ route, navigation }) {
         { key: '6', value: 'Diary Products' },
         { key: '7', value: 'Drinks' },
     ];
-    const [imgPath, setImgPath] = useState(`https://vnpi-hcm.vn/wp-content/uploads/2018/01/no-image-800x600.png`);
+    // const [imgPath, setImgPath] = useState(`https://vnpi-hcm.vn/wp-content/uploads/2018/01/no-image-800x600.png`);
 
-    const [responseImage, setResponseImage] = useState('');
+    // const [responseImage, setResponseImage] = useState('');
+
+    const [listImage, setListImage] = useState([]);
+
     const chooseImage = () => {
         let options = {
             title: 'Select Image',
@@ -95,8 +98,19 @@ function TourScreen({ route, navigation }) {
             } else {
                 // console.log('source', response.assets[0].uri);
 
-                setImgPath(response.assets[0].uri);
-                setResponseImage(response);
+                // setImgPath(response.assets[0].uri);
+                // setListImage(listTemp);
+                setListImage(
+                    // Replace the state
+                    [
+                        // with a new array
+                        ...listImage, // that contains all the old items
+                        { id: nextId++, uri: response.assets[0].uri }, // and one new item at the end
+                    ],
+                );
+
+                // console.log('listImage: ', listImage);
+                // setResponseImage(response);
             }
         });
     };
@@ -195,13 +209,51 @@ function TourScreen({ route, navigation }) {
                             <Text style={{ color: '#FFFFFF' }}>Thêm ảnh </Text>
                         </View>
                     </TouchableOpacity>
-                    <Image source={{ uri: `${imgPath}` }} style={{ height: 150, width: 150 }} />
+
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            flexWrap: 'wrap',
+                            alignItems: 'center',
+                            flex: 1,
+                        }}
+                    >
+                        {listImage.map((item) => (
+                            // console.log('item: ', item),
+                            <View
+                                key={item.id}
+                                style={{
+                                    flexDirection: 'row',
+                                    marginTop: 40,
+                                    marginRight: 8,
+                                }}
+                            >
+                                <Image
+                                    source={{ uri: `${item.uri}` }}
+                                    style={{ height: 85, width: 85, borderRadius: 6 }}
+                                />
+                                <TouchableOpacity
+                                    hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
+                                    onPress={() => {
+                                        setListImage(listImage.filter((a) => a.id !== item.id));
+                                    }}
+                                >
+                                    <FontAwesome5
+                                        name="times"
+                                        size={15}
+                                        color="#021A5A"
+                                        style={{ marginLeft: 3, marginTop: -5 }}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                        ))}
+                    </View>
                 </View>
                 <View style={{ width: 320, marginTop: 20, flexDirection: 'row' }}>
                     <View>
                         <Text style={stylesTour.title}>Ngày khởi hành</Text>
                         <TouchableOpacity onPress={openDatePicker}>
-                            <Text style={stylesTour.input}>{date.getDate()}</Text>
+                            <Text style={stylesTour.input}>{moment(date).format('DD/MM/YYYY')}</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={{ marginLeft: 50 }}>

@@ -61,7 +61,7 @@ function CardOrder(props) {
             <Collapse>
                 <CollapseHeader
                     style={{ alignItems: 'center' }}
-                    onToggle={() => {
+                    onPress={() => {
                         setIsExpanded(!isExpanded);
                         console.log('click!');
                     }}

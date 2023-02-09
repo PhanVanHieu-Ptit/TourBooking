@@ -80,11 +80,18 @@ function DetailHistoryOrder({ route, navigation }) {
                 value={note}
             />
             <Text style={[stylesModal.title, { marginTop: 20 }]}>Tổng tiền: {Number(number) * Number(DATA.price)}</Text>
-            <View style={{ flexDirection: 'row', margin: 5 }}>
-                <Pressable style={[stylesModal.button, stylesModal.buttonClose, { marginLeft: 10 }]}>
-                    <Text style={stylesModal.textStyle}>Xác nhận</Text>
-                </Pressable>
-            </View>
+
+            <TouchableOpacity
+                style={{
+                    width: 350,
+                    height: 50,
+                    justifyContent: 'center',
+                    backgroundColor: COLOR.primary,
+                    borderRadius: 20,
+                }}
+            >
+                <Text style={stylesModal.textStyle}>Xác nhận</Text>
+            </TouchableOpacity>
         </SafeAreaView>
     );
 }
