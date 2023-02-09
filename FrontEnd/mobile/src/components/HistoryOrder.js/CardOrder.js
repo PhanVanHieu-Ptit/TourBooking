@@ -7,63 +7,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import stylesCard from '../home/card/style';
 import { ScrollView } from 'react-native-gesture-handler';
 import COLOR from '../../res/color';
-
-const ExpandableView = ({ expanded = false, props }) => {
-    const [height] = useState(new Animated.Value(0));
-
-    useEffect(() => {
-        Animated.timing(height, {
-            toValue: !expanded ? 100 : 0,
-            duration: 150,
-            useNativeDriver: false,
-        }).start();
-    }, [expanded, height]);
-
-    // console.log('rerendered');
-
-    return (
-        <Animated.View style={{ height }}>
-            <Text style={styles.title}>Thông tin đơn đặt</Text>
-            <Text style={styles.content}>Số lượng: {props?.quantity}</Text>
-            <Text style={styles.content}>Tổng tiền: {props?.totalMoney}</Text>
-            <Text style={styles.content}>Ghi chú: {props?.note}</Text>
-            <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Cập nhật</Text>
-
-            <TouchableOpacity
-                style={{
-                    backgroundColor: COLOR.primary, //'#FFD336',
-                    borderRadius: 20,
-                    width: 80,
-                    height: 30,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    margin: 10,
-                }}
-                onPress={() =>
-                    props.navigation.navigate('DetailHistoryOrder', {
-                        tour: tour,
-                        tourOrder: tourOrder,
-                    })
-                }
-            >
-                <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Cập nhật</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={{
-                    backgroundColor: 'red',
-                    borderRadius: 20,
-                    width: 80,
-                    height: 30,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    margin: 10,
-                }}
-            >
-                <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Hủy</Text>
-            </TouchableOpacity>
-        </Animated.View>
-    );
-};
+import { Collapse, CollapseHeader, CollapseBody, AccordionList } from 'accordion-collapse-react-native';
 
 function CardOrder(props) {
     const tour = props.tour;
@@ -113,21 +57,65 @@ function CardOrder(props) {
                     </View>
                 </View>
             </View>
-            <TouchableOpacity
-                onPress={() => {
-                    setIsExpanded(!isExpanded);
-                }}
-                style={{ alignItems: 'center' }}
-            >
-                {isExpanded == true ? (
-                    <MaterialIcons name="expand-more" size={25} color={COLOR.primary} style={{ marginLeft: 10 }} />
-                ) : (
-                    <MaterialIcons name="expand-less" size={25} color={COLOR.primary} style={{ marginLeft: 10 }} />
-                )}
-            </TouchableOpacity>
 
-            <ExpandableView expanded={isExpanded} props={tourOrder} />
-            <View style={{ borderBottomWidth: 2 }} />
+            <Collapse>
+                <CollapseHeader
+                    style={{ alignItems: 'center' }}
+                    onToggle={() => {
+                        setIsExpanded(!isExpanded);
+                        console.log('click!');
+                    }}
+                >
+                    {isExpanded == true ? (
+                        <MaterialIcons name="expand-more" size={25} color={COLOR.primary} style={{ marginLeft: 10 }} />
+                    ) : (
+                        <MaterialIcons name="expand-less" size={25} color={COLOR.primary} style={{ marginLeft: 10 }} />
+                    )}
+                </CollapseHeader>
+                <CollapseBody>
+                    <Text style={styles.title}>Thông tin đơn đặt</Text>
+                    <Text style={styles.content}>Số lượng: {tourOrder?.quantity}</Text>
+                    <Text style={styles.content}>Tổng tiền: {tourOrder?.totalMoney}</Text>
+                    <Text style={styles.content}>Ghi chú: {tourOrder?.note}</Text>
+                    <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Cập nhật</Text>
+
+                    <View style={{ flexDirection: 'row' }}>
+                        <TouchableOpacity
+                            style={{
+                                backgroundColor: COLOR.primary, //'#FFD336',
+                                borderRadius: 20,
+                                width: 80,
+                                height: 30,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                margin: 10,
+                            }}
+                            onPress={() =>
+                                props.navigation.navigate('DetailHistoryOrder', {
+                                    tour: tour,
+                                    tourOrder: tourOrder,
+                                })
+                            }
+                        >
+                            <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Cập nhật</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={{
+                                backgroundColor: 'red',
+                                borderRadius: 20,
+                                width: 80,
+                                height: 30,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                margin: 10,
+                            }}
+                        >
+                            <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Hủy</Text>
+                        </TouchableOpacity>
+                    </View>
+                </CollapseBody>
+            </Collapse>
+            <View style={{ borderBottomWidth: 2, borderBottomColor: COLOR.primary }} />
         </View>
     );
 }
