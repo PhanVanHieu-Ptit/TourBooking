@@ -41,6 +41,7 @@ function Home({ navigation }) {
                 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
         },
     ];
+
     return (
         <ScrollView>
             <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
@@ -58,7 +59,7 @@ function Home({ navigation }) {
                         </View>
                     </TouchableOpacity>
                     <View>
-                        <Text style={stylesHome.txt2}>Các tour mới nhất</Text>
+                        <Text style={stylesHome.txt2}>Các tour nổi bật</Text>
                     </View>
                     <FlatList
                         horizontal

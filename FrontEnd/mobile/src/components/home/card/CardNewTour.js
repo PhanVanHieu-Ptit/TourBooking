@@ -12,7 +12,7 @@ function CardNewTour({ navigation, props }) {
             }}
         >
             <ImageBackground source={{ uri: `${props.imageUrl}` }} style={stylesCard.img}>
-                <View style={stylesCard.viewStar}>
+                <View style={[stylesCard.viewStar, { marginLeft: 90 }]}>
                     <Text style={{ color: '#FFFF' }}>5</Text>
                     <Icon name="star" size={15} color="#FFD336" style={{ marginTop: 2 }} />
                 </View>

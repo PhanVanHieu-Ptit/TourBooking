@@ -13,79 +13,144 @@ import COLOR from '../../res/color';
 import stylesTour from '../tourScreen/styles';
 
 function ManageScreen({ navigation }) {
+    const user = {
+        id: 1,
+        name: 'Phan Văn Hiểu',
+        uriImage: 'https://img.freepik.com/free-photo/smiley-little-boy-isolated-pink_23-2148984798.jpg',
+        role: 'Admin',
+    };
+    const [isLogin, setIsLogin] = useState(false);
+
     return (
         <ScrollView>
-            <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center' }}>
-                <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
-                    <Image
-                        source={{
-                            uri: `https://img.freepik.com/free-photo/smiley-little-boy-isolated-pink_23-2148984798.jpg`,
-                        }}
-                        style={stylesManage.img}
-                    />
+            {isLogin ? (
+                <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
+                        <Image
+                            source={{
+                                uri:
+                                    user?.uriImage != undefined
+                                        ? user.uriImage
+                                        : `https://freesvg.org/img/abstract-user-flat-4.png`,
+                            }}
+                            style={stylesManage.img}
+                        />
+                        <Text style={stylesManage.txt_name}>{user?.name}</Text>
+                        <Text style={[stylesManage.txt_name, { fontSize: 16, fontWeight: 'normal' }]}>
+                            {user?.role}
+                        </Text>
+                    </View>
+                    <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+                        <View style={stylesManage.btn}>
+                            <View style={{ flexDirection: 'row' }}>
+                                <Icon name="information-circle-outline" size={20} color={COLOR.primary} />
+                                <Text style={[stylesTour.txt_btn, { color: COLOR.primary, marginLeft: 5 }]}>
+                                    Thông tin cá nhân
+                                </Text>
+                            </View>
+                            <AntDesign name="right" size={20} color={COLOR.primary} />
+                        </View>
+                    </TouchableOpacity>
+                    {user.role === 'Admin' ? (
+                        <View>
+                            <TouchableOpacity onPress={() => navigation.navigate('ManageTour')}>
+                                <View style={stylesManage.btn}>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <MaterialIcons name="tour" size={20} color={COLOR.primary} />
+                                        <Text style={[stylesTour.txt_btn, { color: COLOR.primary, marginLeft: 5 }]}>
+                                            Quản lý tour
+                                        </Text>
+                                    </View>
+                                    <AntDesign name="right" size={20} color={COLOR.primary} />
+                                </View>
+                            </TouchableOpacity>
 
-                    <Text style={stylesManage.txt_name}>Phan Văn Hiểu</Text>
+                            <TouchableOpacity onPress={() => navigation.navigate('ManageOrder')}>
+                                <View style={stylesManage.btn}>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Entypo name="ticket" size={20} color={COLOR.primary} />
+                                        <Text style={[stylesTour.txt_btn, { color: COLOR.primary, marginLeft: 5 }]}>
+                                            Quản lý đơn đặt
+                                        </Text>
+                                    </View>
+                                    <AntDesign name="right" size={20} color={COLOR.primary} />
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => navigation.navigate('ManageStaff')}>
+                                <View style={stylesManage.btn}>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Icon name="people-outline" size={20} color={COLOR.primary} />
+                                        <Text style={[stylesTour.txt_btn, { color: COLOR.primary, marginLeft: 5 }]}>
+                                            Quản lý nhân viên
+                                        </Text>
+                                    </View>
+                                    <AntDesign name="right" size={20} color={COLOR.primary} />
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    ) : (
+                        ''
+                    )}
+                    {user.role === 'Nhân viên' ? (
+                        <View>
+                            <TouchableOpacity onPress={() => navigation.navigate('ManageTour')}>
+                                <View style={stylesManage.btn}>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <MaterialIcons name="tour" size={20} color={COLOR.primary} />
+                                        <Text style={[stylesTour.txt_btn, { color: COLOR.primary, marginLeft: 5 }]}>
+                                            Quản lý tour
+                                        </Text>
+                                    </View>
+                                    <AntDesign name="right" size={20} color={COLOR.primary} />
+                                </View>
+                            </TouchableOpacity>
 
-                    <Text style={[stylesManage.txt_name, { fontSize: 16, fontWeight: 'normal' }]}>Khách hàng</Text>
-                </View>
+                            <TouchableOpacity onPress={() => navigation.navigate('ManageOrder')}>
+                                <View style={stylesManage.btn}>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Entypo name="ticket" size={20} color={COLOR.primary} />
+                                        <Text style={[stylesTour.txt_btn, { color: COLOR.primary, marginLeft: 5 }]}>
+                                            Quản lý đơn đặt
+                                        </Text>
+                                    </View>
+                                    <AntDesign name="right" size={20} color={COLOR.primary} />
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    ) : (
+                        ''
+                    )}
 
-                <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-                    <View style={stylesManage.btn}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <Icon name="information-circle-outline" size={20} color={COLOR.primary} />
-                            <Text style={[stylesTour.txt_btn, { color: COLOR.primary, marginLeft: 5 }]}>
-                                Thông tin cá nhân
-                            </Text>
+                    <TouchableOpacity onPress={() => setIsLogin(false)}>
+                        <View style={[stylesManage.btn, { justifyContent: 'center' }]}>
+                            <AntDesign name="logout" size={20} color={COLOR.primary} />
+                            <Text style={[stylesTour.txt_btn, { color: COLOR.primary, marginLeft: 5 }]}>Đăng xuất</Text>
                         </View>
-                        <AntDesign name="right" size={20} color={COLOR.primary} />
+                    </TouchableOpacity>
+                </SafeAreaView>
+            ) : (
+                <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
+                        <Image
+                            source={{
+                                uri: `https://freesvg.org/img/abstract-user-flat-4.png`,
+                            }}
+                            style={stylesManage.img}
+                        />
+                        <Text style={stylesManage.txt_name}>Khách</Text>
+                        <Text style={[stylesManage.txt_name, { fontSize: 16, fontWeight: 'normal' }]}>
+                            Chưa đăng nhập
+                        </Text>
                     </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('ManageTour')}>
-                    <View style={stylesManage.btn}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <MaterialIcons name="tour" size={20} color={COLOR.primary} />
-                            <Text style={[stylesTour.txt_btn, { color: COLOR.primary, marginLeft: 5 }]}>
-                                Quản lý tour
-                            </Text>
+
+                    <TouchableOpacity onPress={() => setIsLogin(true)}>
+                        <View style={[stylesManage.btn, { justifyContent: 'center' }]}>
+                            <AntDesign name="login" size={20} color={COLOR.primary} />
+                            <Text style={[stylesTour.txt_btn, { color: COLOR.primary, marginLeft: 5 }]}>Đăng nhập</Text>
                         </View>
-                        <AntDesign name="right" size={20} color={COLOR.primary} />
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('ManageStaff')}>
-                    <View style={stylesManage.btn}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <Icon name="people-outline" size={20} color={COLOR.primary} />
-                            <Text style={[stylesTour.txt_btn, { color: COLOR.primary, marginLeft: 5 }]}>
-                                Quản lý nhân viên
-                            </Text>
-                        </View>
-                        <AntDesign name="right" size={20} color={COLOR.primary} />
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('ManageOrder')}>
-                    <View style={stylesManage.btn}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <Entypo name="ticket" size={20} color={COLOR.primary} />
-                            <Text style={[stylesTour.txt_btn, { color: COLOR.primary, marginLeft: 5 }]}>
-                                Quản lý đơn đặt
-                            </Text>
-                        </View>
-                        <AntDesign name="right" size={20} color={COLOR.primary} />
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity>
-                    <View style={[stylesManage.btn, { justifyContent: 'center' }]}>
-                        <AntDesign name="logout" size={20} color={COLOR.primary} />
-                        <Text style={[stylesTour.txt_btn, { color: COLOR.primary, marginLeft: 5 }]}>Đăng xuất</Text>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity>
-                    <View style={[stylesManage.btn, { justifyContent: 'center' }]}>
-                        <AntDesign name="login" size={20} color={COLOR.primary} />
-                        <Text style={[stylesTour.txt_btn, { color: COLOR.primary, marginLeft: 5 }]}>Đăng nhập</Text>
-                    </View>
-                </TouchableOpacity>
-            </SafeAreaView>
+                    </TouchableOpacity>
+                </SafeAreaView>
+            )}
         </ScrollView>
     );
 }

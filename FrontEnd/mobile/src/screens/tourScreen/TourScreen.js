@@ -1,15 +1,5 @@
 import React, { useState } from 'react';
-import {
-    FlatList,
-    Image,
-    SafeAreaView,
-    ScrollView,
-    Text,
-    View,
-    TextInput,
-    TouchableOpacity,
-    Button,
-} from 'react-native';
+import { Image, SafeAreaView, ScrollView, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import stylesButton from '../../components/general/actionButton/styles';
@@ -18,9 +8,9 @@ import stylesTour from './styles';
 import { SelectList } from 'react-native-dropdown-select-list';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import COLOR from '../../res/color';
-import { Checkbox } from 'react-native-paper';
 import DatePicker from 'react-native-neat-date-picker';
 import moment from 'moment';
+import CheckBox from 'react-native-check-box';
 
 let nextId = 0;
 function TourScreen({ route, navigation }) {
@@ -42,6 +32,94 @@ function TourScreen({ route, navigation }) {
     const [price, setPrice] = useState(tour != undefined ? tour.price + '' : '');
     const [tourDestination, setTourDestination] = useState(tour != undefined ? tour.tourDestination : '');
 
+    const checkData = () => {
+        if (name.trim().length == 0) {
+            Alert.alert('Thông báo!', 'Không được để trống tên tour!', [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
+            return false;
+        }
+        if (tourIntro.trim().length == 0) {
+            Alert.alert('Thông báo!', 'Không được để trống giới thiệu tour!', [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
+            return false;
+        }
+        if (tourDetail.trim().length == 0) {
+            Alert.alert('Thông báo!', 'Không được để trống chi tiết tour!', [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
+            return false;
+        }
+        if (pickUpPoint.trim().length == 0) {
+            Alert.alert('Thông báo!', 'Không được để trống điểm đón!', [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
+            return false;
+        }
+        if (tourDestination.trim().length == 0) {
+            Alert.alert('Thông báo!', 'Không được để trống điểm đến!', [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
+            return false;
+        }
+        if (Number(totalDay) <= 0) {
+            Alert.alert('Thông báo!', 'Số ngày phải lớn hơn 0!', [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
+            return false;
+        }
+        if (Number(minQuantity) <= 0) {
+            Alert.alert('Thông báo!', 'Số người tối thiểu phải lớn hơn 0!', [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
+            return false;
+        }
+        if (Number(maxQuantity) <= 0) {
+            Alert.alert('Thông báo!', 'Số người tối đa ngày phải lớn hơn 0!', [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
+            return false;
+        }
+        if (Number(maxQuantity) < Number(minQuantity)) {
+            Alert.alert('Thông báo!', 'Số người tối đa  phải lớn hơn hoặc bằng số  người tối thiểu!', [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
+            return false;
+        }
+        if (Number(normalPenaltyFee) <= 0) {
+            Alert.alert('Thông báo!', 'Mức hủy 1 phải lớn hơn 0!', [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
+            return false;
+        }
+        if (Number(strictPenaltyFee) <= 0) {
+            Alert.alert('Thông báo!', 'Mức hủy 2 phải lớn hơn 0!', [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
+            return false;
+        }
+        if (Number(strictPenaltyFee) < Number(strictPenaltyFee)) {
+            Alert.alert('Thông báo!', 'Mức hủy 2 phải lớn hơn 0!', [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
+            return false;
+        }
+        if (Number(minDate) <= 0) {
+            Alert.alert('Thông báo!', 'Thời điểm áp dụng mức hủy 2 phải lớn hơn 0!', [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
+            return false;
+        }
+        if (Number(price) <= 0) {
+            Alert.alert('Thông báo!', 'Giá phải lớn hơn 0!', [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
+            return false;
+        }
+        return true;
+    };
+
     const openDatePicker = () => {
         setShowDatePicker(true);
     };
@@ -55,11 +133,10 @@ function TourScreen({ route, navigation }) {
         // You should close the modal in here
         setShowDatePicker(false);
         setDate(date);
+        console.log('date: ', date);
     };
 
     const [selected, setSelected] = useState('');
-
-    // const [checked, setChecked] = React.useState(false);
 
     const data = [
         { key: '1', value: 'Mobiles', disabled: true },
@@ -253,12 +330,13 @@ function TourScreen({ route, navigation }) {
                     <View>
                         <Text style={stylesTour.title}>Ngày khởi hành</Text>
                         <TouchableOpacity onPress={openDatePicker}>
-                            <Text style={stylesTour.input}>{moment(date).format('DD/MM/YYYY')}</Text>
+                            <Text style={stylesTour.input}>{moment(date.date).format('DD/MM/YYYY')}</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={{ marginLeft: 50 }}>
                         <Text style={stylesTour.title}>Số ngày </Text>
                         <TextInput
+                            keyboardType="numeric"
                             placeholder="Nhập số ngày"
                             style={stylesTour.input}
                             value={totalDay}
@@ -270,6 +348,7 @@ function TourScreen({ route, navigation }) {
                     <View>
                         <Text style={stylesTour.title}>Số người tối thiểu</Text>
                         <TextInput
+                            keyboardType="numeric"
                             placeholder="Nhập số người tối thiểu"
                             style={stylesTour.input}
                             value={minQuantity}
@@ -279,6 +358,7 @@ function TourScreen({ route, navigation }) {
                     <View style={{ marginLeft: 30 }}>
                         <Text style={stylesTour.title}>Số người tối đa </Text>
                         <TextInput
+                            keyboardType="numeric"
                             placeholder="Nhập số người tối đa"
                             style={stylesTour.input}
                             value={maxQuantity}
@@ -296,6 +376,7 @@ function TourScreen({ route, navigation }) {
                 >
                     <Text style={stylesTour.title}>Mức hủy 1 (%)</Text>
                     <TextInput
+                        keyboardType="numeric"
                         placeholder="Nhập mức hủy 1"
                         style={[stylesTour.input, { marginLeft: 80 }]}
                         value={normalPenaltyFee}
@@ -312,7 +393,8 @@ function TourScreen({ route, navigation }) {
                 >
                     <Text style={stylesTour.title}>Mức hủy 2 (%)</Text>
                     <TextInput
-                        placeholder="Nhập mức hủy 1"
+                        keyboardType="numeric"
+                        placeholder="Nhập mức hủy 2"
                         style={[stylesTour.input, { marginLeft: 80 }]}
                         value={strictPenaltyFee}
                         onChangeText={(newText) => setStrictPenaltyFee(newText)}
@@ -327,6 +409,7 @@ function TourScreen({ route, navigation }) {
                     <Text style={stylesTour.title}>Thời điểm áp dụng mức hủy 2</Text>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <TextInput
+                            keyboardType="numeric"
                             placeholder="Nhập số ngày"
                             style={[stylesTour.input, { marginLeft: 80 }]}
                             value={minDate}
@@ -344,11 +427,13 @@ function TourScreen({ route, navigation }) {
                     }}
                 >
                     <Text style={stylesTour.title}>Hướng dẫn viên du lịch</Text>
-                    <Checkbox
-                        status={tourGuide ? 'checked' : 'unchecked'}
-                        onPress={() => {
+
+                    <CheckBox
+                        style={{ flex: 1, padding: 10 }}
+                        onClick={() => {
                             setTourGuide(!tourGuide);
                         }}
+                        isChecked={tourGuide}
                     />
                 </View>
                 <View style={{ width: 320, marginTop: 20 }}>
@@ -375,7 +460,11 @@ function TourScreen({ route, navigation }) {
                         <Text style={[stylesTour.txt_btn, { color: COLOR.primary }]}>Xóa tour</Text>
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => {
+                        checkData();
+                    }}
+                >
                     <View style={stylesTour.btn}>
                         <Text style={stylesTour.txt_btn}>Cập nhật</Text>
                     </View>
