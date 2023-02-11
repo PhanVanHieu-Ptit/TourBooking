@@ -81,6 +81,15 @@ function ManageInforPersonScreen({ navigation }) {
             ]);
         }
     };
+
+    const addInfo = () => {
+        if (checkValue()) {
+            Alert.alert('Thông báo!', 'Thêm thông tin thành công!', [
+                { text: 'OK', onPress: () => navigation.navigate('Register') },
+            ]);
+        }
+    };
+    const state = 'add';
     return (
         <ScrollView>
             <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -205,7 +214,12 @@ function ManageInforPersonScreen({ navigation }) {
                         <AntDesign name="check" size={20} color="#0D6EFD" />
                     </View>
                 </View>
-                <TouchableOpacity onPress={() => update()}>
+                <TouchableOpacity
+                    onPress={() => {
+                        if (state != 'add') update();
+                        else addInfo();
+                    }}
+                >
                     <View style={stylesTour.btn}>
                         <Text style={stylesTour.txt_btn}>Lưu</Text>
                     </View>

@@ -5,12 +5,14 @@ import stylesMyInput from '../../../components/auth/styles';
 import stylesButton from '../../../components/general/actionButton/styles';
 import { styles } from '../../../styles';
 import stylesLogin from '../styles';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 function Login({ navigation }) {
     const User = {
         username: 'PhanVanHieu',
         password: 123,
     };
+    const [seePassword, setSeePassword] = useState(true);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const checkValue = () => {
@@ -62,14 +64,33 @@ function Login({ navigation }) {
                 <View style={stylesLogin.input}>
                     <Text style={styles.title3}>Mật khẩu </Text>
                     {/* <MyInputPassWord placeholder="Nhập mật khẩu của bạn" setPassword={setPassword()} /> */}
-                    <TextInput
-                        secureTextEntry={true}
-                        style={stylesMyInput.input}
-                        placeholder="Nhập mật khẩu của bạn"
-                        onChangeText={(newText) => {
-                            setPassword(newText);
-                        }}
-                    />
+                    <View
+                        style={[
+                            stylesMyInput.input,
+                            { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+                        ]}
+                    >
+                        <TextInput
+                            secureTextEntry={seePassword}
+                            placeholder="Nhập mật khẩu của bạn"
+                            onChangeText={(newText) => {
+                                setPassword(newText);
+                            }}
+                            maxLength={12}
+                        />
+                        <TouchableOpacity
+                            onPress={() => {
+                                setSeePassword(!seePassword);
+                            }}
+                            style={{ marginRight: 10 }}
+                        >
+                            {seePassword ? (
+                                <FontAwesome5 name="eye-slash" size={20} color="#0D6EFD" />
+                            ) : (
+                                <FontAwesome5 name="eye" size={20} color="#0D6EFD" />
+                            )}
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
             <View style={stylesLogin.footer}>
@@ -116,7 +137,7 @@ function Login({ navigation }) {
                     />
                     <TouchableOpacity
                         onPress={() => {
-                            navigation.navigate('Register');
+                            navigation.navigate('Profile');
                         }}
                     >
                         <Text style={stylesLogin.txt}>Tạo tài khoản mới</Text>

@@ -14,6 +14,7 @@ import ManageOrder from '../../screens/manage/ManageOrder';
 import ManageTourScreen from '../../screens/manageTour/manageTourScreen';
 import TourScreen from '../../screens/tourScreen/TourScreen';
 import DetailHistoryOrder from '../../screens/historyOrder.js/DetailHistoryOrder';
+import ChangePassword from '../../screens/manage/ChangePassword';
 
 const Stack = createStackNavigator();
 function HomeNavigation() {
@@ -32,6 +33,7 @@ function HomeNavigation() {
             <Stack.Screen name="ManageTour" component={ManageTourScreen} />
             <Stack.Screen name="EditTour" component={TourScreen} />
             <Stack.Screen name="DetailHistoryOrder" component={DetailHistoryOrder} />
+            <Stack.Screen name="Changepassword" component={ChangePassword} />
         </Stack.Navigator>
     );
 }

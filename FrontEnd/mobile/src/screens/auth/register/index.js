@@ -5,12 +5,15 @@ import stylesMyInput from '../../../components/auth/styles';
 import stylesButton from '../../../components/general/actionButton/styles';
 import { styles } from '../../../styles';
 import stylesLogin from '../styles';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 function Register({ navigation }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirm, setConfirm] = useState('');
-    const [capcha, setCapcha] = useState('');
+    // const [capcha, setCapcha] = useState('');
+    const [seePassword, setSeePassword] = useState(true);
+    const [seeConfirmPassword, setSeeConfirmPassword] = useState(true);
 
     const checkValue = () => {
         if (username.trim().length == 0) {
@@ -52,6 +55,7 @@ function Register({ navigation }) {
             ]);
         }
     };
+
     return (
         <SafeAreaView>
             <View style={stylesLogin.header2}>
@@ -72,29 +76,65 @@ function Register({ navigation }) {
                 </View>
                 <View style={stylesLogin.input2}>
                     <Text style={styles.title3}>Mật khẩu </Text>
-                    {/* <MyInputPassWord placeholder="Nhập mật khẩu của bạn" /> */}
-                    <TextInput
-                        secureTextEntry={true}
-                        style={stylesMyInput.input}
-                        placeholder="Nhập mật khẩu của bạn"
-                        // placeholder={props.placeholder}
-                        onChangeText={(newText) => {
-                            setPassword(newText);
-                        }}
-                    />
+
+                    <View
+                        style={[
+                            stylesMyInput.input,
+                            { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+                        ]}
+                    >
+                        <TextInput
+                            secureTextEntry={seePassword}
+                            placeholder="Nhập mật khẩu của bạn"
+                            onChangeText={(newText) => {
+                                setPassword(newText);
+                            }}
+                            maxLength={12}
+                        />
+                        <TouchableOpacity
+                            onPress={() => {
+                                setSeePassword(!seePassword);
+                            }}
+                            style={{ marginRight: 10 }}
+                        >
+                            {seePassword ? (
+                                <FontAwesome5 name="eye-slash" size={20} color="#0D6EFD" />
+                            ) : (
+                                <FontAwesome5 name="eye" size={20} color="#0D6EFD" />
+                            )}
+                        </TouchableOpacity>
+                    </View>
                 </View>
                 <View style={stylesLogin.input2}>
                     <Text style={styles.title3}>Xác nhận mật khẩu </Text>
-                    {/* <MyInputPassWord placeholder="Nhập lại mật khẩu của bạn" /> */}
-                    <TextInput
-                        secureTextEntry={true}
-                        style={stylesMyInput.input}
-                        placeholder="Nhập lại mật khẩu của bạn"
-                        // placeholder={props.placeholder}
-                        onChangeText={(newText) => {
-                            setConfirm(newText);
-                        }}
-                    />
+
+                    <View
+                        style={[
+                            stylesMyInput.input,
+                            { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+                        ]}
+                    >
+                        <TextInput
+                            secureTextEntry={seeConfirmPassword}
+                            placeholder="Nhập lại mật khẩu của bạn"
+                            onChangeText={(newText) => {
+                                setConfirm(newText);
+                            }}
+                            maxLength={12}
+                        />
+                        <TouchableOpacity
+                            onPress={() => {
+                                setSeeConfirmPassword(!seeConfirmPassword);
+                            }}
+                            style={{ marginRight: 10 }}
+                        >
+                            {seeConfirmPassword ? (
+                                <FontAwesome5 name="eye-slash" size={20} color="#0D6EFD" />
+                            ) : (
+                                <FontAwesome5 name="eye" size={20} color="#0D6EFD" />
+                            )}
+                        </TouchableOpacity>
+                    </View>
                 </View>
                 <View style={stylesLogin.input2}>
                     <Text style={styles.title3}>Capcha</Text>

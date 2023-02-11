@@ -51,6 +51,17 @@ function ManageScreen({ navigation }) {
                             <AntDesign name="right" size={20} color={COLOR.primary} />
                         </View>
                     </TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.navigate('Changepassword')}>
+                        <View style={stylesManage.btn}>
+                            <View style={{ flexDirection: 'row' }}>
+                                <Icon name="information-circle-outline" size={20} color={COLOR.primary} />
+                                <Text style={[stylesTour.txt_btn, { color: COLOR.primary, marginLeft: 5 }]}>
+                                    Đổi mật khẩu
+                                </Text>
+                            </View>
+                            <AntDesign name="right" size={20} color={COLOR.primary} />
+                        </View>
+                    </TouchableOpacity>
                     {user.role === 'Admin' ? (
                         <View>
                             <TouchableOpacity onPress={() => navigation.navigate('ManageTour')}>
@@ -143,7 +154,12 @@ function ManageScreen({ navigation }) {
                         </Text>
                     </View>
 
-                    <TouchableOpacity onPress={() => setIsLogin(true)}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            navigation.navigate('Login');
+                            setIsLogin(true);
+                        }}
+                    >
                         <View style={[stylesManage.btn, { justifyContent: 'center' }]}>
                             <AntDesign name="login" size={20} color={COLOR.primary} />
                             <Text style={[stylesTour.txt_btn, { color: COLOR.primary, marginLeft: 5 }]}>Đăng nhập</Text>
