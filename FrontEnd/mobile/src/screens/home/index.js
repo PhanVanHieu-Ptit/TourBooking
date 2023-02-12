@@ -19,6 +19,18 @@ function Home({ navigation }) {
             imageUrl:
                 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
             descript: 'Chuyen di thu vi',
+            pickUpPoint: 'TP. Hồ Chí Minh',
+            quantity: '10',
+            listImage: [
+                {
+                    id: 1,
+                    imageUrl: 'https://file1.dangcongsan.vn/data/0/images/2021/11/10/anhdv/tien-giang-10-11.jpg',
+                },
+                {
+                    id: 2,
+                    imageUrl: 'https://cdn3.ivivu.com/2022/06/ti%E1%BB%81n-giang.jpg',
+                },
+            ],
         },
         {
             id: 2,

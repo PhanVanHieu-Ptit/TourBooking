@@ -7,10 +7,9 @@ import Register from './src/screens/auth/register';
 
 export default function App() {
     return (
-        // <NavigationContainer>
-        //     {/* <MyTabs /> */}
-        //     <HomeNavigation />
-        // </NavigationContainer>
-        <Register />
+        <NavigationContainer>
+            {/* <MyTabs /> */}
+            <HomeNavigation />
+        </NavigationContainer>
     );
 }
