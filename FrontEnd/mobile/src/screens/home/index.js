@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FlatList, SafeAreaView, ScrollView, Text, View, TouchableOpacity } from 'react-native';
 import Find from '../../components/home/find';
 import Header from '../../components/home/header';
@@ -34,7 +34,7 @@ function Home({ navigation }) {
         },
         {
             id: 2,
-            name: 'Biển Ngọc',
+            name: 'Biển Den',
             tourDestination: 'Phú Quốc',
             startDate: '25/01/2023',
             totalDay: '2',
@@ -44,7 +44,7 @@ function Home({ navigation }) {
         },
         {
             id: 3,
-            name: 'Biển Ngọc',
+            name: 'Biển Do',
             tourDestination: 'Phú Quốc',
             startDate: '25/01/2023',
             totalDay: '2',
@@ -54,11 +54,18 @@ function Home({ navigation }) {
         },
     ];
 
+    const [masterDataSource, setMasterDataSource] = useState(DATA);
+    const [filteredDataSource, setFilteredDataSource] = useState(DATA);
+
     return (
         <ScrollView>
             <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
                 <Header />
-                <Find />
+                <Find
+                    masterDataSource={masterDataSource}
+                    setMasterDataSource={setMasterDataSource}
+                    setFilteredDataSource={setFilteredDataSource}
+                />
                 <View style={{ flex: 1 }}>
                     <TouchableOpacity
                         onPress={() => {
@@ -76,7 +83,7 @@ function Home({ navigation }) {
                     <FlatList
                         horizontal
                         // style={{flex: 1}}
-                        data={DATA}
+                        data={filteredDataSource}
                         renderItem={({ item }) => <CardNewTour props={item} navigation={navigation} />}
                         keyExtractor={(item) => item.id}
                     />

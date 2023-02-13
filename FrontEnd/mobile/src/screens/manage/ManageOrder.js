@@ -8,17 +8,6 @@ import { SelectList } from 'react-native-dropdown-select-list';
 import CardOrder from '../../components/mange/CardOrder';
 
 function ManageOrder({ navigation }) {
-    const [selected, setSelected] = React.useState('');
-
-    const data = [
-        { key: '1', value: 'Mobiles', disabled: true },
-        { key: '2', value: 'Appliances' },
-        { key: '3', value: 'Cameras' },
-        { key: '4', value: 'Computers', disabled: true },
-        { key: '5', value: 'Vegetables' },
-        { key: '6', value: 'Diary Products' },
-        { key: '7', value: 'Drinks' },
-    ];
     const DATA = [
         {
             id: 1,
@@ -75,6 +64,19 @@ function ManageOrder({ navigation }) {
             note: '',
         },
     ];
+
+    const [selected, setSelected] = React.useState('');
+
+    const data = [
+        { key: '1', value: 'Mobiles', disabled: true },
+        { key: '2', value: 'Appliances' },
+        { key: '3', value: 'Cameras' },
+        { key: '4', value: 'Computers', disabled: true },
+        { key: '5', value: 'Vegetables' },
+        { key: '6', value: 'Diary Products' },
+        { key: '7', value: 'Drinks' },
+    ];
+
     return (
         <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
             <View
