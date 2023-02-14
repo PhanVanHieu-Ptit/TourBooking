@@ -35,6 +35,7 @@ function Find(props) {
                     style={stylesFind.input}
                     placeholder="Bạn đang muốn đi đâu ..."
                     onChangeText={(text) => searchFilterFunction(text)}
+                    autoFocus={props.isFind}
                 />
             </View>
             {/* <Icon name="filter" size={25} color="#021A5A" /> */}

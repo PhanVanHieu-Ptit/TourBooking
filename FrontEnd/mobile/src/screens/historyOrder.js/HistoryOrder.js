@@ -26,7 +26,7 @@ function HistoryOrderScreen({ navigation }) {
             price: '1500',
             imageUrl:
                 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-            state: selected,
+            state: 'Chờ xác nhận',
         },
         {
             id: 2,
@@ -37,7 +37,7 @@ function HistoryOrderScreen({ navigation }) {
             price: '1500',
             imageUrl:
                 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-            state: selected,
+            state: 'Đã xác nhận',
         },
         {
             id: 3,
@@ -48,7 +48,7 @@ function HistoryOrderScreen({ navigation }) {
             price: '1500',
             imageUrl:
                 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-            state: selected,
+            state: 'Đã hủy',
         },
         {
             id: 4,
@@ -59,7 +59,7 @@ function HistoryOrderScreen({ navigation }) {
             price: '1500',
             imageUrl:
                 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-            state: selected,
+            state: 'Hoàn thành',
         },
         {
             id: 5,
@@ -70,7 +70,7 @@ function HistoryOrderScreen({ navigation }) {
             price: '1500',
             imageUrl:
                 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-            state: selected,
+            state: 'Đang sử dụng',
         },
     ];
     const tourOrder = {

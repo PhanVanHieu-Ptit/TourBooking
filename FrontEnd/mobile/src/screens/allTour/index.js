@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FlatList, SafeAreaView, ScrollView, Text, View } from 'react-native';
 import MyTourCard from '../../components/allTour/Card';
 import Find from '../../components/home/find';
@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import stylesButton from '../../components/general/actionButton/styles';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-function AllTourScreen({ navigation }) {
+function AllTourScreen({ route, navigation }) {
     const DATA = [
         {
             id: 1,
@@ -21,7 +21,7 @@ function AllTourScreen({ navigation }) {
         },
         {
             id: 2,
-            name: 'Biển Ngọc',
+            name: 'Biển Do',
             tourDestination: 'Phú Quốc',
             startDate: '25/01/2023',
             totalDay: '2',
@@ -41,7 +41,7 @@ function AllTourScreen({ navigation }) {
         },
         {
             id: 4,
-            name: 'Biển Ngọc',
+            name: 'Biển Den',
             tourDestination: 'Phú Quốc',
             startDate: '25/01/2023',
             totalDay: '2',
@@ -60,6 +60,9 @@ function AllTourScreen({ navigation }) {
                 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
         },
     ];
+
+    const [masterDataSource, setMasterDataSource] = useState(DATA);
+    const [filteredDataSource, setFilteredDataSource] = useState(DATA);
     return (
         <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
             <View
@@ -80,10 +83,15 @@ function AllTourScreen({ navigation }) {
                 </TouchableOpacity>
                 <Text style={stylesAllTour.title}>Tất cả các tour</Text>
             </View>
-            <Find />
+            <Find
+                masterDataSource={masterDataSource}
+                setMasterDataSource={setMasterDataSource}
+                setFilteredDataSource={setFilteredDataSource}
+                isFind={route.params.isFind}
+            />
             <FlatList
                 numColumns={2}
-                data={DATA}
+                data={filteredDataSource}
                 renderItem={({ item }) => <MyTourCard props={item} navigation={navigation} />}
                 keyExtractor={(item) => item.id}
             />

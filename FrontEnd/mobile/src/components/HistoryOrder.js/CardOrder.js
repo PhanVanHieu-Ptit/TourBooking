@@ -14,6 +14,13 @@ function CardOrder(props) {
     const tourOrder = props.tourOrder;
 
     const [isExpanded, setIsExpanded] = useState(true);
+    var colorState = '#FFD336';
+
+    useEffect(() => {
+        if (tour.state == 'Đã xác nhận') colorState = '#32DB61';
+        else if (tour.state == 'Đã hủy') colorState = '#E70303';
+        else if (tour.state == 'Hoàn thành') colorState = '#32DB61';
+    });
     return (
         <View>
             <Text style={styles.title}>Ngày {tourOrder.orderDateTime}</Text>
@@ -44,7 +51,7 @@ function CardOrder(props) {
                     </View>
                     <View
                         style={{
-                            backgroundColor: '#FFD336',
+                            backgroundColor: colorState,
                             borderRadius: 20,
                             width: 80,
                             height: 30,
@@ -75,44 +82,93 @@ function CardOrder(props) {
                 <CollapseBody>
                     <Text style={styles.title}>Thông tin đơn đặt</Text>
                     <Text style={styles.content}>Số lượng: {tourOrder?.quantity}</Text>
-                    <Text style={styles.content}>Tổng tiền: {tourOrder?.totalMoney}</Text>
+                    <Text style={styles.content}>Tổng tiền: {tourOrder?.totalMoney} VND</Text>
                     <Text style={styles.content}>Ghi chú: {tourOrder?.note}</Text>
-                    <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Cập nhật</Text>
 
-                    <View style={{ flexDirection: 'row' }}>
-                        <TouchableOpacity
-                            style={{
-                                backgroundColor: COLOR.primary, //'#FFD336',
-                                borderRadius: 20,
-                                width: 80,
-                                height: 30,
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                margin: 10,
-                            }}
-                            onPress={() =>
-                                props.navigation.navigate('DetailHistoryOrder', {
-                                    tour: tour,
-                                    tourOrder: tourOrder,
-                                })
-                            }
-                        >
-                            <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Cập nhật</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={{
-                                backgroundColor: 'red',
-                                borderRadius: 20,
-                                width: 80,
-                                height: 30,
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                margin: 10,
-                            }}
-                        >
-                            <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Hủy</Text>
-                        </TouchableOpacity>
-                    </View>
+                    {tour.state == 'Chờ xác nhận' ? (
+                        <View style={{ flexDirection: 'row' }}>
+                            <TouchableOpacity
+                                style={{
+                                    backgroundColor: COLOR.primary, //'#FFD336',
+                                    borderRadius: 20,
+                                    width: 80,
+                                    height: 30,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    margin: 10,
+                                }}
+                                onPress={() =>
+                                    props.navigation.navigate('DetailHistoryOrder', {
+                                        tour: tour,
+                                        tourOrder: tourOrder,
+                                    })
+                                }
+                            >
+                                <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Cập nhật</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={{
+                                    backgroundColor: 'red',
+                                    borderRadius: 20,
+                                    width: 80,
+                                    height: 30,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    margin: 10,
+                                }}
+                            >
+                                <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Hủy</Text>
+                            </TouchableOpacity>
+                        </View>
+                    ) : (
+                        ''
+                    )}
+
+                    {tour.state == 'Đặt thành công' ? (
+                        <View style={{ flexDirection: 'row' }}>
+                            <TouchableOpacity
+                                style={{
+                                    backgroundColor: 'red',
+                                    borderRadius: 20,
+                                    width: 80,
+                                    height: 30,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    margin: 10,
+                                }}
+                            >
+                                <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Yêu cầu hủy</Text>
+                            </TouchableOpacity>
+                        </View>
+                    ) : (
+                        ''
+                    )}
+
+                    {tour.state == 'Đã hủy' ? (
+                        <View style={{ flexDirection: 'row' }}>
+                            <TouchableOpacity
+                                style={{
+                                    backgroundColor: COLOR.primary, //'#FFD336',
+                                    borderRadius: 20,
+                                    width: 80,
+                                    height: 30,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    margin: 10,
+                                }}
+                                onPress={() =>
+                                    props.navigation.navigate('DetailHistoryOrder', {
+                                        tour: tour,
+                                        tourOrder: tourOrder,
+                                    })
+                                }
+                            >
+                                <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Đặt lại</Text>
+                            </TouchableOpacity>
+                        </View>
+                    ) : (
+                        ''
+                    )}
                 </CollapseBody>
             </Collapse>
             <View style={{ borderBottomWidth: 2, borderBottomColor: COLOR.primary }} />

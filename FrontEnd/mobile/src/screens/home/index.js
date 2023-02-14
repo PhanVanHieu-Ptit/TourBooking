@@ -6,6 +6,7 @@ import stylesHome from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import COLOR from '../../res/color';
 import { CardCommingTour, CardNewTour } from '../../components/home/card';
+import stylesFind from '../../components/home/find/styles';
 
 function Home({ navigation }) {
     const DATA = [
@@ -54,22 +55,28 @@ function Home({ navigation }) {
         },
     ];
 
-    const [masterDataSource, setMasterDataSource] = useState(DATA);
-    const [filteredDataSource, setFilteredDataSource] = useState(DATA);
-
     return (
         <ScrollView>
             <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
                 <Header />
-                <Find
-                    masterDataSource={masterDataSource}
-                    setMasterDataSource={setMasterDataSource}
-                    setFilteredDataSource={setFilteredDataSource}
-                />
+                {/* find */}
+                <TouchableOpacity
+                    onPress={() => {
+                        navigation.navigate('AllTour', { isFind: true });
+                    }}
+                >
+                    <View style={stylesFind.view}>
+                        <View style={stylesFind.first_component}>
+                            <Icon name="search" size={25} color="#021A5A" />
+                            <Text>Bạn đang muốn đi đâu ...</Text>
+                        </View>
+                        {/* <Icon name="filter" size={25} color="#021A5A" /> */}
+                    </View>
+                </TouchableOpacity>
                 <View style={{ flex: 1 }}>
                     <TouchableOpacity
                         onPress={() => {
-                            navigation.navigate('AllTour');
+                            navigation.navigate('AllTour', { isFind: false });
                         }}
                     >
                         <View style={stylesHome.txt1}>
@@ -83,7 +90,7 @@ function Home({ navigation }) {
                     <FlatList
                         horizontal
                         // style={{flex: 1}}
-                        data={filteredDataSource}
+                        data={DATA}
                         renderItem={({ item }) => <CardNewTour props={item} navigation={navigation} />}
                         keyExtractor={(item) => item.id}
                     />
