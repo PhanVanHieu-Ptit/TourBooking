@@ -1,0 +1,30 @@
+@import "both-side.css";
+
+
+
+.btn--gold {
+  padding: 10px 24px;
+  color: var(--white);
+  background-color: var(--gold);
+  border-radius: 16px;
+  box-shadow: 2px 4px 6px #0000003e;
+  display: inline-block;
+  transition: 0.3s;
+  cursor: pointer;
+  white-space: nowrap;
+  border: none;
+}
+
+.btn--gold:hover {
+  filter: brightness(110%);
+}
+
+
+.main-bg {
+  width: 100%;
+  top: 0;
+  left: 0;
+  object-fit: cover;
+  object-position: center;
+  max-height: 100vh;
+}

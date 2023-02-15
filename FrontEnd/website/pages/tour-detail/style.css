@@ -1,0 +1,152 @@
+@import "../shared/customer-side.css";
+
+body {
+  color: var(--white);
+}
+
+.tour-heading {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.tour-name {
+  font-size: 4rem;
+  text-transform: capitalize;
+  letter-spacing: .3rem;
+  font-weight: bold;
+}
+
+.tour-destination {
+  font-size: larger;
+  font-weight: bold;
+  ;
+}
+
+.main-details {
+  position: absolute;
+  width: 70vw;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 8%;
+  border: 1px solid var(--gold);
+  background-color: var(--dark-opacity);
+  border-radius: 32px;
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 24px;
+}
+
+.main-detail {
+  width: 100%;
+  padding: 0 12px;
+}
+
+.main-detail~.main-detail {
+  padding-left: 12px;
+  border-left: 1px solid var(--white-opacity);
+}
+
+.main-detail-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+}
+
+.main-detail-heading {
+  margin-bottom: 8px;
+}
+
+.main-detail-value {
+  flex: 1;
+  margin-left: 8px;
+}
+
+.main-detail-wrapper img {
+  width: 1.5rem;
+
+}
+
+.main-detail-value {
+  display: inline;
+}
+
+
+.sub-details {
+  color: var(--black);
+  display: flex;
+  padding: 42px 8px;
+  text-align: justify;
+}
+
+.left-area {
+  width: 120%;
+}
+
+.images {
+  display: flex;
+  justify-content: space-between;
+  height: 120px;
+}
+
+.images img {
+  width: 15%;
+  height: 100px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 8px;
+}
+
+.description {
+  /* font-family: 'EB Garamond'; */
+  /* font-size: 16px; */
+  /* text-align: justify; */
+}
+
+.big-display {
+  width: 100%;
+  height: 600px;
+  object-fit: cover;
+  object-position: bottom;
+  margin-bottom: 16px;
+  border-radius: 32px;
+}
+
+.right-area {
+  position: relative;
+  padding: 0 32px;
+  max-width: 50%;
+}
+
+.right-area h1 {
+  color: var(--gold);
+  border-bottom: 1px solid var(--gold);
+}
+
+.booking-frm label {
+  display: block;
+  margin-top: 16px;
+}
+
+.booking-frm {
+  position: sticky;
+  top: 32px;
+}
+
+.booking-frm input,
+.booking-frm textarea {
+  color: var(--white);
+  background-color: var(--dark);
+  padding: 10px 12px;
+  border: none;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: large;
+}
+
+.booking-frm textarea {
+  width: 100%;
+}
