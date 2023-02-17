@@ -11,15 +11,16 @@ import { Collapse, CollapseHeader, CollapseBody, AccordionList } from 'accordion
 
 function CardOrder(props) {
     const tour = props.tour;
+
     const tourOrder = props.tourOrder;
 
     const [isExpanded, setIsExpanded] = useState(true);
-    var colorState = '#FFD336';
+    var [colorState, setColorState] = useState('#FFD336');
 
     useEffect(() => {
-        if (tour.state == 'Đã xác nhận') colorState = '#32DB61';
-        else if (tour.state == 'Đã hủy') colorState = '#E70303';
-        else if (tour.state == 'Hoàn thành') colorState = '#32DB61';
+        if (tour.state === 'Đã xác nhận') setColorState('#32DB61');
+        else if (tour.state === 'Đã hủy') setColorState('#E70303');
+        else if (tour.state === 'Hoàn thành') setColorState('#32DB61');
     });
     return (
         <View>

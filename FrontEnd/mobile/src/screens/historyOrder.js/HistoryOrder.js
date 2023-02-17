@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FlatList, SafeAreaView, ScrollView, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import stylesButton from '../../components/general/actionButton/styles';
@@ -83,6 +83,28 @@ function HistoryOrderScreen({ navigation }) {
         cancelDate: '',
         idStatus: 'Đặt thành công',
     };
+
+    const [masterDataSource, setMasterDataSource] = useState(DATA);
+    const [filteredDataSource, setFilteredDataSource] = useState(DATA);
+    const searchFilterFunction = (text) => {
+        // Check if searched text is not blank
+        if (text) {
+            // Inserted text is not blank
+            // Filter the masterDataSource
+            // Update FilteredDataSource
+            const newData = masterDataSource.filter(function (item) {
+                const itemData = item.idStatus ? item.idStatus.toUpperCase() : ''.toUpperCase();
+                const textData = text.toUpperCase();
+                return itemData.indexOf(textData) > -1;
+            });
+            setFilteredDataSource(newData);
+        } else {
+            // Inserted text is blank
+            // Update FilteredDataSource with masterDataSource
+            setFilteredDataSource(props.masterDataSource);
+        }
+    };
+
     return (
         <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
             <View
@@ -101,15 +123,20 @@ function HistoryOrderScreen({ navigation }) {
             </View>
             <View style={{ marginLeft: 200 }}>
                 <SelectList
-                    defaultOption={{ key: '1', value: 'Chờ xác nhận' }}
-                    setSelected={(val) => setSelected(val)}
+                    defaultOption={{ key: '0', value: 'Tất cả' }}
+                    setSelected={
+                        (val) => {
+                            searchFilterFunction(val);
+                        }
+                        // setSelected(val)
+                    }
                     data={data}
                     save="value"
                 />
             </View>
 
             <ScrollView>
-                {DATA.map((item) => (
+                {filteredDataSource.map((item) => (
                     <CardOrder tour={item} tourOrder={tourOrder} key={item.id} navigation={navigation} />
                 ))}
             </ScrollView>
