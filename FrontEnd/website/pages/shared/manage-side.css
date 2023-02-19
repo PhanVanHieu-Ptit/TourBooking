@@ -12,6 +12,10 @@ main {
   padding: 12px 12px;
 }
 
+a {
+  color: var(--purple-dark);
+}
+
 table {
   border-collapse: collapse;
   min-width: 100%;
@@ -19,7 +23,9 @@ table {
   margin-top: 16px;
 }
 
-tr {}
+tr {
+  position: relative;
+}
 
 tr:nth-child(1) {
   position: sticky;
@@ -57,7 +63,8 @@ td {
 
 .id-value {
   color: var(--purple-dark);
-  display: block;
+
+  font-style: italic;
 }
 
 .value {
@@ -87,6 +94,7 @@ td {
 .btn-red {
   background-color: var(--red);
   color: var(--black);
+  padding: 2px 6px;
 }
 
 .btn-purple {
@@ -120,25 +128,40 @@ td {
   border: none;
 }
 
-.row-wrapper {
-  display: flex;
-  align-items: center;
-}
 
 .options {
   cursor: pointer;
   position: relative;
 }
 
-.options-container {
+.options:hover .options-container {
   display: flex;
+}
+
+.options-container {
+  display: none;
   justify-content: space-between;
   align-items: center;
   position: absolute;
   right: 0;
   bottom: calc(-100% + 12px);
-  background-color: var(--purple-light);
+  background-color: var(--purple);
   padding: 6px 6px;
+  z-index: 5;
+}
+
+
+.options-container::before {
+  display: block;
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid var(--purple);
+  right: 20px;
+  top: -10px;
 }
 
 
@@ -152,5 +175,48 @@ td {
 
 .option:hover {
   filter: brightness(200%);
+
+}
+
+form {
+  display: flex;
+  margin: 0 auto;
+  flex-direction: column;
+  width: 70%;
+}
+
+form label {
+  display: block;
+  font-weight: bold;
+  margin-top: 32px;
+  margin-bottom: 4px;
+
+}
+
+form input {
+  color: var(--purple-dark);
+  background-color: var(--purple-light);
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
+  width: 100%;
+}
+
+form button {
+  display: block;
+  width: min-content;
+  margin: 24px auto 0;
+}
+
+.btn-add {
+  margin-left: auto
+}
+
+.filter {
+  box-shadow: inset 0px 0px 4px var(--purple-dark);
+  color: var(--purple-dark);
+  background: var(--purple-light);
+  border: none;
+  padding: 6px 8px;
 
 }
