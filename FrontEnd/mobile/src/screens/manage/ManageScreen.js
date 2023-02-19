@@ -16,7 +16,11 @@ function ManageScreen({ navigation }) {
     const user = {
         id: 1,
         name: 'Phan Văn Hiểu',
+        email: 'phanvanhieu@gmail.com',
+        address: 'Thu Duc',
+        phone: '012345678',
         uriImage: 'https://img.freepik.com/free-photo/smiley-little-boy-isolated-pink_23-2148984798.jpg',
+
         role: 'Admin',
     };
     const [isLogin, setIsLogin] = useState(false);
@@ -40,7 +44,7 @@ function ManageScreen({ navigation }) {
                             {user?.role}
                         </Text>
                     </View>
-                    <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+                    <TouchableOpacity onPress={() => navigation.navigate('Profile', { user: user })}>
                         <View style={stylesManage.btn}>
                             <View style={{ flexDirection: 'row' }}>
                                 <Icon name="information-circle-outline" size={20} color={COLOR.primary} />

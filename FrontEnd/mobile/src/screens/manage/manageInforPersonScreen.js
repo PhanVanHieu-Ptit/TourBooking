@@ -9,13 +9,16 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import stylesTour from '../tourScreen/styles';
 
-function ManageInforPersonScreen({ navigation }) {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [address, setAddress] = useState('');
-    const [phone, setPhone] = useState('');
+function ManageInforPersonScreen({ route, navigation }) {
+    const user = route?.params?.user;
+    const [name, setName] = useState(user != undefined ? user.name : '');
+    const [email, setEmail] = useState(user != undefined ? user.email : '');
+    const [address, setAddress] = useState(user != undefined ? user.address : '');
+    const [phone, setPhone] = useState(user != undefined ? user.phone : '');
     const [imgPath, setImgPath] = useState(
-        `https://img.freepik.com/free-photo/smiley-little-boy-isolated-pink_23-2148984798.jpg`,
+        user != undefined
+            ? user.uriImage
+            : `https://img.freepik.com/free-photo/smiley-little-boy-isolated-pink_23-2148984798.jpg`,
     );
 
     const [responseImage, setResponseImage] = useState('');
@@ -89,7 +92,7 @@ function ManageInforPersonScreen({ navigation }) {
             ]);
         }
     };
-    const state = 'add';
+
     return (
         <ScrollView>
             <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -216,12 +219,12 @@ function ManageInforPersonScreen({ navigation }) {
                 </View>
                 <TouchableOpacity
                     onPress={() => {
-                        if (state != 'add') update();
+                        if (user != undefined) update();
                         else addInfo();
                     }}
                 >
                     <View style={stylesTour.btn}>
-                        <Text style={stylesTour.txt_btn}>Lưu</Text>
+                        <Text style={stylesTour.txt_btn}>{user != undefined ? 'Lưu lại' : 'Tiếp tục'}</Text>
                     </View>
                 </TouchableOpacity>
             </SafeAreaView>
