@@ -21,6 +21,7 @@ app.get('/', async (req, res) => {
   res.send(rows)
 })
 
-app.listen(8080, () => {
-  console.log('listening on *:8080');
+
+app.listen(3000, () => {
+  console.log('listening on *:3000');
 });
