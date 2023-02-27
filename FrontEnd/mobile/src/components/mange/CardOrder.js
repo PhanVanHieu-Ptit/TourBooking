@@ -80,12 +80,12 @@ function CardOrder({ props }) {
                     <Text style={styles.content}>Số lượng: {props?.number}</Text>
                     <Text style={styles.content}>Tổng tiền: {props?.number * props?.price}</Text>
                     <Text style={styles.content}>Ghi chú: {props?.note}</Text>
-                    <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Cập nhật</Text>
+                   
 
                     <View style={{ flexDirection: 'row' }}>
                         <TouchableOpacity
                             style={{
-                                backgroundColor: COLOR.primary, //'#FFD336',
+                                backgroundColor: COLOR.primary,
                                 borderRadius: 20,
                                 width: 80,
                                 height: 30,

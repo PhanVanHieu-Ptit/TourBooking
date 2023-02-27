@@ -1,84 +1,20 @@
-import React from 'react';
-import { FlatList, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { SafeAreaView, Image, View, Text, TouchableOpacity, TextInput, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
 import stylesButton from '../../components/general/actionButton/styles';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import stylesAllTour from '../allTour/style';
-import { SelectList } from 'react-native-dropdown-select-list';
-import CardOrder from '../../components/mange/CardOrder';
+import stylesManage from './styles';
+import { ScrollView } from 'react-native-gesture-handler';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import COLOR from '../../res/color';
+import stylesTour from '../tourScreen/styles';
 
 function ManageOrder({ navigation }) {
-    const DATA = [
-        {
-            id: 1,
-            orderDate: '20/01/2023',
-            name: 'Biển Ngọc',
-            tourDestination: 'Phú Quốc',
-            startDate: '25/01/2023',
-            totalDay: '2',
-            price: '1500',
-            imageUrl:
-                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-            user: {
-                name: 'Phan Văn Hiểu',
-                phone: '0123454123',
-                email: 'phanvanhieu@gmail.com',
-            },
-            number: 2,
-            note: '',
-        },
-        {
-            id: 2,
-            orderDate: '20/01/2023',
-            name: 'Biển Ngọc',
-            tourDestination: 'Phú Quốc',
-            startDate: '25/01/2023',
-            totalDay: '2',
-            price: '1500',
-            imageUrl:
-                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-            user: {
-                name: 'Phan Văn Hiểu',
-                phone: '0123454123',
-                email: 'phanvanhieu@gmail.com',
-            },
-            number: 3,
-            note: '',
-        },
-        {
-            id: 3,
-            orderDate: '20/01/2023',
-            name: 'Biển Ngọc',
-            tourDestination: 'Phú Quốc',
-            startDate: '25/01/2023',
-            totalDay: '2',
-            price: '1500',
-            imageUrl:
-                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-            user: {
-                name: 'Phan Văn Hiểu',
-                phone: '0123454123',
-                email: 'phanvanhieu@gmail.com',
-            },
-            number: 5,
-            note: '',
-        },
-    ];
-
-    const [selected, setSelected] = React.useState('');
-
-    const data = [
-        { key: '1', value: 'Mobiles', disabled: true },
-        { key: '2', value: 'Appliances' },
-        { key: '3', value: 'Cameras' },
-        { key: '4', value: 'Computers', disabled: true },
-        { key: '5', value: 'Vegetables' },
-        { key: '6', value: 'Diary Products' },
-        { key: '7', value: 'Drinks' },
-    ];
-
     return (
-        <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+        <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center' }}>
             <View
                 style={{
                     flexDirection: 'row',
@@ -93,14 +29,40 @@ function ManageOrder({ navigation }) {
                 </TouchableOpacity>
                 <Text style={stylesAllTour.title}>Quản lý đơn đặt</Text>
             </View>
-            <View style={{ marginLeft: 200 }}>
-                <SelectList setSelected={(val) => setSelected(val)} data={data} save="value" />
-            </View>
-
             <ScrollView>
-                {DATA.map((item) => (
-                    <CardOrder props={item} key={item.id} />
-                ))}
+                <TouchableOpacity onPress={() => navigation.navigate('ManageOrderFollowStatus')}>
+                    <View style={stylesManage.btn}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <Icon name="information-circle-outline" size={20} color={COLOR.primary} />
+                            <Text style={[stylesTour.txt_btn, { color: COLOR.primary, marginLeft: 5 }]}>
+                                Quản lý theo trạng thái
+                            </Text>
+                        </View>
+                        <AntDesign name="right" size={20} color={COLOR.primary} />
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('ManageOrderFollowTour')}>
+                    <View style={stylesManage.btn}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <Icon name="information-circle-outline" size={20} color={COLOR.primary} />
+                            <Text style={[stylesTour.txt_btn, { color: COLOR.primary, marginLeft: 5 }]}>
+                                Quản lý theo tour
+                            </Text>
+                        </View>
+                        <AntDesign name="right" size={20} color={COLOR.primary} />
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('Changepassword')}>
+                    <View style={stylesManage.btn}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <Icon name="information-circle-outline" size={20} color={COLOR.primary} />
+                            <Text style={[stylesTour.txt_btn, { color: COLOR.primary, marginLeft: 5 }]}>
+                                Quản lý theo khách hàng
+                            </Text>
+                        </View>
+                        <AntDesign name="right" size={20} color={COLOR.primary} />
+                    </View>
+                </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>
     );

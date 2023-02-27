@@ -22,7 +22,7 @@ const stylesCard = StyleSheet.create({
         color: '#FFFFFF',
         fontSize: 14,
         fontFamily: 'Ubuntu',
-        marginLeft: 10,
+        marginLeft: 5,
     },
     txt2: {
         color: '#FFFFFF',
