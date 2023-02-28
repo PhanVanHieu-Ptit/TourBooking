@@ -1,25 +1,31 @@
 
 const jwt = require('jsonwebtoken');
-const message = require('./utils/message');
+const message = require('../utils/message');
 function authenticateToken(req, res, next) {
   // Get token from Authorization header
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+  const token = authHeader;
+  console.log(token);
+  // const token = authHeader && authHeader.split(' ')[1];
 
   // If token is null, return 401 Unauthorized
   if (!token) {
-    return res.json(message([], false, 'Không có quyền truy cập'));
+    return res.send(message('', false, 'Không có quyền truy cập'));
   }
-
   try {
     // Verify token using secret key
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(decoded);
     // Add decoded user information to request object
-    req.user = decoded;
-    // Call next middleware function
-    next();
+    req.body = { ...decoded, ...req.body };
+    console.log(req.body);
+    res.send(message(token, true));
+    // next();
   } catch (error) {
-    return res.json(message([], false, 'Token không hợp lệ'));
+    if (error.message == 'jwt expired') {
+      return res.send(message(error, false, 'Token đã hết hạn'));
+    }
+    return res.send(message(error, false, 'Token không hợp lệ'));
   }
 }
 
