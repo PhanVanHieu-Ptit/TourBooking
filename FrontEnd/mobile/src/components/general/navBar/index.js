@@ -30,7 +30,7 @@ function MyTabs() {
                 }}
             />
             <Tab.Screen
-                name="HistoryOrder"
+                name="HistoryOrderScreen"
                 component={HistoryOrderScreen}
                 options={{
                     tabBarLabel: 'Lịch sử',

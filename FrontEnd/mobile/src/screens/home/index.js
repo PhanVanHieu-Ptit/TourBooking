@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FlatList, SafeAreaView, ScrollView, Text, View, TouchableOpacity } from 'react-native';
+import { FlatList, SafeAreaView, ScrollView, Text, View, TouchableOpacity, StatusBar } from 'react-native';
 import Find from '../../components/home/find';
 import Header from '../../components/home/header';
 import stylesHome from './style';
@@ -58,6 +58,7 @@ function Home({ navigation }) {
     return (
         <ScrollView>
             <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+                <StatusBar translucent={false} backgroundColor={COLOR.primary} />
                 <Header />
                 {/* find */}
                 <TouchableOpacity
