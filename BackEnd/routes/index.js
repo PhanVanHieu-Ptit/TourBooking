@@ -1,15 +1,12 @@
-<<<<<<< HEAD
-
-const siteRouter = require('./site.routes');
-const accountRouter = require('./account.routes');
-=======
 const siteRouter = require("./site.routes");
 const tourRouter = require("./tour.routes");
 const orderRouter = require("./order.routes");
->>>>>>> 63c8d759e8559a500747ce0fd4d0e9be1bc0af3b
+const accountRouter = require('./account.routes');
 
 function hung(app) {
   //viet route trong nay
+  app.use('/account', accountRouter);
+  app.use('/staff', accountRouter);
   app.use('/account', accountRouter);
 }
 
