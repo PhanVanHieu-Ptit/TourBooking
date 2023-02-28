@@ -6,7 +6,7 @@ function message(data = [], status = true, message = "") {
     throw new Error('status must be a boolean');
   if (typeof message != 'string')
     throw new Error('message must be a string');
-  return { data, status, message };
+  return { status, message, data };
 }
 
 module.exports = message;
