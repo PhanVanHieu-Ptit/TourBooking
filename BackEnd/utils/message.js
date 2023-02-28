@@ -1,6 +1,7 @@
 function message(data = [], status = true, message = "") {
-  if (!Array.isArray(data))
-    throw new Error('data must be an array');
+  if (!Array.isArray(data)) {
+    data = [data];
+  }
   if (typeof status != 'boolean')
     throw new Error('status must be a boolean');
   if (typeof message != 'string')
