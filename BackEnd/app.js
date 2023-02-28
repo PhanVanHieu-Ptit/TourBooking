@@ -3,6 +3,7 @@ const path = require("path");
 const app = express();
 const cors = require("cors");
 const route = require("./routes");
+const dotenv = require("dotenv").config();
 
 // cấu hình body-paser
 var bodyParser = require("body-parser");
@@ -17,13 +18,6 @@ app.use(
 );
 route(app);
 
-
-// app.get("/", async (req, res) => {
-//   const connection = require("./utils/connection");
-//   const [rows, fields] = await connection.execute("select * from status");
-//   console.log(rows);
-//   res.send(rows);
-// });
 
 app.listen(3000, () => {
   console.log("listening on *:3000");

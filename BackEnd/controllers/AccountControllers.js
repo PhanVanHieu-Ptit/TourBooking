@@ -2,6 +2,8 @@ const message = require('../utils/message');
 const connection = require("../utils/connection");
 const { listAddress, checkAddress } = require('../utils/address');
 const { encode, compare } = require('../utils/my-bcrypt');
+const getToken = require('../utils/token');
+
 
 
 class AccountControllers {
@@ -75,7 +77,18 @@ class AccountControllers {
     res.send(message({ idCustomer: rows.insertId, username: email }, true, 'Đăng ký thành công'));
   }
   async signIn(req, res) {
-    console.log(req.body);
+    try {
+      const { username, password } = req.body;
+
+      //set token for client
+      const token = getToken(username);
+      console.log(token);
+      res.setHeader('authorization', token);
+      res.send(message('', true,));
+    } catch (error) {
+
+    }
+
   }
 }
 
