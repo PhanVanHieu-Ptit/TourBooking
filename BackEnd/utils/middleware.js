@@ -19,8 +19,7 @@ function authenticateToken(req, res, next) {
     // Add decoded user information to request object
     req.body = { ...decoded, ...req.body };
     console.log(req.body);
-    res.send(message(token, true));
-    // next();
+    next();
   } catch (error) {
     if (error.message == 'jwt expired') {
       return res.send(message(error, false, 'Token đã hết hạn'));
@@ -29,4 +28,20 @@ function authenticateToken(req, res, next) {
   }
 }
 
-module.exports = authenticateToken;
+function staffCheck(req, res, next) {
+  const role = req.body.role;
+  if (role != 'staff' && role != 'manager') {
+    return res.send(message({ client: role, require: 'staff || manager' }, false, 'Không có quyền truy cập'));
+  }
+  next();
+}
+
+function managerCheck(req, res, next) {
+  const role = req.body.role;
+  if (role != 'manager') {
+    return res.send(message({ client: role, require: 'manager' }, false, 'Không có quyền truy cập'));
+  }
+  next();
+}
+
+module.exports = { authenticateToken, managerCheck, staffCheck };
