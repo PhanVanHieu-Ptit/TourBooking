@@ -1,6 +1,7 @@
-const db = require("../utils/connection2");
+const db = require("../utils/connection");
 
 const OrderTour = function (order) {
+  this.idTourOrder = order.idTourOrder;
   this.idCustomer = order.idCustomer;
   this.idTour = order.idTour;
   this.orderDateTime = order.orderDateTime;
@@ -12,31 +13,84 @@ const OrderTour = function (order) {
 };
 
 OrderTour.get_all = function (result) {
-  db.query("SELECT * FROM `tourorder`", function (err, order) {
-    if (err) {
-      result(null);
-    } else {
-      result(order);
-    }
-  });
+  db.query("SELECT * FROM `tourorder`")
+    .then(([rows, fields]) => {
+      result(rows);
+    })
+    .catch((err) => {
+      console.log;
+      result(err);
+    });
+};
+
+OrderTour.findByStatus = function (status, result) {
+  db.query(
+    "SELECT * FROM `tourorder` where idStatus = ( SELECT idStatus FROM `status` where name like ? )",
+    status
+  )
+    .then(([rows, fields]) => {
+      result(rows);
+    })
+    .catch((err) => {
+      console.log;
+      result(err);
+    });
 };
 
 OrderTour.getById = function (id) {
-  db.query("SELECT * FROM `tourorder` where id= ?", id, function (err, order) {
-    if (err) {
+  return db
+    .query("SELECT * FROM `tourorder` where idTourOrder= ?", id)
+    .then(([rows, fields]) => {
+      console.log("rows: ", rows);
+      return rows;
+    })
+    .catch((err) => {
+      console.log(err);
       return err;
-    } else {
-      return order;
-    }
-  });
+    });
 };
 
 OrderTour.create = function (data, result) {
-  result(data);
+  db.query("INSERT INTO tourorder SET ?", data)
+    .then(([rows, fields]) => {
+      console.log(rows);
+      result({ id: rows.idTourOrder, ...data });
+    })
+    .catch((err) => {
+      console.log(err);
+      result(err);
+    });
 };
 
 OrderTour.update = function (data, result) {
-  result(data);
+  db.query(
+    "UPDATE tourorder SET  quantity=?, note=?, totalMoney=? where idTourOrder=?",
+    [data.quantity, data.note, data.totalMoney, data.idTourOrder]
+  )
+    .then(([rows, fields]) => {
+      console.log(rows);
+      result(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      result(err);
+    });
+};
+
+OrderTour.confirm = function (id, idStatus) {
+  return db
+    .query("UPDATE tourorder SET  idStatus=? where idTourOrder=?", [
+      idStatus,
+      id,
+    ])
+    .then(([rows, fields]) => {
+      console.log(rows);
+      return rows;
+    })
+    .catch((err) => {
+      console.log(err);
+      return err;
+    });
 };
 
 module.exports = OrderTour;
