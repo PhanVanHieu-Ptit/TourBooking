@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `managetour`.`customer` (
   PRIMARY KEY (`idCustomer`),
   UNIQUE INDEX `email` (`email` ASC) VISIBLE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 4
+AUTO_INCREMENT = 20
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS `managetour`.`staff` (
   `name` VARCHAR(255) NOT NULL COMMENT 'tên nhân viên',
   `email` VARCHAR(255) NOT NULL COMMENT 'email phải duy nhất',
   `imageUrl` TEXT NOT NULL COMMENT 'đường dẫn ảnh đại diện',
+  `idStatus` INT NOT NULL DEFAULT '5',
   PRIMARY KEY (`idStaff`),
   UNIQUE INDEX `email` (`email` ASC) VISIBLE,
   UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE)
@@ -58,7 +59,7 @@ COLLATE = utf8mb4_0900_ai_ci;
 CREATE TABLE IF NOT EXISTS `managetour`.`account` (
   `username` VARCHAR(255) NOT NULL COMMENT 'tên đăng nhập',
   `password` VARCHAR(255) NOT NULL COMMENT 'mật khẩu',
-  `role` VARCHAR(10) NOT NULL COMMENT 'quyền tài khoản',
+  `role` VARCHAR(10) NOT NULL DEFAULT 'customer' COMMENT 'quyền tài khoản',
   PRIMARY KEY (`username`),
   UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE,
   CONSTRAINT `acc_cus`

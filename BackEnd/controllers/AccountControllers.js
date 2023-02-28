@@ -1,6 +1,7 @@
 const message = require('../utils/message');
 const connection = require("../utils/connection");
 const { listAddress, checkAddress } = require('../utils/address');
+const { encode, compare } = require('../utils/my-bcrypt');
 
 
 class AccountControllers {
@@ -42,8 +43,7 @@ class AccountControllers {
 
     // check email đã có người đăng ký
     [rows, fields] = await connection.execute(
-      "select * from account where username = ?",
-      [email]
+      `select * from account where username='${email}'`
     );
     if (rows.length > 0) {
       res.send(message('', false, 'Email đã được đăng ký!'));
@@ -51,7 +51,6 @@ class AccountControllers {
     }
 
     //pre-process data
-    const { encode } = require('../utils/my-bcrypt');
     password = encode(password);
 
     // insertCustomer
@@ -59,14 +58,24 @@ class AccountControllers {
       "insert into customer(name, email, phoneNumber,imageUrl,address) values (?,?,?,?,?)",
       [name, email, phoneNumber, imageUrl, address]
     );
+    await connection.execute(
+      "SET FOREIGN_KEY_CHECKS=0;"
+    );
     //insert tài khoản
     await connection.execute(
-      "insert into account(username,password,role) values(?,?,?)",
-      [email, password, 'customer']
+      "insert into account(username,password) values(?,?)",
+      [email, password]
+    );
+
+    await connection.execute(
+      "SET FOREIGN_KEY_CHECKS=1;"
     );
 
     console.log(rows, fields);
     res.send(message({ idCustomer: rows.insertId, username: email }, true, 'Đăng ký thành công'));
+  }
+  async signIn(req, res) {
+    console.log(req.body);
   }
 }
 
