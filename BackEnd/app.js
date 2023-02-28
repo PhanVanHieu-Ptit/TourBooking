@@ -3,25 +3,18 @@ const path = require('path');
 const app = express();
 const cors = require("cors");
 const route = require('./routes');
+const bodyParser = require('body-parser')
 
-
-
-route(app);
-app.use(express.json());
+app.use(express.static(path.join(__dirname, '/public')));
+app.use(bodyParser.json())
 app.use(cors({
   origin: '*',
 }));
-app.use(express.static(path.join(__dirname, '/public')));
-
-
-app.get('/', async (req, res) => {
-  const connection = require('./utils/connection');
-  const [rows, fields] = await connection.execute('select * from status');
-  console.log(rows);
-  res.send(rows)
-})
+route(app);
 
 
 app.listen(3000, () => {
   console.log('listening on *:3000');
 });
+
+

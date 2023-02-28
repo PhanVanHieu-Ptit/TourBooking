@@ -13,4 +13,10 @@ const connection = mysql.createPool(
   dbConfig
 ).promise();
 
+
+// demo
+// const [rows, fields] = await connection.execute('select * from status');
+// console.log(rows);
+// res.send(rows)
+
 module.exports = connection;

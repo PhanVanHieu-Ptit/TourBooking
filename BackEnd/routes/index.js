@@ -1,8 +1,10 @@
 
 const siteRouter = require('./site.routes');
+const accountRouter = require('./account.routes');
 
-function hung() {
+function hung(app) {
   //viet route trong nay
+  app.use('/account', accountRouter);
 }
 
 function hieu() {
