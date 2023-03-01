@@ -1,10 +1,13 @@
 const express = require("express");
 const JWT = require("../utils/_JWT");
+const middleware = require("../utils/middleware");
+const token = require("../utils/token");
 const router = express.Router();
 
 const orderController = require("../controllers/OrderTourController");
 
 // orderController.index;
+
 router.get("/list/:status", orderController.filter);
 router.get("/list", orderController.list);
 // router.get("/find", orderController.find);
@@ -18,12 +21,14 @@ router.patch("/:id/cancel", orderController.cancel);
 router.patch("/:id/customer-cancel", orderController.cancel);
 router.patch("/:id/customer-need-cancel", orderController.customerNeedCancel);
 
-router.get("/token", async function (req, res) {
-  var user = {
-    name: "Admin",
-    email: "admin@gmail.com",
-  };
-  const _token = await JWT.make(user);
+router.get("/token", function (req, res) {
+  // var user = {
+  //   name: "Admin",
+  //   email: "admin@gmail.com",
+  // };
+  // const _token = await JWT.make(user);
+  // res.send({ token: _token });
+  const _token = token.getToken("pvh@gmail.com");
   res.send({ token: _token });
 });
 

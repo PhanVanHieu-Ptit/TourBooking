@@ -10,4 +10,4 @@ function getToken(email) {
   return token;
 }
 
-module.exports = getToken;
+module.exports = { getToken };
