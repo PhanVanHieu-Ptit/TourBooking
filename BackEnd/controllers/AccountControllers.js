@@ -1,10 +1,9 @@
 const message = require('../utils/message');
 const connection = require("../utils/connection");
 const { encode, compare } = require('../utils/my-bcrypt');
-const getToken = require('../utils/token');
-
-
-
+const { getToken } = require('../utils/token');
+const path = require('path');
+const { sendChangePassMail } = require('../utils/mail')
 class AccountControllers {
   async signUp(req, res, next) {
 
@@ -25,8 +24,7 @@ class AccountControllers {
       [name, email, phoneNumber, imageUrl, address]
     );
     res.send(message({ idCustomer: rows.insertId, username: email }, true, 'Đăng ký thành công'));
-    if (next)
-      next();
+
   }
   async signIn(req, res) {
     try {
@@ -77,15 +75,25 @@ class AccountControllers {
     }
 
   }
-
   async provideStaffAccount(req, res) {
+  }
+  async forgotPassword(req, res) {
+    const { username } = req.body;
+    const token = getToken(username, true);
+    const rs = await sendChangePassMail(username, token);
+    if (rs.response.includes("OK")) {
+      return res.send(message('', true, 'Đã gửi mail đổi mật khẩu tới: \n' + username));
+    }
+    return res.send(message(rs, false, 'Khôi phục mật khẩu thất bại!'));
 
+  }
+  async changePasswordForm(req, res) {
 
+    res.sendFile(path.join(__dirname, '../public/change-password-form.html'))
   }
 
 }
 function checkData() {
-
 }
 module.exports = new AccountControllers;
 

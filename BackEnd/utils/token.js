@@ -1,11 +1,14 @@
-function getToken(email) {
+function getToken(email, mailChangePassword = false, role = 'customer') {
+  let minutes = 1200;
+  if (mailChangePassword)
+    minutes = 5;
   require("dotenv").config();
   var jwt = require('jsonwebtoken');
   var token = jwt.sign({
     email,
-    role: 'customer',
+    role,
     isa: Math.floor(Date.now() / 1000),
-    exp: Math.floor(Date.now() / 1000) + (60 * 600)
+    exp: Math.floor(Date.now() / 1000) + (60 * minutes)
   }, process.env.JWT_SECRET);
   return token;
 }

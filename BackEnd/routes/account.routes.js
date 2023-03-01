@@ -8,5 +8,6 @@ const { customerInsert } = require('../middlewares/customer');
 router.post('/sign-up', accountInsert, customerInsert, accountControllers.signUp);
 router.post('/sign-in', accountControllers.signIn);
 router.post('/change-password', authenticateToken, accountControllers.changePassword);
-
+router.post('/forgot-password', accountControllers.forgotPassword);
+router.get('/change-password-form', authenticateToken, accountControllers.changePasswordForm)
 module.exports = router;

@@ -3,9 +3,8 @@ const jwt = require('jsonwebtoken');
 const message = require('../utils/message');
 function authenticateToken(req, res, next) {
   // Get token from Authorization header
-  const authHeader = req.headers['authorization'];
-  const token = authHeader;
-  console.log(token);
+  const token = req.headers['authorization'] || req.query.token;
+  console.log("authenticateToken:", token);
   // const token = authHeader && authHeader.split(' ')[1];
 
   // If token is null, return 401 Unauthorized
