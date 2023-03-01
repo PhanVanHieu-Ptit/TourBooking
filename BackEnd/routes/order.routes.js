@@ -1,9 +1,7 @@
 const express = require("express");
 const JWT = require("../utils/_JWT");
-const middleware = require("../utils/middleware");
 const token = require("../utils/token");
 const router = express.Router();
-
 const orderController = require("../controllers/OrderTourController");
 
 // orderController.index;
