@@ -10,6 +10,8 @@ function getToken(email, mailChangePassword = false, role = 'customer') {
     isa: Math.floor(Date.now() / 1000),
     exp: Math.floor(Date.now() / 1000) + (60 * minutes)
   }, process.env.JWT_SECRET);
+  console.log('maked token:', email, role, token);
+
   return token;
 }
 

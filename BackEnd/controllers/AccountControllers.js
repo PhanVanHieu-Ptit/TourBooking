@@ -45,10 +45,9 @@ class AccountControllers {
       }
 
       //set token for client
-      const token = getToken(username);
-      console.log('authorizationed:', username, token);
+      const token = getToken(username, false, rows[0].role);
       res.setHeader('authorization', token);
-      return res.send(message({ username: rows[0].username }, true,));
+      return res.send(message({ username: rows[0].username, role: rows[0].role }, true,));
     } catch (error) {
       return res.send(message(error, false,));
     }
