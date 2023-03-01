@@ -1,13 +1,13 @@
 const siteRouter = require("./site.routes");
 const tourRouter = require("./tour.routes");
 const orderRouter = require("./order.routes");
-const accountRouter = require('./account.routes');
-const staffRouter = require('./staff.routes');
+const accountRouter = require("./account.routes");
+const staffRouter = require("./staff.routes");
 
 function hung(app) {
   //viet route trong nay
-  app.use('/account', accountRouter);
-  app.use('/staff', staffRouter);
+  app.use("/account", accountRouter);
+  app.use("/staff", staffRouter);
 }
 
 function hieu(app) {

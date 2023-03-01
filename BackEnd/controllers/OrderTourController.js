@@ -7,18 +7,20 @@ class OrderTourController {
     var status = req.params.status;
     OrderTour.findByStatus(status, function (result) {
       res.send(message(result, true, "Thành công!"));
-    }).catch((err) => {
-      res.send(message(err, false, "Thất bại!"));
     });
+    // .catch((err) => {
+    //   res.send(message(err, false, "Thất bại!"));
+    // });
   }
 
   //[GET] /order-tours/list
   list(req, res, next) {
     OrderTour.get_all(function (result) {
       res.send(message(result, true, "Thành công!"));
-    }).catch((err) => {
-      res.send(message(err, false, "Thất bại!"));
     });
+    // .catch((err) => {
+    //   res.send(message(err, false, "Thất bại!"));
+    // });
   }
 
   //[GET] /order-tours/:id/detail
@@ -37,9 +39,10 @@ class OrderTourController {
     var data = req.body;
     OrderTour.create(data, function (result) {
       res.send(message(result, true, "Thành công!"));
-    }).catch((err) => {
-      res.send(message(err, false, "Thất bại!"));
     });
+    // .catch((err) => {
+    //   res.send(message(err, false, "Thất bại!"));
+    // });
   }
 
   //[PUT] /order-tours/:id/update
@@ -47,9 +50,10 @@ class OrderTourController {
     var data = req.body;
     OrderTour.update(data, function (result) {
       res.send(message(result, true, "Cập nhật thành công!"));
-    }).catch((err) => {
-      res.send(message(err, false, "Cập nhật thất bại!"));
     });
+    // .catch((err) => {
+    //   res.send(message(err, false, "Cập nhật thất bại!"));
+    // });
   }
 
   //[PACTH] /order-tours/:id/confirm-using

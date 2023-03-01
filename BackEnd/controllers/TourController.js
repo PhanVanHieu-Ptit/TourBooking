@@ -1,7 +1,7 @@
 const message = require("../utils/message");
 var Tour = require("../models/tour_model");
 class TourController {
-  //[GET] /tour/find?key={key}
+  //[GET] /tour/find/:key
   find(req, res, next) {
     var key = req.params.key;
 
