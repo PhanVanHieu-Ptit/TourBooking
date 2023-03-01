@@ -15,10 +15,9 @@ function authenticateToken(req, res, next) {
   try {
     // Verify token using secret key
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(decoded);
     // Add decoded user information to request object
     req.body = { ...decoded, ...req.body };
-    console.log(req.body);
+    console.log("Body after authenticateToken: \n", req.body);
     next();
   } catch (error) {
     if (error.message == 'jwt expired') {

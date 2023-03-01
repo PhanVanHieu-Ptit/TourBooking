@@ -5,7 +5,7 @@ function getToken(email) {
     email,
     role: 'customer',
     isa: Math.floor(Date.now() / 1000),
-    exp: Math.floor(Date.now() / 1000) + (60 * 5)
+    exp: Math.floor(Date.now() / 1000) + (60 * 600)
   }, process.env.JWT_SECRET);
   return token;
 }

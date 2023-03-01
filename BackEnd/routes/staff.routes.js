@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const StaffControllers = require('../controllers/StaffControllers')
+const staffControllers = require('../controllers/StaffControllers')
 
-router.post('/', StaffControllers.index);
+router.post('/add', staffControllers.addStaff);
+router.post('/', staffControllers.index);
 
 module.exports = router;

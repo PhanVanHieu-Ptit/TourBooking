@@ -1,96 +1,106 @@
 const message = require('../utils/message');
 const connection = require("../utils/connection");
-const { listAddress, checkAddress } = require('../utils/address');
 const { encode, compare } = require('../utils/my-bcrypt');
 const getToken = require('../utils/token');
 
 
 
 class AccountControllers {
-  async signUp(req, res) {
+  async signUp(req, res, next) {
 
     let { name, email, password, phoneNumber, imageUrl, address } = req.body;
-    console.log(name, email, password, phoneNumber, imageUrl, address);
-    let rows, fields;
-    //check data
-    if (!name || !phoneNumber || !address) {
-      res.send(message('', false, 'Họ tên, số điện thoại, địa chỉ không được để trống!'));
-      return;
-    }
-
-    if (!email || !password) {
-      res.send(message('', false, 'Email và mật khẩu không được để trống!'));
-      return;
-    }
-
-    if (name.length < 3) {
-      res.send(message('', false, 'Tên có ít nhất 3 kí tự!'));
-      return;
-    }
-
-    if ((phoneNumber.length != 9 && phoneNumber.length != 10) || !phoneNumber.startsWith('0')) {
-      res.send(message('', false, "Số điện thoại bắt đầu bằng số '0' và có 9 đến 10 kí tự!"));
-      return;
-    }
-
-    if (!checkAddress(address)) {
-      res.send(message(listAddress, false, "Địa chỉ không hợp lệ: " + address));
-      return;
-    }
-
-    if (password.length < 6) {
-      res.send(message(listAddress, false, "Mật khẩu có ít nhất 6 kí tự!"));
-      return;
-    }
-
-    // check email đã có người đăng ký
-    [rows, fields] = await connection.execute(
-      `select * from account where username='${email}'`
-    );
-    if (rows.length > 0) {
-      res.send(message('', false, 'Email đã được đăng ký!'));
-      return;
-    }
 
     //pre-process data
     password = encode(password);
 
-    // insertCustomer
-    [rows, fields] = await connection.execute(
-      "insert into customer(name, email, phoneNumber,imageUrl,address) values (?,?,?,?,?)",
-      [name, email, phoneNumber, imageUrl, address]
-    );
-    await connection.execute(
-      "SET FOREIGN_KEY_CHECKS=0;"
-    );
     //insert tài khoản
     await connection.execute(
       "insert into account(username,password) values(?,?)",
       [email, password]
     );
 
-    await connection.execute(
-      "SET FOREIGN_KEY_CHECKS=1;"
+    // insertCustomer
+    let [rows, fields] = await connection.execute(
+      "insert into customer(name, email, phoneNumber,imageUrl,address) values (?,?,?,?,?)",
+      [name, email, phoneNumber, imageUrl, address]
     );
-
-    console.log(rows, fields);
     res.send(message({ idCustomer: rows.insertId, username: email }, true, 'Đăng ký thành công'));
+    if (next)
+      next();
   }
   async signIn(req, res) {
     try {
       const { username, password } = req.body;
+      console.log('sign-in: ' + username + ' ' + password);
+
+      if (!username || !password) {
+        return res.send(message('', false, 'Tên đăng nhập và mật khẩu không được để trống!'));
+      }
+
+
+      //check valid account
+      let [rows, fields] = await connection.execute(
+        `select * from account where username='${username}'`
+      );
+      if (rows.length == 0 || !compare(password, rows[0].password)) {
+        return res.send(message('', false, 'Sai tên đăng nhập hoặc mật khẩu!'));
+      }
 
       //set token for client
       const token = getToken(username);
-      console.log(token);
+      console.log('authorizationed:', username, token);
       res.setHeader('authorization', token);
-      res.send(message('', true,));
+      return res.send(message({ username: rows[0].username }, true,));
     } catch (error) {
-
+      return res.send(message(error, false,));
     }
 
   }
-}
+  async changePassword(req, res) {
+    const { email: username, newPassword } = req.body;
 
+    checkData();
+
+    const encodedPassword = encode(newPassword);
+    try {
+      let [rows, fields] = await connection.execute(
+        "update account set password=? where username=?",
+        [encodedPassword, username]
+      );
+      if (rows.changedRows == 1) {
+        return res.send(message(username, true, 'Đổi mật khẩu thành công'));
+      }
+      return res.send(message('', false, 'Đổi mật khẩu thất bại'));
+
+    } catch (error) {
+      return res.send(message(error, false, 'Đổi mật khẩu thất bại'));
+    }
+
+  }
+
+  async provideStaffAccount(req, res) {
+    const { email } = req.body;
+    //pre-process data
+    try {
+      let password = Math.random().toString(36).slice(2, 10); //length = 10
+      password = encode(password);
+      console.log(password);
+
+      //insert tài khoản
+      let [rows, fields] = await connection.execute(
+        "insert into account(username,password,role) values(?,?)",
+        [email, password, 'staff']
+      );
+      return res.send(message(rows, true, "Cấp tài khoản thành công: "));
+    } catch (error) {
+      return res.send(message(error, false,));
+    }
+
+  }
+
+}
+function checkData() {
+
+}
 module.exports = new AccountControllers;
 
