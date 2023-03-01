@@ -6,9 +6,9 @@ const orderController = require("../controllers/OrderTourController");
 
 // orderController.index;
 
-router.get("/list/:status", orderController.filter);
-router.get("/list", orderController.list);
-// router.get("/find", orderController.find);
+router.get("/list", orderController.filter);
+// router.get("/list", orderController.list);
+router.get("/find", orderController.find);
 router.post("/order", orderController.order);
 router.put("/:id/update", orderController.update);
 router.get("/:id/detail", orderController.detail);

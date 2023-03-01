@@ -1,9 +1,10 @@
 const message = require("../utils/message");
 var Tour = require("../models/tour_model");
 class TourController {
-  //[GET] /tour/find/:key
+  //[GET] /tour/find?key={key}
   find(req, res, next) {
-    var key = req.params.key;
+    var query = require("url").parse(req.url, true).query;
+    var key = query.key;
 
     Tour.findBykey(key)
       .then((result) => {

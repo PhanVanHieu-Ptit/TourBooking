@@ -2,25 +2,48 @@ const message = require("../utils/message");
 var OrderTour = require("../models/order_tour_model");
 
 class OrderTourController {
-  //[GET] /order-tours/list/:status
+  //[GET] /order-tours/list?status={value}
   filter(req, res, next) {
-    var status = req.params.status;
-    OrderTour.findByStatus(status, function (result) {
-      res.send(message(result, true, "Thành công!"));
-    });
+    var query = require("url").parse(req.url, true).query;
+
+    var status = query.status;
+    if (status == "Tất cả") {
+      OrderTour.get_all(function (result) {
+        res.send(message(result, true, "Thành công!"));
+      });
+    } else {
+      OrderTour.findByStatus(status, function (result) {
+        res.send(message(result, true, "Thành công!"));
+      });
+    }
+
     // .catch((err) => {
     //   res.send(message(err, false, "Thất bại!"));
     // });
   }
 
   //[GET] /order-tours/list
-  list(req, res, next) {
-    OrderTour.get_all(function (result) {
-      res.send(message(result, true, "Thành công!"));
-    });
-    // .catch((err) => {
-    //   res.send(message(err, false, "Thất bại!"));
-    // });
+  // list(req, res, next) {
+  //   OrderTour.get_all(function (result) {
+  //     res.send(message(result, true, "Thành công!"));
+  //   });
+  //   // .catch((err) => {
+  //   //   res.send(message(err, false, "Thất bại!"));
+  //   // });
+  // }
+
+  //[GET] /order-tours/find?key={key}
+  find(req, res, next) {
+    var query = require("url").parse(req.url, true).query;
+    var key = query.key;
+
+    OrderTour.findBykey(key)
+      .then((result) => {
+        res.send(message(result, true, "Thành công!"));
+      })
+      .catch((err) => {
+        res.send(message(err, false, "Thất bại!"));
+      });
   }
 
   //[GET] /order-tours/:id/detail

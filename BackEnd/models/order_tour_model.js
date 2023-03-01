@@ -50,6 +50,35 @@ OrderTour.getById = function (id) {
     });
 };
 
+OrderTour.findBykey = function (key) {
+  return db
+    .query(
+      "SELECT * FROM `tourorder` where " +
+        " idTour = (SELECT idTour FROM `tour` where name like ? OR  tourIntro like ? or tourDetail like ? or pickUpPoint like ? or tourDestination like ?) " +
+        "or idCustomer = (SELECT idCustomer FROM `customer` where name like ? or email like ? or phoneNumber like ? or address like ?)",
+      [
+        key,
+        "%" + key + "%",
+        "%" + key + "%",
+        "%" + key + "%",
+        "%" + key + "%",
+        "%" + key + "%",
+        "%" + key + "%",
+        "%" + key + "%",
+        "%" + key + "%",
+        "%" + key + "%",
+      ]
+    )
+    .then(([rows, fields]) => {
+      console.log(rows);
+      return rows;
+    })
+    .catch((err) => {
+      console.log(err);
+      return err;
+    });
+};
+
 OrderTour.create = function (data, result) {
   db.query("INSERT INTO tourorder SET ?", data)
     .then(([rows, fields]) => {
