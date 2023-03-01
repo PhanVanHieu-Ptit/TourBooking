@@ -17,7 +17,7 @@ async function customerInsert(req, res, next) {
   if (!(await checkAddress(address))) {
     return res.send(message(await getListAddress(), false, "Địa chỉ không hợp lệ: " + address));
   }
-  if (imageUrl == 'undefined')
+  if (imageUrl == undefined)
     req.body.imageUrl = null;
   next();
 }

@@ -79,22 +79,7 @@ class AccountControllers {
   }
 
   async provideStaffAccount(req, res) {
-    const { email } = req.body;
-    //pre-process data
-    try {
-      let password = Math.random().toString(36).slice(2, 10); //length = 10
-      password = encode(password);
-      console.log(password);
 
-      //insert tài khoản
-      let [rows, fields] = await connection.execute(
-        "insert into account(username,password,role) values(?,?)",
-        [email, password, 'staff']
-      );
-      return res.send(message(rows, true, "Cấp tài khoản thành công: "));
-    } catch (error) {
-      return res.send(message(error, false,));
-    }
 
   }
 
