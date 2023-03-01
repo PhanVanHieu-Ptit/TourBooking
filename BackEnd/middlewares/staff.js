@@ -1,6 +1,6 @@
-async function staffVerify(req, res, next) {
+async function staffInsert(req, res, next) {
   let { name, email, imageUrl } = req.body;
-  console.log("staffVerify: ", name, email, imageUrl);
+  console.log("staffInsert: ", name, email, imageUrl);
   if (!name) {
     return res.send(message('', false, 'Tên không được để trống!'))
   }
@@ -10,3 +10,5 @@ async function staffVerify(req, res, next) {
   if (imageUrl == 'undefined')
     req.body.imageUrl = null;
 }
+
+module.exports = { staffInsert }

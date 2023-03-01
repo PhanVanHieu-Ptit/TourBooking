@@ -4,7 +4,7 @@ const { getListAddress, checkAddress } = require('../utils/address');
 async function customerInsert(req, res, next) {
 
   let { name, email, password, phoneNumber, imageUrl, address } = req.body;
-  console.log("customerVerify: ", name, email, password, phoneNumber, imageUrl, address);
+  console.log("customerInsert: ", name, email, password, phoneNumber, imageUrl, address);
   if (!name || !phoneNumber || !address) {
     return res.send(message('', false, 'Họ tên, số điện thoại, địa chỉ không được để trống!'))
   }

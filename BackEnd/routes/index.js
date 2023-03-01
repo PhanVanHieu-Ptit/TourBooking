@@ -3,7 +3,6 @@ const tourRouter = require("./tour.routes");
 const orderRouter = require("./order.routes");
 const accountRouter = require("./account.routes");
 const staffRouter = require("./staff.routes");
-const middleware = require("../utils/middleware");
 
 function hung(app) {
   //viet route trong nay
