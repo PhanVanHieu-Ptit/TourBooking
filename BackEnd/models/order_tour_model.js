@@ -12,7 +12,7 @@ const OrderTour = function (order) {
   this.idStatus = order.idStatus;
 };
 
-OrderTour.get_all = function (result) {
+OrderTour.getAll = function (result) {
   db.query("SELECT * FROM `tourorder`")
     .then(([rows, fields]) => {
       result(rows);
@@ -27,6 +27,31 @@ OrderTour.findByStatus = function (status, result) {
   db.query(
     "SELECT * FROM `tourorder` where idStatus = ( SELECT idStatus FROM `status` where name like ? )",
     status
+  )
+    .then(([rows, fields]) => {
+      result(rows);
+    })
+    .catch((err) => {
+      console.log;
+      result(err);
+    });
+};
+
+OrderTour.getAllFollowCustomer = function (id, result) {
+  db.query("SELECT * FROM `tourorder` where idCustomer = ?", id)
+    .then(([rows, fields]) => {
+      result(rows);
+    })
+    .catch((err) => {
+      console.log;
+      result(err);
+    });
+};
+
+OrderTour.findByStatusFollowCustomer = function (id, status, result) {
+  db.query(
+    "SELECT * FROM `tourorder` where idCustomer = ? and idStatus = ( SELECT idStatus FROM `status` where name like ? )",
+    [id, status]
   )
     .then(([rows, fields]) => {
       result(rows);

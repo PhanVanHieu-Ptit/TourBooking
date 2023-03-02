@@ -6,15 +6,31 @@ class OrderTourController {
   filter(req, res, next) {
     var query = require("url").parse(req.url, true).query;
 
+    var id = query.id;
     var status = query.status;
-    if (status == "Tất cả") {
-      OrderTour.get_all(function (result) {
-        res.send(message(result, true, "Thành công!"));
-      });
-    } else {
-      OrderTour.findByStatus(status, function (result) {
-        res.send(message(result, true, "Thành công!"));
-      });
+
+    switch (id) {
+      case undefined:
+        if (status == "Tất cả" || status == undefined) {
+          OrderTour.getAll(function (result) {
+            res.send(message(result, true, "Thành công!"));
+          });
+        } else {
+          OrderTour.findByStatus(status, function (result) {
+            res.send(message(result, true, "Thành công!"));
+          });
+        }
+        break;
+      default:
+        if (status == "Tất cả" || status == undefined) {
+          OrderTour.getAllFollowCustomer(id, function (result) {
+            res.send(message(result, true, "Thành công!"));
+          });
+        } else {
+          OrderTour.findByStatusFollowCustomer(id, status, function (result) {
+            res.send(message(result, true, "Thành công!"));
+          });
+        }
     }
 
     // .catch((err) => {

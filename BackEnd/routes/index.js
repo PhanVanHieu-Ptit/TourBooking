@@ -14,7 +14,7 @@ function hung(app) {
 function hieu(app) {
   //viet route trong nay
   app.use("/tour", tourRouter);
-  app.use(middleware.authenticateToken);
+  // app.use(middleware.authenticateToken);
   app.use("/order-tours", orderRouter);
 }
 
