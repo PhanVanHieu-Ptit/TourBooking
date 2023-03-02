@@ -5,6 +5,12 @@ class StaffController {
   index(req, res) {
     res.send(message([], true, 'Staff'));
   }
+  async getListStaff(req, res) {
+    const key = req.query.key || '';
+    let [rows, fields] = await connection.execute(
+      `SELECT * FROM staff where idstaff like '%${key}%' or name like '%${key}%' or email like '%${key}%'`);
+    return res.send(message(rows, true, 'Key:' + key));
+  }
   async addStaff(req, res) {
     try {
       const { name, email, password, imageUrl } = req.body;
