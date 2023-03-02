@@ -3,6 +3,7 @@ const path = require("path");
 const app = express();
 const cors = require("cors");
 const route = require("./routes");
+require("dotenv").config();
 
 // cấu hình body-paser
 var bodyParser = require("body-parser");
@@ -18,8 +19,8 @@ app.use(
 route(app);
 
 
-app.listen(3000, () => {
-  console.log("listening on *:3000");
+app.listen(process.env.PORT, () => {
+  console.log("listening on :", process.env.PORT);
 });
 
 
