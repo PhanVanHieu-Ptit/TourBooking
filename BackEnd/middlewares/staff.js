@@ -1,3 +1,4 @@
+const message = require('../utils/message');
 
 async function staffInsert(req, res, next) {
   let { name, email, imageUrl } = req.body;

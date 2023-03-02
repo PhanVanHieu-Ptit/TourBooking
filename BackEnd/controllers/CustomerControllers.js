@@ -8,37 +8,33 @@ class AccountControllers {
   async signUp(req, res, next) {
     let { name, email, password, phoneNumber, imageUrl, address } = req.body;
 
-    try {
-      //pre-process data
-      password = encode(password);
+    //pre-process data
+    password = encode(password);
 
-      //insert tài khoản
-      await connection.execute(
-        "insert into account(username,password) values(?,?)",
-        [email, password]
-      );
+    //insert tài khoản
+    await connection.execute(
+      "insert into account(username,password) values(?,?)",
+      [email, password]
+    );
 
-      // insertCustomer
-      let [rows, fields] = await connection.execute(
-        "insert into customer(name, email, phoneNumber,imageUrl,address) values (?,?,?,?,?)",
-        [name, email, phoneNumber, imageUrl, address]
-      );
-      return res.send(message(
+    // insertCustomer
+    let [rows, fields] = await connection.execute(
+      "insert into customer(name, email, phoneNumber,imageUrl,address) values (?,?,?,?,?)",
+      [name, email, phoneNumber, imageUrl, address]
+    );
+    res.send(
+      message(
         { idCustomer: rows.insertId, username: email },
         true,
         "Đăng ký thành công"
       )
-      );
-    } catch (error) {
-      return res.send(message(error, false));
-    }
+    );
   }
   async signIn(req, res) {
     try {
-
       const { username, password } = req.body;
       console.log("sign-in: " + username + " " + password);
-      //check valid data form
+
       if (!username || !password) {
         return res.send(
           message("", false, "Tên đăng nhập và mật khẩu không được để trống!")
@@ -52,28 +48,13 @@ class AccountControllers {
       if (rows.length == 0 || !compare(password, rows[0].password)) {
         return res.send(message("", false, "Sai tên đăng nhập hoặc mật khẩu!"));
       }
-      const role = rows[0].role;
-      [rows, fields] = await connection.execute(
-        `select * from ${role} where email='${username}'`
-      );
-      if (rows.length == 0) {
-        return res.send(message("", false, "Không có thông tin user!"));
-      }
-      if (role == 'staff' && rows[0].idStatus == 7) {
-        return res.send(message("", false, "Tài khoản bị khóa!"));
-      }
-      const { name, imageUrl } = rows[0];
-      let id = rows[0].idStaff;
-      if (role == 'customer') {
-        id = rows[0].idCustomer;
-      }
+
       //set token for client
-      const token = getToken(username, false, role);
+      const token = getToken(username, false, rows[0].role);
       res.setHeader("authorization", token);
       return res.send(
-        message({ id, name, imageUrl, role }, true, 'Đăng nhập thành công')
+        message({ username: rows[0].username, role: rows[0].role }, true)
       );
-
     } catch (error) {
       return res.send(message(error, false));
     }
