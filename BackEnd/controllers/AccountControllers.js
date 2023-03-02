@@ -60,10 +60,19 @@ class AccountControllers {
     }
   }
   async changePassword(req, res) {
-    const { email: username, newPassword } = req.body;
+    const { email: username, newPassword, oldPassword } = req.body;
+    if (!newPassword || !oldPassword) {
+      return res.send(message("", false, "Mật khẩu mới và mật khẩu cũ không được để trống"));
+    }
+    //check valid old password
+    let [rows, fields] = await connection.execute(
+      "select * from account where username=?",
+      [username]
+    );
 
-    checkData();
-
+    if (!compare(oldPassword, rows[0].password)) {
+      return res.send(message("", false, "Mật khẩu cũ không trùng khớp"));
+    }
     const encodedPassword = encode(newPassword);
     try {
       let [rows, fields] = await connection.execute(
@@ -78,9 +87,17 @@ class AccountControllers {
       return res.send(message(error, false, "Đổi mật khẩu thất bại"));
     }
   }
-  async provideStaffAccount(req, res) {}
+  async provideStaffAccount(req, res) { }
   async forgotPassword(req, res) {
     const { username } = req.body;
+    // check valid email
+    let [rows, fields] = await connection.execute(
+      `select * from account where username='${username}'`
+    );
+    if (rows.length == 0) {
+      return res.send(message('', false, 'Email không hợp lệ!'));
+    }
+
     const token = getToken(username, true);
     const rs = await sendChangePassMail(username, token);
     if (rs.response.includes("OK")) {
@@ -94,5 +111,4 @@ class AccountControllers {
     res.sendFile(path.join(__dirname, "../public/change-password-form.html"));
   }
 }
-function checkData() {}
 module.exports = new AccountControllers();
