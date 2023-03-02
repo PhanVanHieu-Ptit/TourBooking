@@ -12,7 +12,7 @@ import stylesTour from '../tourScreen/styles';
 function ManageInforPersonScreen({ route, navigation }) {
     const user = route?.params?.user;
     const [name, setName] = useState(user != undefined ? user.name : '');
-    const [email, setEmail] = useState(user != undefined ? user.email : '');
+    const [email, setEmail] = useState(user != undefined ? user.email : '1');
     const [address, setAddress] = useState(user != undefined ? user.address : '');
     const [phone, setPhone] = useState(user != undefined ? user.phone : '');
     const [imgPath, setImgPath] = useState(
@@ -87,9 +87,7 @@ function ManageInforPersonScreen({ route, navigation }) {
 
     const addInfo = () => {
         if (checkValue()) {
-            Alert.alert('Thông báo!', 'Thêm thông tin thành công!', [
-                { text: 'OK', onPress: () => navigation.navigate('Register') },
-            ]);
+            navigation.navigate('Register', { name: name, address: address, phone: phone });
         }
     };
 
@@ -112,7 +110,9 @@ function ManageInforPersonScreen({ route, navigation }) {
                             <Icon name="chevron-back" size={25} color="#021A5A" />
                         </View>
                     </TouchableOpacity>
-                    <Text style={stylesAllTour.title}>Sửa thông tin cá nhân</Text>
+                    <Text style={stylesAllTour.title}>
+                        {user != undefined ? 'Sửa thông tin cá nhân' : 'Nhập thông tin cá nhân'}
+                    </Text>
                 </View>
                 <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
                     <Image
@@ -128,7 +128,9 @@ function ManageInforPersonScreen({ route, navigation }) {
                             chooseImage();
                         }}
                     >
-                        <Text style={[stylesManage.txt_name, { fontSize: 16, fontWeight: 'normal' }]}>Đổi ảnh</Text>
+                        <Text style={[stylesManage.txt_name, { fontSize: 16, fontWeight: 'normal' }]}>
+                            {user != undefined ? 'Đổi ảnh' : 'Chọn ảnh'}
+                        </Text>
                     </TouchableOpacity>
                 </View>
                 <View style={{ marginTop: 20 }}>
@@ -152,27 +154,31 @@ function ManageInforPersonScreen({ route, navigation }) {
                         <AntDesign name="check" size={20} color="#0D6EFD" />
                     </View>
                 </View>
-                <View style={{ marginTop: 20 }}>
-                    <Text style={stylesManage.title}>Email</Text>
-                    <View
-                        style={[
-                            stylesManage.input,
-                            {
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                padding: 5,
-                            },
-                        ]}
-                    >
-                        <TextInput
-                            placeholder="Nhập email của bạn"
-                            onChangeText={(newText) => setEmail(newText)}
-                            value={email}
-                        />
-                        <AntDesign name="check" size={20} color="#0D6EFD" />
+                {user != undefined ? (
+                    <View style={{ marginTop: 20 }}>
+                        <Text style={stylesManage.title}>Email</Text>
+                        <View
+                            style={[
+                                stylesManage.input,
+                                {
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    padding: 5,
+                                },
+                            ]}
+                        >
+                            <TextInput
+                                placeholder="Nhập email của bạn"
+                                onChangeText={(newText) => setEmail(newText)}
+                                value={email}
+                            />
+                            <AntDesign name="check" size={20} color="#0D6EFD" />
+                        </View>
                     </View>
-                </View>
+                ) : (
+                    ''
+                )}
                 <View style={{ marginTop: 20 }}>
                     <Text style={stylesManage.title}>Địa chỉ</Text>
                     <View

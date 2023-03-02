@@ -8,7 +8,8 @@ import MyModal from '../../../components/general/form/myModal';
 import { styles } from '../../../styles';
 import stylesLogin from '../styles';
 import Icon from 'react-native-vector-icons/Ionicons';
-// import {Alert, Modal, StyleSheet, Text, Pressable, View} from 'react-native';
+import * as request from '../../../services/untils/index';
+import API from '../../../res/string';
 
 function ForgotPassword({ navigation }) {
     const [modalVisible, setModalVisible] = useState(false);
@@ -19,8 +20,30 @@ function ForgotPassword({ navigation }) {
                 { text: 'OK', onPress: () => console.log('OK Pressed') },
             ]);
         } else {
-            setEmail('');
-            setModalVisible(true);
+            request
+                .post(API.forgotpassword, { username: email })
+                .then((response) => {
+                    console.log(response.data);
+                    if (response.status == true) {
+                        setEmail('');
+                        // setModalVisible(true);
+
+                        Alert.alert(
+                            'Đổi mật khẩu thành công!',
+                            'Chúng tôi đã gửi link đổi mật khẩu về mail: ' +
+                                email +
+                                '. Bạn hãy kiểm tra mail của bạn trước khi link hết hiệu lực.',
+                            [{ text: 'OK', onPress: () => navigation.replace('Login') }],
+                        );
+                    } else {
+                        Alert.alert('Thông báo!', response.message + '', [
+                            { text: 'OK', onPress: () => console.log('OK Pressed') },
+                        ]);
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         }
     };
     return (

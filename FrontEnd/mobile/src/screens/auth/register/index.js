@@ -6,8 +6,11 @@ import stylesButton from '../../../components/general/actionButton/styles';
 import { styles } from '../../../styles';
 import stylesLogin from '../styles';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import * as request from '../../../services/untils/index';
+import API from '../../../res/string';
 
-function Register({ navigation }) {
+function Register({ navigation, route }) {
+    console.log(route);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirm, setConfirm] = useState('');
@@ -45,14 +48,42 @@ function Register({ navigation }) {
     };
     const register = () => {
         if (checkValue()) {
-            Alert.alert('Thông báo!', 'Đăng ký thành công!', [
-                {
-                    text: 'OK',
-                    onPress: () => {
-                        navigation.navigate('Login');
-                    },
-                },
-            ]);
+            request
+                .post(API.register, {
+                    username: username,
+                    password: password,
+                    name: route.params.name,
+                    email: username,
+                    phoneNumber: route.params.phone,
+                    imageUrl: '',
+                    address: route.params.address,
+                })
+                .then((response) => {
+                    console.log(response.data);
+                    if (response.data.status == true) {
+                        setUsername('');
+                        setPassword('');
+                        setConfirm('');
+                        Alert.alert('Thông báo!', 'Đăng ký thành công!', [
+                            {
+                                text: 'OK',
+                                onPress: () => navigation.replace('Login'),
+                            },
+                        ]);
+                    } else {
+                        Alert.alert('Thông báo!', response.message, [
+                            {
+                                text: 'OK',
+                                onPress: () => {},
+                            },
+                        ]);
+                    }
+                })
+                .catch((err) =>
+                    Alert.alert('Thông báo!', 'Đăng ký thất bại!', [
+                        { text: 'OK', onPress: () => console.log('OK Pressed') },
+                    ]),
+                );
         }
     };
 
@@ -135,18 +166,6 @@ function Register({ navigation }) {
                             )}
                         </TouchableOpacity>
                     </View>
-                </View>
-                <View style={stylesLogin.input2}>
-                    <Text style={styles.title3}>Capcha</Text>
-                    <MyInput
-                        placeholder="Vui lòng nhập capcha bên dưới"
-                        onChangeText={(newText) => {
-                            setCapcha(newText);
-                        }}
-                    />
-                    {/* <View style={stylesLogin.capcha}>
-                        <Text style={stylesLogin.txt_capcha}>123ESs</Text>
-                    </View> */}
                 </View>
             </View>
             <View style={stylesLogin.footer2}>

@@ -1,20 +1,24 @@
 import React, { useState } from 'react';
 import { SafeAreaView, Text, View, Alert, TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TextInput } from 'react-native-gesture-handler';
 import stylesMyInput from '../../../components/auth/styles';
 import stylesButton from '../../../components/general/actionButton/styles';
 import { styles } from '../../../styles';
 import stylesLogin from '../styles';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import * as request from '../../../services/untils/index';
+import API from '../../../res/string';
 
 function Login({ navigation }) {
-    const User = {
-        username: 'PhanVanHieu',
-        password: 123,
-    };
+    // const User = {
+    //     username: 'PhanVanHieu',
+    //     password: 123,
+    // };
     const [seePassword, setSeePassword] = useState(true);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    // const [token, setToken] = useState('');
     const checkValue = () => {
         if (username.trim().length == 0) {
             Alert.alert('Thông báo!', 'Không được để trống tên đăng nhập!', [
@@ -30,18 +34,42 @@ function Login({ navigation }) {
         }
         return true;
     };
-    const checkLogin = () => {
+    const login = () => {
         console.log('checkValue(): ', checkValue());
         if (checkValue() == true) {
-            if (username == User.username && password == User.password) {
-                navigation.navigate('HomeScreen');
-            } else {
-                Alert.alert('Đăng nhập thất bại!', 'Tên đăng nhập hoặc mật khẩu không đúng!', [
-                    { text: 'OK', onPress: () => console.log('OK Pressed') },
-                ]);
-            }
+            request
+                .post(API.login, { username, password })
+                .then((response) => {
+                    console.log(response.data);
+                    if (response.data.status == true) {
+                        setUsername('');
+                        setPassword('');
+                        // setToken(response.header);
+                        // AsyncStorage.setItem('AccessToken', response.headers.authorization);
+                        const user = {
+                            email: response.data.data.username,
+                            role: response.data.data.role,
+                            accessToken: response.headers.authorization,
+                        };
+                        console.log('user: ', user);
+                        AsyncStorage.setItem('user', JSON.stringify(user))
+                            .then(() => console.log('Object stored successfully'))
+                            .catch((error) => console.log('Error storing object: ', error));
+                        Alert.alert('Thông báo!', 'Đăng nhập thành công!', [
+                            { text: 'OK', onPress: () => navigation.replace('HomeScreen') },
+                        ]);
+                    } else {
+                        Alert.alert('Đăng nhập thất bại!', response.data.message + '', [
+                            { text: 'OK', onPress: () => console.log('OK Pressed') },
+                        ]);
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         }
     };
+
     return (
         <SafeAreaView>
             <View style={stylesLogin.header}>
@@ -57,7 +85,7 @@ function Login({ navigation }) {
                         // placeholder={props.placeholder}
                         placeholder="Nhập tên đăng nhập hoặc email"
                         onChangeText={(newText) => {
-                            setUsername(newText);
+                            setUsername(newText.trim());
                         }}
                     />
                 </View>
@@ -96,7 +124,7 @@ function Login({ navigation }) {
             <View style={stylesLogin.footer}>
                 <TouchableOpacity
                     onPress={() => {
-                        checkLogin();
+                        login();
                     }}
                 >
                     <View style={stylesButton.btn}>

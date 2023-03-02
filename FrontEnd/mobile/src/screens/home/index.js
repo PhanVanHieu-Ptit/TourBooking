@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, SafeAreaView, ScrollView, Text, View, TouchableOpacity, StatusBar } from 'react-native';
 import Find from '../../components/home/find';
 import Header from '../../components/home/header';
