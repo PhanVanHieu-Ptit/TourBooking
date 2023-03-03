@@ -1,12 +1,14 @@
 //not done yet
+let listAddress;
 async function checkAddress(address) {
-  let listAddress = await getListAddress();
-  return listAddress.includes(address);
+  return (await getListAddress()).includes(address);
 }
 async function getListAddress() {
   var rp = require('request-promise');
+  if (listAddress)
+    return listAddress;
   var rs = JSON.parse(await rp('https://provinces.open-api.vn/api/?depth=2'));
-  var listAddress = [];
+  listAddress = [];
   rs.forEach(e => {
     listAddress.push(e.name);
     e.districts.forEach(e => {

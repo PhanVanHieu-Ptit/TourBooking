@@ -4,7 +4,6 @@ async function tourInsert(req, res, next) {
   const listAttribute = ["name", "startDate", "totalDay", "tourIntro", "tourDetail",
     "pickUpPoint", "tourDestination", "price", "minQuantity",
     "maxQuantity", "normalPenaltyFee", "strictPenaltyFee", "minDate", "tourGuide", "featured", "tourPictures"];
-  console.log("tourInsert: " + req.body);
   listAttribute.forEach((e) => {
     if (!req.body[e]) {
       return res.send(message(e, false, "Không được để trống thông tin!"));
@@ -72,6 +71,7 @@ async function tourInsert(req, res, next) {
   if (tourPictures.length <= 0 || tourPictures.length >= 7) {
     return res.send(message({ tourPictures }, false, "Có tối thiểu 1 hình ảnh và tối đa 6 hình!"));
   }
+  console.log("tourInsert: ");
 
   next();
 }
