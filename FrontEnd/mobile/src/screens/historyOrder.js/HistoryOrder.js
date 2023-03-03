@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { FlatList, SafeAreaView, ScrollView, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import stylesButton from '../../components/general/actionButton/styles';
@@ -6,9 +6,34 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import stylesAllTour from '../allTour/style';
 import CardOrder from '../../components/HistoryOrder.js/CardOrder';
 import { SelectList } from 'react-native-dropdown-select-list';
+import request from '../../services/untils';
+import API from '../../res/string';
+import { AppContext } from '../../../App';
 
 function HistoryOrderScreen({ navigation }) {
+    const { user, historyOrder, setHistoryOrder } = useContext(AppContext);
     const [selected, setSelected] = React.useState('Chờ xác nhận');
+
+    useEffect(() => {
+        request
+            .get(API.historyOrder, {
+                id: user.id,
+            })
+            .then((response) => {
+                console.log(response.data);
+
+                if (response.data.status == true) {
+                    setHistoryOrder(response.data.data);
+                } else {
+                    Alert.alert('Thông báo!', response.data.message + '', [
+                        { text: 'OK', onPress: () => console.log('OK Pressed') },
+                    ]);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }, []);
 
     const data = [
         { key: '1', value: 'Chờ xác nhận' },
@@ -136,7 +161,7 @@ function HistoryOrderScreen({ navigation }) {
             </View>
 
             <ScrollView>
-                {DATA.map((item) => (
+                {historyOrder.map((item) => (
                     <CardOrder tour={item} tourOrder={tourOrder} key={item.id} navigation={navigation} />
                 ))}
             </ScrollView>
