@@ -1,6 +1,7 @@
 const message = require("../utils/message");
 var OrderTour = require("../models/order_tour_model");
 var Tour = require("../models/tour_model");
+var Customer = require("../models/customer_model");
 
 function getInforTour(res, result) {
   const tourPromises = [];
@@ -9,7 +10,7 @@ function getInforTour(res, result) {
   // Loop through each tour order and call Tour.getById() for its ID
   result.forEach((tourOrder) => {
     tourPromises.push(Tour.getById(tourOrder.idTour));
-    customerPromises.push(Tour.getById(tourOrder.idCustomer));
+    customerPromises.push(Customer.getById(tourOrder.idCustomer));
   });
 
   // Wait for all of the promises to resolve using Promise.all()
@@ -21,7 +22,10 @@ function getInforTour(res, result) {
         return tourOrder;
       });
 
-      // const customer
+      const customers = result.map((customer, index) => {
+        customer["tour"] = customerResponse[index][0];
+        return customer;
+      });
 
       // Send the response with the tour orders and their tour information
       res.send(message(tourOrders, true, "Thành công!"));
