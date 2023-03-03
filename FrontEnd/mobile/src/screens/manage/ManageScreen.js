@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { SafeAreaView, Image, View, Text, TouchableOpacity, TextInput, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -14,7 +14,7 @@ import stylesTour from '../tourScreen/styles';
 import { AppContext } from '../../../App';
 
 function ManageScreen({ navigation }) {
-    const { user, setUser } = useContext(AppContext);
+    const { user } = useContext(AppContext);
     // const user = {
     //     id: 1,
     //     name: 'Phan Văn Hiểu',
@@ -26,6 +26,17 @@ function ManageScreen({ navigation }) {
     //     role: 'Admin',
     // };
     const [isLogin, setIsLogin] = useState(user != '');
+    const [role, setRole] = useState(user.role);
+    function setRoleUser() {
+        if (user.role == 'customer') {
+            setRole('Khách hàng');
+        } else if (user.role == 'staff') {
+            setRole('Nhân viên');
+        }
+    }
+    useEffect(() => {
+        setRoleUser();
+    }, []);
 
     return (
         <ScrollView>
@@ -42,9 +53,7 @@ function ManageScreen({ navigation }) {
                             style={stylesManage.img}
                         />
                         <Text style={stylesManage.txt_name}>{user?.name}</Text>
-                        <Text style={[stylesManage.txt_name, { fontSize: 16, fontWeight: 'normal' }]}>
-                            {user?.role}
-                        </Text>
+                        <Text style={[stylesManage.txt_name, { fontSize: 16, fontWeight: 'normal' }]}>{role}</Text>
                     </View>
                     <TouchableOpacity onPress={() => navigation.navigate('Profile', { user: user })}>
                         <View style={stylesManage.btn}>

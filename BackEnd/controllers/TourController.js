@@ -1,19 +1,8 @@
 const message = require("../utils/message");
 const connection = require("../utils/connection");
+const seperateString = require("../utils/seperateString");
 var Tour = require("../models/tour_model");
 
-function seperateString(result) {
-  var tours = [];
-  result.forEach(function (tour) {
-    const image_list = tour.image_list;
-    const imgUrl = image_list.split(",");
-    tour["imageUrl"] = imgUrl;
-    delete tour.image_list;
-    tours.push(tour);
-  });
-  console.log("tours: ", tours);
-  return tours;
-}
 class TourController {
   //[GET] /tour/list?key={key}
   list(req, res, next) {
@@ -56,34 +45,92 @@ class TourController {
     });
   }
   async add(req, res, next) {
-
     try {
-
-      let [rows, fields] = await connection.execute('select idStaff from staff where email=?', [req.body.email]);
+      let [rows, fields] = await connection.execute(
+        "select idStaff from staff where email=?",
+        [req.body.email]
+      );
       let idStaffCreate = rows[0].idStaff;
-      let { name, startDate, totalDay, minQuantity, maxQuantity, normalPenaltyFee, strictPenaltyFee, minDate,
-        tourGuide, tourIntro, tourDetail, pickUpPoint, tourDestination, price, featured, tourPictures } = req.body;
+      let {
+        name,
+        startDate,
+        totalDay,
+        minQuantity,
+        maxQuantity,
+        normalPenaltyFee,
+        strictPenaltyFee,
+        minDate,
+        tourGuide,
+        tourIntro,
+        tourDetail,
+        pickUpPoint,
+        tourDestination,
+        price,
+        featured,
+        tourPictures,
+      } = req.body;
 
-
-      [rows, fields] = await connection.execute(`INSERT INTO tour(name,startDate,totalDay,minQuantity,maxQuantity,normalPenaltyFee,strictPenaltyFee,minDate,tourGuide,tourIntro,tourDetail,pickUpPoint,tourDestination,price,idStaffCreate,featured)VALUES('${name}','${startDate}',${totalDay},${minQuantity},${maxQuantity},${normalPenaltyFee},${strictPenaltyFee},${minDate},${tourGuide},'${tourIntro}','${tourDetail}','${pickUpPoint}','${tourDestination}',${price},${idStaffCreate},${featured})`)
-      tourPictures.forEach(e => {
-        connection.execute("insert into tourpicture(idTour,imageUrl) values(?,?)", [rows.insertId, e])
+      [rows, fields] = await connection.execute(
+        `INSERT INTO tour(name,startDate,totalDay,minQuantity,maxQuantity,normalPenaltyFee,strictPenaltyFee,minDate,tourGuide,tourIntro,tourDetail,pickUpPoint,tourDestination,price,idStaffCreate,featured)VALUES('${name}','${startDate}',${totalDay},${minQuantity},${maxQuantity},${normalPenaltyFee},${strictPenaltyFee},${minDate},${tourGuide},'${tourIntro}','${tourDetail}','${pickUpPoint}','${tourDestination}',${price},${idStaffCreate},${featured})`
+      );
+      tourPictures.forEach((e) => {
+        connection.execute(
+          "insert into tourpicture(idTour,imageUrl) values(?,?)",
+          [rows.insertId, e]
+        );
       });
-      return res.send(message({ idTour: rows.insertId }, true, "Thêm tour thành công!"));
+      return res.send(
+        message({ idTour: rows.insertId }, true, "Thêm tour thành công!")
+      );
     } catch (error) {
       return res.send(message(error, false, "Thêm tour thất bại!"));
     }
   }
   async update(req, res, next) {
-
     try {
-      let { idTour, name, startDate, totalDay, minQuantity, maxQuantity, normalPenaltyFee, strictPenaltyFee, minDate,
-        tourGuide, tourIntro, tourDetail, pickUpPoint, tourDestination, price, featured, tourPictures } = req.body;
-      let [rows, fields] = await connection.execute("update tour set name=?,startDate=?,totalDay=?,minQuantity=?,maxQuantity=?,normalPenaltyFee=?,strictPenaltyFee=?,minDate=?,tourGuide=?,tourIntro=?,tourDetail=?,pickUpPoint=?,tourDestination=?,price=?,featured=? where idTour=?",
-        [name, startDate, totalDay, minQuantity, maxQuantity, normalPenaltyFee, strictPenaltyFee, minDate, tourGuide, tourIntro, tourDetail, pickUpPoint, tourDestination, price, featured, idTour])
+      let {
+        idTour,
+        name,
+        startDate,
+        totalDay,
+        minQuantity,
+        maxQuantity,
+        normalPenaltyFee,
+        strictPenaltyFee,
+        minDate,
+        tourGuide,
+        tourIntro,
+        tourDetail,
+        pickUpPoint,
+        tourDestination,
+        price,
+        featured,
+        tourPictures,
+      } = req.body;
+      let [rows, fields] = await connection.execute(
+        "update tour set name=?,startDate=?,totalDay=?,minQuantity=?,maxQuantity=?,normalPenaltyFee=?,strictPenaltyFee=?,minDate=?,tourGuide=?,tourIntro=?,tourDetail=?,pickUpPoint=?,tourDestination=?,price=?,featured=? where idTour=?",
+        [
+          name,
+          startDate,
+          totalDay,
+          minQuantity,
+          maxQuantity,
+          normalPenaltyFee,
+          strictPenaltyFee,
+          minDate,
+          tourGuide,
+          tourIntro,
+          tourDetail,
+          pickUpPoint,
+          tourDestination,
+          price,
+          featured,
+          idTour,
+        ]
+      );
       if (rows.changedRows < 1)
-        return res.send(message(rows, false, 'Không có thay đổi!'));
-      return res.send(message(rows, true, 'Cập nhật tour thành công'));
+        return res.send(message(rows, false, "Không có thay đổi!"));
+      return res.send(message(rows, true, "Cập nhật tour thành công"));
     } catch (error) {
       console.log(error.message);
       return res.send(message(error, false, "Cập nhật tour tour thất bại!"));

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { SafeAreaView, Image, View, Text, TouchableOpacity, TextInput, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -8,16 +8,18 @@ import stylesManage from './styles';
 import { ScrollView } from 'react-native-gesture-handler';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import stylesTour from '../tourScreen/styles';
+import { AppContext } from '../../../App';
 
 function ManageInforPersonScreen({ route, navigation }) {
-    const user = route?.params?.user;
+    const { user, setUser } = useContext(AppContext);
+    console.log(user);
     const [name, setName] = useState(user != undefined ? user.name : '');
     const [email, setEmail] = useState(user != undefined ? user.email : '1');
     const [address, setAddress] = useState(user != undefined ? user.address : '');
     const [phone, setPhone] = useState(user != undefined ? user.phone : '');
     const [imgPath, setImgPath] = useState(
         user != undefined
-            ? user.uriImage
+            ? user.imageUrl
             : `https://img.freepik.com/free-photo/smiley-little-boy-isolated-pink_23-2148984798.jpg`,
     );
 
@@ -149,7 +151,7 @@ function ManageInforPersonScreen({ route, navigation }) {
                         <TextInput
                             placeholder="Nhập họ tên của bạn"
                             onChangeText={(newText) => setName(newText)}
-                            value={name}
+                            defaultValue={name}
                         />
                         <AntDesign name="check" size={20} color="#0D6EFD" />
                     </View>
@@ -169,9 +171,10 @@ function ManageInforPersonScreen({ route, navigation }) {
                             ]}
                         >
                             <TextInput
+                                editable={false}
                                 placeholder="Nhập email của bạn"
                                 onChangeText={(newText) => setEmail(newText)}
-                                value={email}
+                                defaultValue={email}
                             />
                             <AntDesign name="check" size={20} color="#0D6EFD" />
                         </View>
@@ -195,7 +198,7 @@ function ManageInforPersonScreen({ route, navigation }) {
                         <TextInput
                             placeholder="Nhập địa chỉ của bạn"
                             onChangeText={(newText) => setAddress(newText)}
-                            value={address}
+                            defaultValue={address}
                         />
                         <AntDesign name="check" size={20} color="#0D6EFD" />
                     </View>

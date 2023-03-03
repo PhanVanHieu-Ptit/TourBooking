@@ -8,6 +8,7 @@ import stylesCard from '../home/card/style';
 import { ScrollView } from 'react-native-gesture-handler';
 import COLOR from '../../res/color';
 import { Collapse, CollapseHeader, CollapseBody, AccordionList } from 'accordion-collapse-react-native';
+import { formatDate, formatMoney } from '../../res/untils';
 
 function CardOrder(props) {
     const tour = props.item.tour;
@@ -18,13 +19,14 @@ function CardOrder(props) {
     var [colorState, setColorState] = useState('#FFD336');
 
     useEffect(() => {
-        if (tour.state === 'Đã xác nhận') setColorState('#32DB61');
-        else if (tour.state === 'Đã hủy') setColorState('#E70303');
-        else if (tour.state === 'Hoàn thành') setColorState('#32DB61');
+        if (tourOrder.status.name === 'Đặt thành công') setColorState('#32DB61');
+        else if (tourOrder.status.name === 'Đã hủy') setColorState('#E70303');
+        else if (tourOrder.status.name === 'Hoàn thành') setColorState('#32DB61');
+        else if (tourOrder.status.name === 'Chờ xã nhận hủy') setColorState('#E70303');
     });
     return (
         <View>
-            <Text style={styles.title}>Ngày {tourOrder.orderDateTime}</Text>
+            <Text style={styles.title}>Ngày {formatDate(tourOrder.orderDateTime)}</Text>
             <View style={[stylesCard.card2, { height: 140 }]}>
                 <Image source={{ uri: `${tour.imageUrl[0]}` }} style={stylesCard.img2} />
 
@@ -39,12 +41,12 @@ function CardOrder(props) {
                     <View style={{ flexDirection: 'row', margin: 5 }}>
                         <AntDesign name="calendar" size={20} color="#FFFF" style={{ marginLeft: 10 }} />
                         <Text style={stylesCard.txt1}>
-                            {tour.startDate} -- {tour.totalDay} ngày
+                            {formatDate(tour.startDate)} -- {tour.totalDay} ngày
                         </Text>
                     </View>
                     <View style={{ flexDirection: 'row', margin: 5 }}>
                         <FontAwesome name="dollar" size={20} color="#FFFF" style={{ marginLeft: 10 }} />
-                        <Text style={stylesCard.txt1}>{tour.price} VND</Text>
+                        <Text style={stylesCard.txt1}>{formatMoney(tour.price)}</Text>
                         <View style={{ flexDirection: 'row' }}>
                             <MaterialIcons name="place" size={20} color="#FFFF" style={{ marginLeft: 10 }} />
                             <Text style={stylesCard.txt1}>{tour.tourDestination}</Text>
@@ -54,14 +56,14 @@ function CardOrder(props) {
                         style={{
                             backgroundColor: colorState,
                             borderRadius: 20,
-                            width: 80,
+                            width: 100,
                             height: 30,
                             justifyContent: 'center',
                             alignItems: 'center',
                             margin: 10,
                         }}
                     >
-                        <Text style={{ color: '#FFFFFF', fontSize: 12 }}>{tour.state}</Text>
+                        <Text style={{ color: '#FFFFFF', fontSize: 12 }}>{tourOrder.status.name}</Text>
                     </View>
                 </View>
             </View>
@@ -86,7 +88,7 @@ function CardOrder(props) {
                     <Text style={styles.content}>Tổng tiền: {tourOrder?.totalMoney} VND</Text>
                     <Text style={styles.content}>Ghi chú: {tourOrder?.note}</Text>
 
-                    {tour.state == 'Chờ xác nhận' ? (
+                    {tour.state == 'Chờ xác nhận đặt' ? (
                         <View style={{ flexDirection: 'row' }}>
                             <TouchableOpacity
                                 style={{

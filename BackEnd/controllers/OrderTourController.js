@@ -1,4 +1,5 @@
 const message = require("../utils/message");
+const seperateString = require("../utils/seperateString");
 var OrderTour = require("../models/order_tour_model");
 var Tour = require("../models/tour_model");
 var Customer = require("../models/customer_model");
@@ -31,6 +32,11 @@ function getInforTour(res, result) {
       });
 
       tourOrders = result.map((tourOrder, index) => {
+        const tour = tourOrder.tour;
+        const image_list = tour.image_list;
+        const imgUrl = image_list.split(",");
+        tour["imageUrl"] = imgUrl;
+        delete tour.image_list;
         delete tourOrder.idTour;
         delete tourOrder.idCustomer;
         delete tourOrder.idStatus;
