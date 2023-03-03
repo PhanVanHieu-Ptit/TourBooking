@@ -10,9 +10,9 @@ import COLOR from '../../res/color';
 import { Collapse, CollapseHeader, CollapseBody, AccordionList } from 'accordion-collapse-react-native';
 
 function CardOrder(props) {
-    const tour = props.tour;
+    const tour = props.item.tour;
 
-    const tourOrder = props.tourOrder;
+    const tourOrder = props.item;
 
     const [isExpanded, setIsExpanded] = useState(true);
     var [colorState, setColorState] = useState('#FFD336');
@@ -26,7 +26,7 @@ function CardOrder(props) {
         <View>
             <Text style={styles.title}>Ngày {tourOrder.orderDateTime}</Text>
             <View style={[stylesCard.card2, { height: 140 }]}>
-                <Image source={{ uri: `${tour.imageUrl}` }} style={stylesCard.img2} />
+                <Image source={{ uri: `${tour.imageUrl[0]}` }} style={stylesCard.img2} />
 
                 <View>
                     <View style={{ flexDirection: 'row', margin: 5 }}>

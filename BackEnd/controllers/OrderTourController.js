@@ -2,29 +2,39 @@ const message = require("../utils/message");
 var OrderTour = require("../models/order_tour_model");
 var Tour = require("../models/tour_model");
 var Customer = require("../models/customer_model");
+var Status = require("../models/status_model");
 
 function getInforTour(res, result) {
   const tourPromises = [];
   const customerPromises = [];
+  const statusPromises = [];
 
   // Loop through each tour order and call Tour.getById() for its ID
   result.forEach((tourOrder) => {
     tourPromises.push(Tour.getById(tourOrder.idTour));
     customerPromises.push(Customer.getById(tourOrder.idCustomer));
+    statusPromises.push(Status.getById(tourOrder.idStatus, "tourorder"));
   });
 
-  // Wait for all of the promises to resolve using Promise.all()
-  Promise.all(tourPromises, customerPromises)
-    .then((tourResponses, customerResponse) => {
+  Promise.all([
+    Promise.all(tourPromises),
+    Promise.all(customerPromises),
+    Promise.all(statusPromises),
+  ])
+    .then(([tourResponses, customerResponses, statusResponse]) => {
       // Loop through each tour order and add its tour information to the response
-      const tourOrders = result.map((tourOrder, index) => {
+      let tourOrders = result.map((tourOrder, index) => {
         tourOrder["tour"] = tourResponses[index][0];
+        tourOrder["customer"] = customerResponses[index][0];
+        tourOrder["status"] = statusResponse[index][0];
         return tourOrder;
       });
 
-      const customers = result.map((customer, index) => {
-        customer["tour"] = customerResponse[index][0];
-        return customer;
+      tourOrders = result.map((tourOrder, index) => {
+        delete tourOrder.idTour;
+        delete tourOrder.idCustomer;
+        delete tourOrder.idStatus;
+        return tourOrder;
       });
 
       // Send the response with the tour orders and their tour information
@@ -66,10 +76,6 @@ class OrderTourController {
           });
         }
     }
-
-    // .catch((err) => {
-    //   res.send(message(err, false, "Thất bại!"));
-    // });
   }
 
   //[GET] /order-tours/list
@@ -89,7 +95,7 @@ class OrderTourController {
 
     OrderTour.findBykey(key)
       .then((result) => {
-        res.send(message(result, true, "Thành công!"));
+        getInforTour(res, result);
       })
       .catch((err) => {
         res.send(message(err, false, "Thất bại!"));
@@ -100,7 +106,7 @@ class OrderTourController {
   detail(req, res, next) {
     OrderTour.getById(req.params.id)
       .then((result) => {
-        res.send(message(result), true, "Thành công!");
+        getInforTour(res, result);
       })
       .catch((err) => {
         res.send(message(err, false, "Thất bại!"));
