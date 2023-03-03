@@ -162,7 +162,7 @@ function HistoryOrderScreen({ navigation }) {
 
             <ScrollView>
                 {historyOrder.map((item) => (
-                    <CardOrder tour={item} tourOrder={tourOrder} key={item.id} navigation={navigation} />
+                    <CardOrder item={item} tourOrder={tourOrder} key={item.idTourOrder} navigation={navigation} />
                 ))}
             </ScrollView>
         </SafeAreaView>
