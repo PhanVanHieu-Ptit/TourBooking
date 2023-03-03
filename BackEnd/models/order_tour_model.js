@@ -13,7 +13,7 @@ const OrderTour = function (order) {
 };
 
 OrderTour.getAll = function (result) {
-  db.query("SELECT * FROM `tourorder` ")
+  db.query("SELECT * FROM tourorder")
     .then(([rows, fields]) => {
       result(rows);
     })

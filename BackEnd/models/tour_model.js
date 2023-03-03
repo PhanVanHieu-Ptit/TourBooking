@@ -25,7 +25,7 @@ const Tour = function (tour) {
 
 Tour.getAll = function (result) {
   db.query(
-    "SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ', ') AS image_list" +
+    "SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ',') AS image_list" +
       " FROM tour" +
       " JOIN tourpicture ON tour.idTour = tourpicture.idTour" +
       " GROUP BY tour.idTour;"
@@ -45,12 +45,12 @@ Tour.getById = function (id) {
       "SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ', ') AS image_list" +
         " FROM tour" +
         " JOIN tourpicture ON tour.idTour = tourpicture.idTour" +
-        "WHERE tour.idTour = ?" +
+        " WHERE tour.idTour = ?" +
         " GROUP BY tour.idTour;",
       id
     )
     .then(([rows, fields]) => {
-      console.log(rows);
+      // console.log(rows);
       return rows;
     })
     .catch((err) => {

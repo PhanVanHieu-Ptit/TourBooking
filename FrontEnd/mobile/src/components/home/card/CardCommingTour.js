@@ -9,7 +9,7 @@ import { formatDate, formatMoney } from '../../../res/untils';
 
 function CardCommingTour(props) {
     const tour = props.tour;
-    const imageUrl = tour.image_list.split(',')[0];
+    // const imageUrl = tour.image_list.split(',')[0];
 
     return (
         <TouchableOpacity
@@ -18,7 +18,7 @@ function CardCommingTour(props) {
             }}
         >
             <View style={stylesCard.card2}>
-                <Image source={{ uri: `${imageUrl}` }} style={stylesCard.img2} />
+                <Image source={{ uri: `${tour.imageUrl[0]}` }} style={stylesCard.img2} />
 
                 <View>
                     <View style={{ flexDirection: 'row', margin: 5 }}>

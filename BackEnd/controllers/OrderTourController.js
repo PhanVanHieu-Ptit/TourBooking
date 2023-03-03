@@ -1,5 +1,6 @@
 const message = require("../utils/message");
 var OrderTour = require("../models/order_tour_model");
+var Tour = require("../models/tour_model");
 
 class OrderTourController {
   //[GET] /order-tours/list?status={value}
@@ -13,7 +14,23 @@ class OrderTourController {
       case undefined:
         if (status == "Tất cả" || status == undefined) {
           OrderTour.getAll(function (result) {
-            res.send(message(result, true, "Thành công!"));
+            var tourOrders = [];
+            var tour = {};
+
+            result.forEach(function (tourOrder) {
+              Tour.getById(tourOrder.idTour)
+                .then((result2) => {
+                  tour = result2[0];
+                  tourOrder["tour"] = result2[0];
+                  tourOrders.push(tourOrder);
+                })
+                .catch((err) => {
+                  res.send(message(err, false, "Thất bại!"));
+                });
+              console.log("tour: ", tour);
+            });
+            console.log("tourOrders: ", tourOrders);
+            res.send(message(tourOrders, true, "Thành công!"));
           });
         } else {
           OrderTour.findByStatus(status, function (result) {

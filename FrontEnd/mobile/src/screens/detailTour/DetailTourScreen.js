@@ -15,7 +15,7 @@ import { formatDate, formatMoney } from '../../res/untils';
 function DetailTourScreen({ route, navigation }) {
     const tour = route.params.tour;
     const [modalVisible, setModalVisible] = useState(false);
-    const listImage = tour.image_list.split(', ');
+    const listImage = tour.imageUrl;
     const [selectImage, setSelectImage] = useState(listImage[0]);
     return (
         <ScrollView>

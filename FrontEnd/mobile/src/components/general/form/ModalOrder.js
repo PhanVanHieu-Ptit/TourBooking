@@ -23,7 +23,7 @@ import API from '../../../res/string';
 
 function ModalOrder(props) {
     const { user } = useContext(AppContext);
-    const imageUrl = props.DATA.image_list.split(', ')[0];
+    const imageUrl = props.DATA.imageUrl[0];
     const [number, setNumber] = useState('');
     const [note, setNote] = useState('');
     const order = () => {
