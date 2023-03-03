@@ -6,6 +6,7 @@ const { tourInsert } = require("../middlewares/tour");
 const {
   managerCheck,
   authenticateToken,
+  staffCheck,
 } = require("../middlewares/authentication");
 
 router.get("/list", tourController.list);
@@ -17,5 +18,6 @@ router.delete(
   tourController.delete
 );
 router.post("/add", authenticateToken, managerCheck, tourInsert, tourController.add);
+router.post("/update", authenticateToken, staffCheck, tourInsert, tourController.update);
 
 module.exports = router;

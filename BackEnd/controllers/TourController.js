@@ -1,4 +1,5 @@
 const message = require("../utils/message");
+const connection = require("../utils/connection");
 var Tour = require("../models/tour_model");
 
 function seperateString(result) {
@@ -68,13 +69,26 @@ class TourController {
       tourPictures.forEach(e => {
         connection.execute("insert into tourpicture(idTour,imageUrl) values(?,?)", [rows.insertId, e])
       });
-      //get ID staff create  
       return res.send(message({ idTour: rows.insertId }, true, "Thêm tour thành công!"));
     } catch (error) {
       return res.send(message(error, false, "Thêm tour thất bại!"));
     }
   }
+  async update(req, res, next) {
 
+    try {
+      let { idTour, name, startDate, totalDay, minQuantity, maxQuantity, normalPenaltyFee, strictPenaltyFee, minDate,
+        tourGuide, tourIntro, tourDetail, pickUpPoint, tourDestination, price, featured, tourPictures } = req.body;
+      let [rows, fields] = await connection.execute("update tour set name=?,startDate=?,totalDay=?,minQuantity=?,maxQuantity=?,normalPenaltyFee=?,strictPenaltyFee=?,minDate=?,tourGuide=?,tourIntro=?,tourDetail=?,pickUpPoint=?,tourDestination=?,price=?,featured=? where idTour=?",
+        [name, startDate, totalDay, minQuantity, maxQuantity, normalPenaltyFee, strictPenaltyFee, minDate, tourGuide, tourIntro, tourDetail, pickUpPoint, tourDestination, price, featured, idTour])
+      if (rows.changedRows < 1)
+        return res.send(message(rows, false, 'Không có thay đổi!'));
+      return res.send(message(rows, true, 'Cập nhật tour thành công'));
+    } catch (error) {
+      console.log(error.message);
+      return res.send(message(error, false, "Cập nhật tour tour thất bại!"));
+    }
+  }
 }
 
 module.exports = new TourController();
