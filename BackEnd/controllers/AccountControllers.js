@@ -111,6 +111,30 @@ class AccountControllers {
       return res.send(message(error, false, "Đổi mật khẩu thất bại"));
     }
   }
+  async changePasswordInForgot(req, res) {
+    const { email: username, newPassword } = req.body;
+    //check valid old password
+    if (!newPassword) {
+      return res.send(message("", false, "Mật khẩu mới không được để trống!"));
+    }
+    let [rows, fields] = await connection.execute(
+      "select * from account where username=?",
+      [username]
+    );
+    const encodedPassword = encode(newPassword);
+    try {
+      let [rows, fields] = await connection.execute(
+        "update account set password=? where username=?",
+        [encodedPassword, username]
+      );
+      if (rows.changedRows == 1) {
+        return res.send(message(username, true, "Đổi mật khẩu thành công"));
+      }
+      return res.send(message("", false, "Đổi mật khẩu thất bại"));
+    } catch (error) {
+      return res.send(message(error, false, "Đổi mật khẩu thất bại"));
+    }
+  }
   async provideStaffAccount(req, res) { }
   async forgotPassword(req, res) {
     const { username } = req.body;
