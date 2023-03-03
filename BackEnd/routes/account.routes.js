@@ -16,10 +16,15 @@ router.post(
   accountControllers.signUp
 );
 router.post("/sign-in", accountControllers.signIn);
-router.post(
+router.patch(
   "/change-password",
   authenticateToken,
   accountControllers.changePassword
+);
+router.patch(
+  "/change-password-in-forgot",
+  authenticateToken,
+  accountControllers.changePasswordInForgot
 );
 router.post("/forgot-password", accountControllers.forgotPassword);
 router.get(

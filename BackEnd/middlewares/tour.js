@@ -57,7 +57,7 @@ async function tourInsert(req, res, next) {
     return res.send(message({ tourDestination }, false, "Điểm đến không hợp lệ!"));
   }
   if (price < 0) {
-    return res.send(message({ pickUpPoint }, false, "Giá không được nhỏ hơn 0!"));
+    return res.send(message({ price }, false, "Giá không được nhỏ hơn 0!"));
   }
   if (featured) {
     featured = 1;
