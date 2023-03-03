@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
     Alert,
     Modal,
@@ -16,8 +16,14 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import stylesButton from '../actionButton/styles';
 import stylesCard from '../../home/card/style';
 import COLOR from '../../../res/color';
+import { formatDate, formatMoney } from '../../../res/untils';
+import { AppContext } from '../../../../App';
+import request from '../../../services/untils';
+import API from '../../../res/string';
 
 function ModalOrder(props) {
+    const { user } = useContext(AppContext);
+    const imageUrl = props.DATA.image_list.split(', ')[0];
     const [number, setNumber] = useState('');
     const [note, setNote] = useState('');
     const order = () => {
@@ -26,11 +32,30 @@ function ModalOrder(props) {
                 { text: 'OK', onPress: () => console.log('OK Pressed') },
             ]);
         } else {
-            setNumber('');
-            setNote('');
-            Alert.alert('Thông báo!', 'Đặt thành công!', [
-                { text: 'OK', onPress: () => props.setModalVisible(!props.modalVisible) },
-            ]);
+            request
+                .post(API.order, {
+                    idCustomer: user.id,
+                    idTour: props.DATA.idTour,
+                    quantity: number,
+                    note: note,
+                    totalMoney: Number(number) * Number(props.DATA.price),
+                })
+                .then((response) => {
+                    console.log(response.data);
+                    console.log('response.data.data: ' + response.data.data[0]);
+                    setNumber('');
+                    setNote('');
+                    if (response.data.status == true) {
+                        Alert.alert('Thông báo!', 'Đặt thành công!', [
+                            { text: 'OK', onPress: () => props.setModalVisible(!props.modalVisible) },
+                        ]);
+                    } else {
+                        Alert.alert('Đặt thất bại!', response.data.message, [{ text: 'OK', onPress: () => {} }]);
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         }
     };
     return (
@@ -47,7 +72,7 @@ function ModalOrder(props) {
                 <View style={stylesModal.centeredView}>
                     <View style={stylesModal.modalView}>
                         <ImageBackground
-                            source={{ uri: `${props.DATA.imageUrl}` }}
+                            source={{ uri: `${imageUrl}` }}
                             style={{
                                 borderRadius: 20,
                                 height: 200,
@@ -72,7 +97,7 @@ function ModalOrder(props) {
                                 </View>
                             </View>
                         </ImageBackground>
-                        <Text style={stylesModal.title}>Ngày khởi hành: {props.DATA.startDate}</Text>
+                        <Text style={stylesModal.title}>Ngày khởi hành: {formatDate(props.DATA.startDate)}</Text>
                         <Text style={[stylesModal.title, { marginLeft: -260 }]}>Số lượng</Text>
                         <TextInput
                             placeholder="Nhập số lượng ở đây ..."
@@ -105,7 +130,7 @@ function ModalOrder(props) {
                             value={note}
                         />
                         <Text style={[stylesModal.title, { marginTop: 20 }]}>
-                            Tổng tiền: {Number(number) * Number(props.DATA.price)}
+                            Tổng tiền: {formatMoney(Number(number) * Number(props.DATA.price))}
                         </Text>
                         <View style={{ flexDirection: 'row', margin: 5 }}>
                             <Pressable

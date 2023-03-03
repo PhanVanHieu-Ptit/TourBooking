@@ -6,8 +6,8 @@ const request = axios.create({
     withCredentials: true,
 });
 
-export const get = async (path, options = {}) => {
-    const response = await request.get(path, options);
+export const get = async (path, params = {}, options = {}) => {
+    const response = await request.get(path, params, options);
     return response.data;
 };
 

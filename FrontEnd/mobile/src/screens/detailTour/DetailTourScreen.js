@@ -10,20 +10,10 @@ import COLOR from '../../res/color';
 import stylesDetailTour from './styles';
 import ModalOrder from '../../components/general/form/ModalOrder';
 import { FlatList } from 'react-native-gesture-handler';
+import { formatDate, formatMoney } from '../../res/untils';
 
 function DetailTourScreen({ route, navigation }) {
     const tour = route.params.tour;
-    // const DATA = {
-    //   id: 1,
-    //   name: 'Biển Ngọc',
-    //   tourDestination: 'Phú Quốc',
-    //   startDate: '25/01/2023',
-    //   totalDay: '2',
-    //   price: '15000000',
-    //   descript: 'Chuyến đi thú vị',
-    //   imageUrl:
-    //     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-    // };
     const [modalVisible, setModalVisible] = useState(false);
     const listImage = tour.image_list.split(', ');
     const [selectImage, setSelectImage] = useState(listImage[0]);
@@ -100,7 +90,7 @@ function DetailTourScreen({ route, navigation }) {
                             <MaterialIcons name="date-range" size={30} color={COLOR.primary} style={{ marginTop: 2 }} />
                             <View style={{ marginLeft: 5 }}>
                                 <Text style={stylesDetailTour.title2}>Ngày khởi hành</Text>
-                                <Text style={stylesDetailTour.txt}>{tour.startDate}</Text>
+                                <Text style={stylesDetailTour.txt}>{formatDate(tour.startDate)}</Text>
                             </View>
                         </View>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -140,7 +130,7 @@ function DetailTourScreen({ route, navigation }) {
                         }}
                     >
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={[stylesDetailTour.txt, { fontSize: 24 }]}>{tour.price} VNĐ</Text>
+                            <Text style={[stylesDetailTour.txt, { fontSize: 24 }]}>{formatMoney(tour.price)}</Text>
                             <Text style={{ marginTop: 10 }}>/ chuyến</Text>
                         </View>
                         <TouchableOpacity onPress={() => setModalVisible(true)}>
