@@ -2,6 +2,35 @@ const message = require("../utils/message");
 var OrderTour = require("../models/order_tour_model");
 var Tour = require("../models/tour_model");
 
+function getInforTour(res, result) {
+  const tourPromises = [];
+  const customerPromises = [];
+
+  // Loop through each tour order and call Tour.getById() for its ID
+  result.forEach((tourOrder) => {
+    tourPromises.push(Tour.getById(tourOrder.idTour));
+    customerPromises.push(Tour.getById(tourOrder.idCustomer));
+  });
+
+  // Wait for all of the promises to resolve using Promise.all()
+  Promise.all(tourPromises, customerPromises)
+    .then((tourResponses, customerResponse) => {
+      // Loop through each tour order and add its tour information to the response
+      const tourOrders = result.map((tourOrder, index) => {
+        tourOrder["tour"] = tourResponses[index][0];
+        return tourOrder;
+      });
+
+      // const customer
+
+      // Send the response with the tour orders and their tour information
+      res.send(message(tourOrders, true, "Thành công!"));
+    })
+    .catch((err) => {
+      res.send(message(err, false, "Thất bại!"));
+    });
+}
+
 class OrderTourController {
   //[GET] /order-tours/list?status={value}
   filter(req, res, next) {
@@ -14,38 +43,22 @@ class OrderTourController {
       case undefined:
         if (status == "Tất cả" || status == undefined) {
           OrderTour.getAll(function (result) {
-            var tourOrders = [];
-            var tour = {};
-
-            result.forEach(function (tourOrder) {
-              Tour.getById(tourOrder.idTour)
-                .then((result2) => {
-                  tour = result2[0];
-                  tourOrder["tour"] = result2[0];
-                  tourOrders.push(tourOrder);
-                })
-                .catch((err) => {
-                  res.send(message(err, false, "Thất bại!"));
-                });
-              console.log("tour: ", tour);
-            });
-            console.log("tourOrders: ", tourOrders);
-            res.send(message(tourOrders, true, "Thành công!"));
+            getInforTour(res, result);
           });
         } else {
           OrderTour.findByStatus(status, function (result) {
-            res.send(message(result, true, "Thành công!"));
+            getInforTour(res, result);
           });
         }
         break;
       default:
         if (status == "Tất cả" || status == undefined) {
           OrderTour.getAllFollowCustomer(id, function (result) {
-            res.send(message(result, true, "Thành công!"));
+            getInforTour(res, result);
           });
         } else {
           OrderTour.findByStatusFollowCustomer(id, status, function (result) {
-            res.send(message(result, true, "Thành công!"));
+            getInforTour(res, result);
           });
         }
     }

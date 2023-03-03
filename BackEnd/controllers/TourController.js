@@ -14,15 +14,8 @@ function seperateString(result) {
   return tours;
 }
 class TourController {
-  //[GET] /tour/list
-  // list(req, res, next) {
-  //   Tour.getAll(function (result) {
-  //     res.send(message(result, true, "Thành công!"));
-  //   });
-  // }
-
-  //[GET] /tour/find?key={key}
-  find(req, res, next) {
+  //[GET] /tour/list?key={key}
+  list(req, res, next) {
     var query = require("url").parse(req.url, true).query;
     var key = query.key;
 
