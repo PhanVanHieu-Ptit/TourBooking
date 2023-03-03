@@ -4,13 +4,12 @@ const orderRouter = require("./order.routes");
 const accountRouter = require("./account.routes");
 const staffRouter = require("./staff.routes");
 const customerRouter = require("./customer.routes");
-const middleware = require("../middlewares/authentication");
 
 function hung(app) {
   //viet route trong nay
   app.use("/account", accountRouter);
   app.use("/staff", staffRouter);
-  app.use("/customerRouter", staffRouter);
+  app.use("/customer", customerRouter);
 }
 
 function hieu(app) {

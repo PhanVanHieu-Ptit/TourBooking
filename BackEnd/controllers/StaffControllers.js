@@ -37,12 +37,17 @@ class StaffController {
       const idStaff = req.params.id;
       const { name, imageUrl } = req.body;
       let [rows, fields] = await connection.execute(
-        "update staff set name=?,imageUrl=? where idStaff = ?",
-        [name, imageUrl, idStaff]
+        "update staff set name=? where idStaff = ?",
+        [name, idStaff]
       );
       if (rows.affectedRows < 1) {
         return res.send(message(rows, false, 'Không tìm thấy nhân viên có id:' + idStaff));
       }
+      if (imageUrl)
+        await connection.execute(
+          "update staff set imageUrl=? where idStaff = ?",
+          [imageUrl, idStaff]
+        );
       if (rows.changedRows < 1)
         return res.send(message(rows, false, 'Không có thay đổi!'));
       return res.send(message(rows, true, 'Cập nhật nhân viên thành công'));

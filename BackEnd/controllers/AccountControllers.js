@@ -53,9 +53,14 @@ class AccountControllers {
         return res.send(message("", false, "Sai tên đăng nhập hoặc mật khẩu!"));
       }
       const role = rows[0].role;
-      [rows, fields] = await connection.execute(
-        `select * from ${role} where email='${username}'`
-      );
+      if (role == 'customer')
+        [rows, fields] = await connection.execute(
+          `select * from customer  where email='${username}'`
+        );
+      else
+        [rows, fields] = await connection.execute(
+          `select * from staff  where email='${username}'`
+        );
       if (rows.length == 0) {
         return res.send(message("", false, "Không có thông tin user!"));
       }
@@ -69,7 +74,7 @@ class AccountControllers {
       }
       //set token for client
       const token = getToken(username, false, role);
-      res.setHeader("authorization", token);
+      res.setHeader("Authorization", token);
       return res.send(
         message({ id, name, imageUrl, role }, true, 'Đăng nhập thành công')
       );
