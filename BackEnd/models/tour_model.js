@@ -26,9 +26,9 @@ const Tour = function (tour) {
 Tour.getAll = function (result) {
   db.query(
     "SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ', ') AS image_list" +
-      " FROM tour" +
-      " JOIN tourpicture ON tour.idTour = tourpicture.idTour" +
-      " GROUP BY tour.idTour;"
+    " FROM tour" +
+    " JOIN tourpicture ON tour.idTour = tourpicture.idTour" +
+    " GROUP BY tour.idTour;"
   )
     .then(([rows, fields]) => {
       result(rows);
@@ -43,10 +43,10 @@ Tour.getById = function (id) {
   return db
     .query(
       "SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ', ') AS image_list" +
-        " FROM tour" +
-        " JOIN tourpicture ON tour.idTour = tourpicture.idTour" +
-        "WHERE tour.idTour = ?" +
-        " GROUP BY tour.idTour;",
+      " FROM tour" +
+      " JOIN tourpicture ON tour.idTour = tourpicture.idTour" +
+      "WHERE tour.idTour = ?" +
+      " GROUP BY tour.idTour;",
       id
     )
     .then(([rows, fields]) => {
@@ -60,20 +60,18 @@ Tour.getById = function (id) {
 };
 
 Tour.findBykey = function (key) {
+  let condition = ` where name like '%${key}%' or pickUpPoint like '%${key}%' or tourDestination like '%${key}%'`;
+  if (!key) {
+    condition = '';
+  }
   return db
     .query(
       "SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ', ') AS image_list" +
-        " FROM tour" +
-        " JOIN tourpicture ON tour.idTour = tourpicture.idTour" +
-        "where name like ? OR  tourIntro like ? or tourDetail like ? or pickUpPoint like ? or tourDestination like ?" +
-        " GROUP BY tour.idTour;",
-      [
-        "%" + key + "%",
-        "%" + key + "%",
-        "%" + key + "%",
-        "%" + key + "%",
-        "%" + key + "%",
-      ]
+      " FROM tour" +
+      " JOIN tourpicture ON tour.idTour = tourpicture.idTour" + condition
+      +
+      " GROUP BY tour.idTour;",
+
     )
     .then(([rows, fields]) => {
       console.log(rows);
@@ -94,6 +92,7 @@ Tour.remove = function (id, result) {
       console.log;
       result(err);
     });
+
 };
 
 module.exports = Tour;

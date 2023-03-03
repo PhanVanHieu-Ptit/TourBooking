@@ -1,9 +1,13 @@
 const message = require('../utils/message');
-
+const { getListAddress } = require('../utils/address');
 
 class SiteControllers {
   index(req, res) {
-    res.send(message({ data: 'Hello world' }));
+    return res.send(message({ data: 'Hello world' }));
+  }
+  async listAddress(req, res) {
+
+    return res.send(message(await getListAddress()));
   }
 }
 

@@ -17,11 +17,12 @@ async function sendChangePassMail(mail, token) {
     to: mail,
     subject: 'Đổi mật khẩu bookingtour.com',
     text: 'Xin chào!',
-    html: `<p> Click vào <a href="http://localhost:3000/account/change-password-form?token=${token}"> đây </a> để đổi mật khẩu!<p/> 
+    html: `<p> Click vào <a href="${process.env.BASE_URL}/account/change-password-form?token=${token}"> đây </a> để đổi mật khẩu!<p/> 
     <p>Link chỉ có hiệu lực trong 5 phút</p>
     `
   };
   let rs = await transporter.sendMail(message);
+  console.log(rs);
   return rs;
 }
 

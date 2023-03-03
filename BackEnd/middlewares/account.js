@@ -10,6 +10,9 @@ async function accountInsert(req, res, next) {
   if (!username || !password) {
     return res.send(message('', false, 'Tên đăng nhập và mật khẩu không được để trống!'));
   }
+  if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(username))) {
+    return res.send(message('', false, 'Email không hợp lệ!'));
+  }
 
   if (password.length < 6) {
     return res.send(message('', false, "Mật khẩu có ít nhất 6 kí tự!"));

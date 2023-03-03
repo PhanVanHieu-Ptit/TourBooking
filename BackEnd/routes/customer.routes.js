@@ -4,6 +4,6 @@ const customerControllers = require('../controllers/CustomerControllers');
 const { authenticateToken } = require('../middlewares/authentication');
 const { customerInsert } = require('../middlewares/customer');
 
-
+router.post('/update', authenticateToken, customerInsert, customerControllers.update)
 
 module.exports = router;
