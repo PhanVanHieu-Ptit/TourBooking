@@ -67,7 +67,7 @@ class AccountControllers {
       if (role == 'staff' && rows[0].idStatus == 7) {
         return res.send(message("", false, "Tài khoản bị khóa!"));
       }
-      const { name, imageUrl } = rows[0];
+      const { name, imageUrl, phoneNumber, email, address } = rows[0];
       let id = rows[0].idStaff;
       if (role == 'customer') {
         id = rows[0].idCustomer;
@@ -76,7 +76,7 @@ class AccountControllers {
       const token = getToken(username, false, role);
       res.setHeader("Authorization", token);
       return res.send(
-        message({ id, name, imageUrl, role }, true, 'Đăng nhập thành công')
+        message({ id, name, imageUrl, role, phoneNumber, email, address }, true, 'Đăng nhập thành công')
       );
 
     } catch (error) {
