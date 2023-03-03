@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Image, Text, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import stylesHeader from './styles';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { AppContext } from '../../../../App';
 
 function Header() {
-    const [user, setUser] = useState('');
+    const { user, setUser } = useContext(AppContext);
+    // const [user, setUser] = useState('');
     useEffect(() => {
         AsyncStorage.getItem('user')
             .then((value) => {
@@ -24,14 +26,14 @@ function Header() {
             <Icon name="notifications" size={25} color="#021A5A" />
             <View style={stylesHeader.view_info}>
                 <View style={stylesHeader.view_txt}>
-                    <Text style={stylesHeader.title1}>Chào {user != undefined ? user.email : 'Bạn'},</Text>
+                    <Text style={stylesHeader.title1}>Chào {user?.name != undefined ? user.name : 'Bạn'},</Text>
                     <Text style={stylesHeader.title2}>Chúc bạn có chuyến đi vui vẻ!</Text>
                 </View>
                 <Image
                     source={{
                         uri:
-                            user?.uriImage != undefined
-                                ? user.uriImage
+                            user?.imageUrl != undefined
+                                ? user.imageUrl
                                 : `https://freesvg.org/img/abstract-user-flat-4.png`,
                     }}
                     style={stylesHeader.img}

@@ -5,13 +5,14 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import stylesCard from './style';
 
 function CardNewTour({ navigation, props }) {
+    const imageUrl = props.image_list.split(',')[0];
     return (
         <TouchableOpacity
             onPress={() => {
                 navigation.navigate('DetailTour', { tour: props });
             }}
         >
-            <ImageBackground source={{ uri: `${props.imageUrl}` }} style={stylesCard.img}>
+            <ImageBackground source={{ uri: `${imageUrl}` }} style={stylesCard.img}>
                 <View style={[stylesCard.viewStar, { marginLeft: 90 }]}>
                     <Text style={{ color: '#FFFF' }}>5</Text>
                     <Icon name="star" size={15} color="#FFD336" style={{ marginTop: 2 }} />

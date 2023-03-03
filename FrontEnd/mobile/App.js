@@ -1,14 +1,34 @@
-import MyTabs from './src/components/general/navBar';
 import { NavigationContainer } from '@react-navigation/native';
 import HomeNavigation from './src/navigation/home';
-import DetailHistoryOrder from './src/screens/historyOrder.js/DetailHistoryOrder';
-import Register from './src/screens/auth/register';
+import React, { createContext, useState } from 'react';
+
+const AppContext = createContext();
+
+const AppContextProvider = ({ children }) => {
+    const [user, setUser] = useState('');
+    const [toursOutStanding, setToursOutStanding] = useState([]);
+    const [toursComing, setToursComming] = useState([]);
+
+    const contextValues = {
+        user,
+        setUser,
+        toursOutStanding,
+        setToursOutStanding,
+        toursComing,
+        setToursComming,
+    };
+
+    return <AppContext.Provider value={contextValues}>{children}</AppContext.Provider>;
+};
+export { AppContext, AppContextProvider };
 
 export default function App() {
     return (
-        <NavigationContainer>
-            {/* <MyTabs /> */}
-            <HomeNavigation />
-        </NavigationContainer>
+        <AppContextProvider>
+            <NavigationContainer>
+                {/* <MyTabs /> */}
+                <HomeNavigation />
+            </NavigationContainer>
+        </AppContextProvider>
     );
 }

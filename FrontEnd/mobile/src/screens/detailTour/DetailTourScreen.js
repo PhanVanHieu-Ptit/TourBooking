@@ -25,8 +25,8 @@ function DetailTourScreen({ route, navigation }) {
     //     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
     // };
     const [modalVisible, setModalVisible] = useState(false);
-    const listImage = tour.listImage;
-    const [selectImage, setSelectImage] = useState(listImage[0].imageUrl);
+    const listImage = tour.image_list.split(', ');
+    const [selectImage, setSelectImage] = useState(listImage[0]);
     return (
         <ScrollView>
             <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -78,17 +78,16 @@ function DetailTourScreen({ route, navigation }) {
                     renderItem={({ item }) => (
                         <TouchableOpacity
                             onPress={() => {
-                                setSelectImage(item.imageUrl);
+                                setSelectImage(item);
                             }}
                         >
                             <Image
-                                key={item.id}
-                                source={{ uri: `${item.imageUrl}` }}
+                                source={{ uri: `${item}` }}
                                 style={{ height: 50, width: 50, margin: 5, borderRadius: 6 }}
                             />
                         </TouchableOpacity>
                     )}
-                    keyExtractor={(item) => item.id}
+                    // keyExtractor={(item) => item.id}
                 />
                 <View
                     style={{

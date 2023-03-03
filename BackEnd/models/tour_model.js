@@ -23,9 +23,32 @@ const Tour = function (tour) {
   this.featured = tour.featured;
 };
 
+Tour.getAll = function (result) {
+  db.query(
+    "SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ', ') AS image_list" +
+      " FROM tour" +
+      " JOIN tourpicture ON tour.idTour = tourpicture.idTour" +
+      " GROUP BY tour.idTour;"
+  )
+    .then(([rows, fields]) => {
+      result(rows);
+    })
+    .catch((err) => {
+      console.log;
+      result(err);
+    });
+};
+
 Tour.getById = function (id) {
   return db
-    .query("SELECT * FROM `tour` where idTour= ?", id)
+    .query(
+      "SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ', ') AS image_list" +
+        " FROM tour" +
+        " JOIN tourpicture ON tour.idTour = tourpicture.idTour" +
+        "WHERE tour.idTour = ?" +
+        " GROUP BY tour.idTour;",
+      id
+    )
     .then(([rows, fields]) => {
       console.log(rows);
       return rows;
@@ -39,7 +62,11 @@ Tour.getById = function (id) {
 Tour.findBykey = function (key) {
   return db
     .query(
-      "SELECT * FROM `tour` where name like ? OR  tourIntro like ? or tourDetail like ? or pickUpPoint like ? or tourDestination like ?",
+      "SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ', ') AS image_list" +
+        " FROM tour" +
+        " JOIN tourpicture ON tour.idTour = tourpicture.idTour" +
+        "where name like ? OR  tourIntro like ? or tourDetail like ? or pickUpPoint like ? or tourDestination like ?" +
+        " GROUP BY tour.idTour;",
       [
         "%" + key + "%",
         "%" + key + "%",

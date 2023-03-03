@@ -1,18 +1,31 @@
 const message = require("../utils/message");
 var Tour = require("../models/tour_model");
 class TourController {
+  //[GET] /tour/list
+  // list(req, res, next) {
+  //   Tour.getAll(function (result) {
+  //     res.send(message(result, true, "Thành công!"));
+  //   });
+  // }
+
   //[GET] /tour/find?key={key}
   find(req, res, next) {
     var query = require("url").parse(req.url, true).query;
     var key = query.key;
 
-    Tour.findBykey(key)
-      .then((result) => {
+    if (key == undefined) {
+      Tour.getAll(function (result) {
         res.send(message(result, true, "Thành công!"));
-      })
-      .catch((err) => {
-        res.send(message(err, false, "Thất bại!"));
       });
+    } else {
+      Tour.findBykey(key)
+        .then((result) => {
+          res.send(message(result, true, "Thành công!"));
+        })
+        .catch((err) => {
+          res.send(message(err, false, "Thất bại!"));
+        });
+    }
   }
 
   //[GET] /tour/:id/detail

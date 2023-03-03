@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { SafeAreaView, Image, View, Text, TouchableOpacity, TextInput, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -11,19 +11,21 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import COLOR from '../../res/color';
 import stylesTour from '../tourScreen/styles';
+import { AppContext } from '../../../App';
 
 function ManageScreen({ navigation }) {
-    const user = {
-        id: 1,
-        name: 'Phan Văn Hiểu',
-        email: 'phanvanhieu@gmail.com',
-        address: 'Thu Duc',
-        phone: '012345678',
-        uriImage: 'https://img.freepik.com/free-photo/smiley-little-boy-isolated-pink_23-2148984798.jpg',
+    const { user, setUser } = useContext(AppContext);
+    // const user = {
+    //     id: 1,
+    //     name: 'Phan Văn Hiểu',
+    //     email: 'phanvanhieu@gmail.com',
+    //     address: 'Thu Duc',
+    //     phone: '012345678',
+    //     uriImage: 'https://img.freepik.com/free-photo/smiley-little-boy-isolated-pink_23-2148984798.jpg',
 
-        role: 'Admin',
-    };
-    const [isLogin, setIsLogin] = useState(false);
+    //     role: 'Admin',
+    // };
+    const [isLogin, setIsLogin] = useState(user != '');
 
     return (
         <ScrollView>
@@ -33,8 +35,8 @@ function ManageScreen({ navigation }) {
                         <Image
                             source={{
                                 uri:
-                                    user?.uriImage != undefined
-                                        ? user.uriImage
+                                    user?.imageUrl != undefined
+                                        ? user.imageUrl
                                         : `https://freesvg.org/img/abstract-user-flat-4.png`,
                             }}
                             style={stylesManage.img}

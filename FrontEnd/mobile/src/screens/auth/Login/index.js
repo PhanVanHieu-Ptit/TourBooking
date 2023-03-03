@@ -41,14 +41,17 @@ function Login({ navigation }) {
                 .post(API.login, { username, password })
                 .then((response) => {
                     console.log(response.data);
+                    console.log('response.data.data: ' + response.data.data[0]);
                     if (response.data.status == true) {
                         setUsername('');
                         setPassword('');
                         // setToken(response.header);
                         // AsyncStorage.setItem('AccessToken', response.headers.authorization);
                         const user = {
-                            email: response.data.data.username,
-                            role: response.data.data.role,
+                            id: response.data.data[0].id,
+                            name: response.data.data[0].name,
+                            imageUrl: response.data.data[0].imageUrl,
+                            role: response.data.data[0].role,
                             accessToken: response.headers.authorization,
                         };
                         console.log('user: ', user);
