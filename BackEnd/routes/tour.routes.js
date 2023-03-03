@@ -16,6 +16,6 @@ router.delete(
   managerCheck,
   tourController.delete
 );
-// router.post("/add", authenticateToken, managerCheck, tourInsert, tourController.add);
+router.post("/add", authenticateToken, managerCheck, tourInsert, tourController.add);
 
 module.exports = router;
