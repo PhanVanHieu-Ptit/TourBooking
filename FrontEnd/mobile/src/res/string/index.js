@@ -7,6 +7,8 @@ const API = {
     // allTours: 'tour/find',
     order: '/order-tours/order',
     historyOrder: '/order-tours/list',
+    updateInfoPersonal: '/customer/update',
+    listAddress: '/site/list-address',
 };
 
 export default API;

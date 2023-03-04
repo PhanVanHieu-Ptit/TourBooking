@@ -52,6 +52,9 @@ function Login({ navigation }) {
                             name: response.data.data[0].name,
                             imageUrl: response.data.data[0].imageUrl,
                             role: response.data.data[0].role,
+                            phoneNumber: response.data.data[0].phoneNumber,
+                            email: response.data.data[0].email,
+                            address: response.data.data[0].address,
                             accessToken: response.headers.authorization,
                         };
                         console.log('user: ', user);

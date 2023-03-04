@@ -28,4 +28,19 @@ export const post = async (path, options = {}) => {
     }
 };
 
+export const postPrivate = async (path, options = {}, header = {}) => {
+    try {
+        const result = await request(path, {
+            method: 'POST',
+            headers: header,
+            data: options,
+        });
+        console.log('result: ', result);
+        return result;
+    } catch (error) {
+        console.log(error);
+        return error.reponse.data;
+    }
+};
+
 export default request;
