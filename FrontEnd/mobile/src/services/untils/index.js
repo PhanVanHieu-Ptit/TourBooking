@@ -6,8 +6,8 @@ const request = axios.create({
     withCredentials: true,
 });
 
-export const get = async (path, params = {}, options = {}) => {
-    const response = await request.get(path, params, options);
+export const get = async (path, options = {}) => {
+    const response = await request.get(path, options);
     return response.data;
 };
 
@@ -28,12 +28,12 @@ export const post = async (path, options = {}) => {
     }
 };
 
-export const postPrivate = async (path, options = {}, header = {}, method = 'POST') => {
+export const postPrivate = async (path, data = {}, header = {}, method = 'POST') => {
     try {
         const result = await request(path, {
             method: method,
             headers: header,
-            data: options,
+            data: data,
         });
         console.log('result: ', result);
         return result;

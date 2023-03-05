@@ -121,8 +121,15 @@ OrderTour.create = function (data, result) {
 
 OrderTour.update = function (data, result) {
   db.query(
-    "UPDATE tourorder SET  quantity=?, note=?, totalMoney=? where idTourOrder=?",
-    [data.quantity, data.note, data.totalMoney, data.idTourOrder]
+    "UPDATE tourorder SET  quantity=?, note=?, totalMoney=? where idTourOrder=? and idCustomer = ? and idTour = ?",
+    [
+      data.quantity,
+      data.note,
+      data.totalMoney,
+      data.idTourOrder,
+      data.idCustomer,
+      data.idTour,
+    ]
   )
     .then(([rows, fields]) => {
       console.log(rows);
@@ -136,7 +143,7 @@ OrderTour.update = function (data, result) {
 
 OrderTour.confirm = function (id, idStatus) {
   return db
-    .query("UPDATE tourorder SET  idStatus=? where idTourOrder=?", [
+    .query("UPDATE tourorder SET  idStatus=? where idTourOrder = ?;", [
       idStatus,
       id,
     ])

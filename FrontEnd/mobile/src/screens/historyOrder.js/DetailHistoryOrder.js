@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { SafeAreaView, Text, View, ImageBackground, TouchableOpacity, Pressable, TextInput } from 'react-native';
+import React, { useState, useContext } from 'react';
+import { SafeAreaView, Text, View, ImageBackground, TouchableOpacity, TextInput, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import stylesButton from '../../components/general/actionButton/styles';
 import stylesAllTour from '../allTour/style';
@@ -7,11 +7,67 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import stylesCard from '../../components/home/card/style';
 import stylesModal from '../../components/general/form/styles';
 import COLOR from '../../res/color';
+import { formatDate, formatMoney } from '../../res/untils';
+import * as request from '../../services/untils';
+import API from '../../res/string';
+import { AppContext } from '../../../App';
 
 function DetailHistoryOrder({ route, navigation }) {
+    const { user, setHistoryOrder } = useContext(AppContext);
     const DATA = route.params.tour;
     const [number, setNumber] = useState(route.params.tourOrder.quantity + '');
     const [note, setNote] = useState(route.params.tourOrder.note);
+
+    function updateOrderTour() {
+        request
+            .postPrivate(
+                API.tourOrder + route.params.tourOrder.idTourOrder + '/update',
+                {
+                    idTourOrder: route.params.tourOrder.idTourOrder,
+                    idCustomer: user.id,
+                    idTour: route.params.tour.idTour,
+                    quantity: number,
+                    note: note,
+                    totalMoney: Number(number) * Number(DATA.price),
+                },
+                { 'Content-Type': 'application/json', authorization: user.accessToken },
+                'PUT',
+            )
+            .then((response) => {
+                console.log(response.data);
+
+                if (response.data.status == true) {
+                    updateListTourOrder();
+                    Alert.alert('Thông báo!', 'Cập nhật thành công!', [{ text: 'OK', onPress: () => {} }]);
+                } else {
+                    Alert.alert('Cập nhật thất bại!', response.data.message, [{ text: 'OK', onPress: () => {} }]);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
+    function updateListTourOrder() {
+        request
+            .get(API.historyOrder + '?id=' + user.id, {
+                headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
+            })
+            .then((response) => {
+                console.log('response.data:', response.data);
+
+                if (response.status == true) {
+                    setHistoryOrder(response.data);
+                } else {
+                    Alert.alert('Thông báo!', response.message + '', [
+                        { text: 'OK', onPress: () => console.log('OK Pressed') },
+                    ]);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
     return (
         <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center' }}>
             <View
@@ -47,7 +103,7 @@ function DetailHistoryOrder({ route, navigation }) {
                     </View>
                 </View>
             </ImageBackground>
-            <Text style={stylesModal.title}>Ngày khởi hành: {DATA.startDate}</Text>
+            <Text style={stylesModal.title}>Ngày khởi hành: {formatDate(DATA.startDate)}</Text>
             <Text style={[stylesModal.title, { marginLeft: -260 }]}>Số lượng</Text>
             <TextInput
                 placeholder="Nhập số lượng ở đây ..."
@@ -79,7 +135,9 @@ function DetailHistoryOrder({ route, navigation }) {
                 }}
                 value={note}
             />
-            <Text style={[stylesModal.title, { marginTop: 20 }]}>Tổng tiền: {Number(number) * Number(DATA.price)}</Text>
+            <Text style={[stylesModal.title, { marginTop: 20 }]}>
+                Tổng tiền: {formatMoney(Number(number) * Number(DATA.price))}
+            </Text>
 
             <TouchableOpacity
                 style={{
@@ -89,6 +147,7 @@ function DetailHistoryOrder({ route, navigation }) {
                     backgroundColor: COLOR.primary,
                     borderRadius: 20,
                 }}
+                onPress={() => updateOrderTour()}
             >
                 <Text style={stylesModal.textStyle}>Xác nhận</Text>
             </TouchableOpacity>

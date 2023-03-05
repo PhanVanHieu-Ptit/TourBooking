@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Image, ImageBackground, Text, TouchableOpacity, View, StyleSheet, Animated } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { Image, Text, TouchableOpacity, View, StyleSheet, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -9,8 +9,12 @@ import { ScrollView } from 'react-native-gesture-handler';
 import COLOR from '../../res/color';
 import { Collapse, CollapseHeader, CollapseBody, AccordionList } from 'accordion-collapse-react-native';
 import { formatDate, formatMoney } from '../../res/untils';
+import { AppContext } from '../../../App';
+import * as request from '../../services/untils';
+import API from '../../res/string';
 
 function CardOrder(props) {
+    const { user, setHistoryOrder } = useContext(AppContext);
     const tour = props.item.tour;
 
     const tourOrder = props.item;
@@ -25,6 +29,50 @@ function CardOrder(props) {
         else if (tourOrder.status.name === 'Hoàn thành' || tourOrder.status.name === 'Đang sử dụng')
             setColorState('#32DB61');
     }, []);
+
+    function cancel() {
+        request
+            .postPrivate(
+                API.tourOrder + tourOrder.idTourOrder + '/cancel',
+                { id: tourOrder.idTourOrder },
+                { 'Content-Type': 'application/json', authorization: user.accessToken },
+                'PATCH',
+            )
+            .then((response) => {
+                console.log(response.data);
+
+                if (response.data.status == true) {
+                    updateListTourOrder();
+                    Alert.alert('Thông báo!', 'Cập nhật thành công!', [{ text: 'OK', onPress: () => {} }]);
+                } else {
+                    Alert.alert('Cập nhật thất bại!', response.data.message, [{ text: 'OK', onPress: () => {} }]);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
+    function updateListTourOrder() {
+        request
+            .get(API.historyOrder + '?id=' + user.id, {
+                headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
+            })
+            .then((response) => {
+                console.log('response.data:', response.data);
+
+                if (response.status == true) {
+                    setHistoryOrder(response.data);
+                } else {
+                    Alert.alert('Thông báo!', response.message + '', [
+                        { text: 'OK', onPress: () => console.log('OK Pressed') },
+                    ]);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
 
     return (
         <View>
@@ -120,6 +168,9 @@ function CardOrder(props) {
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                     margin: 10,
+                                }}
+                                onPress={() => {
+                                    cancel();
                                 }}
                             >
                                 <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Hủy</Text>

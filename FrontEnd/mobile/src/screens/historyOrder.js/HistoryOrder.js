@@ -6,7 +6,7 @@ import stylesButton from '../../components/general/actionButton/styles';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import stylesAllTour from '../allTour/style';
 import CardOrder from '../../components/HistoryOrder.js/CardOrder';
-import request from '../../services/untils';
+import * as request from '../../services/untils';
 import API from '../../res/string';
 import { AppContext } from '../../../App';
 import SelectDropdown from 'react-native-select-dropdown';
@@ -23,16 +23,16 @@ function HistoryOrderScreen({ navigation }) {
             ]);
         } else {
             request
-                .get(API.historyOrder, {
-                    id: user.id,
+                .get(API.historyOrder + '?id=' + user.id, {
+                    headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
                 })
                 .then((response) => {
                     console.log(response.data);
 
-                    if (response.data.status == true) {
-                        setHistoryOrder(response.data.data);
+                    if (response.status == true) {
+                        setHistoryOrder(response.data);
                     } else {
-                        Alert.alert('Thông báo!', response.data.message + '', [
+                        Alert.alert('Thông báo!', response.message + '', [
                             { text: 'OK', onPress: () => console.log('OK Pressed') },
                         ]);
                     }
@@ -51,10 +51,10 @@ function HistoryOrderScreen({ navigation }) {
             .then((response) => {
                 console.log(response.data);
 
-                if (response.data.status == true) {
-                    setListStatus(listStatus.concat(response.data.data));
+                if (response.status == true) {
+                    setListStatus(listStatus.concat(response.data));
                 } else {
-                    Alert.alert('Thông báo!', response.data.message + '', [
+                    Alert.alert('Thông báo!', response.message + '', [
                         { text: 'OK', onPress: () => console.log('OK Pressed') },
                     ]);
                 }
@@ -65,20 +65,24 @@ function HistoryOrderScreen({ navigation }) {
     }
 
     useEffect(() => {
-        filterData();
-        console.log('historyOrder: ', historyOrder);
+        if (!(user == '' || user == undefined || user == null)) {
+            filterData();
+            console.log('historyOrder: ', historyOrder);
+        }
     }, [selected]);
 
     function filterData() {
         request
-            .get(API.historyOrder + '?id=' + user.id + '&status=' + selected)
+            .get(API.historyOrder + '?id=' + user.id + '&status=' + selected, {
+                headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
+            })
             .then((response) => {
                 console.log(response.data);
 
-                if (response.data.status == true) {
-                    setHistoryOrder(response.data.data);
+                if (response.status == true) {
+                    setHistoryOrder(response.data);
                 } else {
-                    Alert.alert('Thông báo!', response.data.message + '', [
+                    Alert.alert('Thông báo!', response.message + '', [
                         { text: 'OK', onPress: () => console.log('OK Pressed') },
                     ]);
                 }
@@ -88,109 +92,20 @@ function HistoryOrderScreen({ navigation }) {
             });
     }
 
-    // const DATA = [
-    //     {
-    //         id: 1,
-    //         name: 'Biển Ngọc',
-    //         tourDestination: 'Phú Quốc',
-    //         startDate: '25/01/2023',
-    //         totalDay: '2',
-    //         price: '1500',
-    //         imageUrl:
-    //             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-    //         state: 'Chờ xác nhận',
-    //     },
-    //     {
-    //         id: 2,
-    //         name: 'Biển Ngọc',
-    //         tourDestination: 'Phú Quốc',
-    //         startDate: '25/01/2023',
-    //         totalDay: '2',
-    //         price: '1500',
-    //         imageUrl:
-    //             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-    //         state: 'Đã xác nhận',
-    //     },
-    //     {
-    //         id: 3,
-    //         name: 'Biển Ngọc',
-    //         tourDestination: 'Phú Quốc',
-    //         startDate: '25/01/2023',
-    //         totalDay: '2',
-    //         price: '1500',
-    //         imageUrl:
-    //             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-    //         state: 'Đã hủy',
-    //     },
-    //     {
-    //         id: 4,
-    //         name: 'Biển Ngọc',
-    //         tourDestination: 'Phú Quốc',
-    //         startDate: '25/01/2023',
-    //         totalDay: '2',
-    //         price: '1500',
-    //         imageUrl:
-    //             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-    //         state: 'Hoàn thành',
-    //     },
-    //     {
-    //         id: 5,
-    //         name: 'Biển Ngọc',
-    //         tourDestination: 'Phú Quốc',
-    //         startDate: '25/01/2023',
-    //         totalDay: '2',
-    //         price: '1500',
-    //         imageUrl:
-    //             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-    //         state: 'Đang sử dụng',
-    //     },
-    // ];
-    // const tourOrder = {
-    //     idCustomer: 1,
-    //     idTour: 1,
-    //     orderDateTime: '12-12-2023',
-    //     quantity: 3,
-    //     note: '',
-    //     totalMoney: 1500,
-    //     cancelDate: '',
-    //     idStatus: 'Đặt thành công',
-    // };
-
-    // const [masterDataSource, setMasterDataSource] = useState(DATA);
-    // const [filteredDataSource, setFilteredDataSource] = useState(DATA);
-    // const searchFilterFunction = (text) => {
-    //     // Check if searched text is not blank
-    //     if (text) {
-    //         // Inserted text is not blank
-    //         // Filter the masterDataSource
-    //         // Update FilteredDataSource
-    //         const newData = masterDataSource.filter(function (item) {
-    //             const itemData = item.idStatus ? item.idStatus.toUpperCase() : ''.toUpperCase();
-    //             const textData = text.toUpperCase();
-    //             return itemData.indexOf(textData) > -1;
-    //         });
-    //         setFilteredDataSource(newData);
-    //     } else {
-    //         // Inserted text is blank
-    //         // Update FilteredDataSource with masterDataSource
-    //         setFilteredDataSource(props.masterDataSource);
-    //     }
-    // };
-
     return (
         <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
             <View
                 style={{
                     flexDirection: 'row',
                     justifyContent: 'flex-start',
-                    marginLeft: -150,
+                    marginLeft: -100,
                 }}
             >
-                <TouchableOpacity>
+                {/* <TouchableOpacity>
                     <View style={stylesButton.btn_back}>
                         <Icon name="chevron-back" size={25} color="#021A5A" />
                     </View>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <Text style={stylesAllTour.title}>Lịch sử đặt</Text>
             </View>
             <View style={{ marginLeft: 200 }}>

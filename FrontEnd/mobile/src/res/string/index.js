@@ -6,6 +6,7 @@ const API = {
     // toursComing: 'tour/find',
     // allTours: 'tour/find',
     order: '/order-tours/order',
+    tourOrder: '/order-tours/',
     historyOrder: '/order-tours/list',
     updateInfoPersonal: '/customer/update',
     listAddress: '/site/list-address',

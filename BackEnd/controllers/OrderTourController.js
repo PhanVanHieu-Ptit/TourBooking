@@ -134,9 +134,15 @@ class OrderTourController {
   //[PUT] /order-tours/:id/update
   update(req, res, next) {
     var data = req.body;
-    OrderTour.update(data, function (result) {
-      res.send(message(result, true, "Cập nhật thành công!"));
-    });
+    if (!data.quantity || Number(data.quantity) < 1) {
+      res.send(message("", false, "Số lượng phải lớn hơn hoặc bằng 1!"));
+    } else {
+      OrderTour.update(data, function (result) {
+        console.log(result);
+        res.send(message(result, true, "Cập nhật thành công!"));
+      });
+    }
+
     // .catch((err) => {
     //   res.send(message(err, false, "Cập nhật thất bại!"));
     // });
