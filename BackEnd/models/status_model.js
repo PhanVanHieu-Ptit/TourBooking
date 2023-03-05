@@ -22,4 +22,20 @@ Status.getById = function (id, type) {
     });
 };
 
+Status.getFollowType = function (type, result) {
+  db.query("SELECT name FROM `status` where type = ?", type)
+    .then(([rows, fields]) => {
+      console.log("rows: ", rows);
+      var list = [];
+      rows.forEach((element) => {
+        list.push(element.name);
+      });
+      result(list);
+    })
+    .catch((err) => {
+      console.log(err);
+      result(err);
+    });
+};
+
 module.exports = Status;

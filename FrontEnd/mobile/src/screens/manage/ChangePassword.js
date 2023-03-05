@@ -21,7 +21,7 @@ function ChangePassword({ route, navigation }) {
             ? user.imageUrl
             : 'https://img.freepik.com/free-photo/smiley-little-boy-isolated-pink_23-2148984798.jpg',
     );
-    const [name, setName] = useState(user != user ? staff.name : '');
+    const [name, setName] = useState(user != undefined ? user.name : '');
     const [seeOldPassWord, setSeeOldPassword] = useState(true);
     const [seeNewPassWord, setSeeNewPassword] = useState(true);
     const [seeConfirmPassWord, setSeeConfirmPassword] = useState(true);

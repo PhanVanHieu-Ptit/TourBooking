@@ -13,7 +13,8 @@ import SelectDropdown from 'react-native-select-dropdown';
 
 function HistoryOrderScreen({ navigation }) {
     const { user, historyOrder, setHistoryOrder } = useContext(AppContext);
-    const [selected, setSelected] = React.useState('Tất cả');
+    const [selected, setSelected] = useState('Tất cả');
+    const [listStatus, setListStatus] = useState(['Tất cả']);
 
     useEffect(() => {
         if (user == '' || user == undefined || user == null) {
@@ -40,97 +41,141 @@ function HistoryOrderScreen({ navigation }) {
                     console.log(err);
                 });
         }
+
+        getStatus();
     }, []);
 
-    const countries = ['Tất cả', 'Chờ xác nhận đặt', 'Đã hủy'];
-    const DATA = [
-        {
-            id: 1,
-            name: 'Biển Ngọc',
-            tourDestination: 'Phú Quốc',
-            startDate: '25/01/2023',
-            totalDay: '2',
-            price: '1500',
-            imageUrl:
-                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-            state: 'Chờ xác nhận',
-        },
-        {
-            id: 2,
-            name: 'Biển Ngọc',
-            tourDestination: 'Phú Quốc',
-            startDate: '25/01/2023',
-            totalDay: '2',
-            price: '1500',
-            imageUrl:
-                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-            state: 'Đã xác nhận',
-        },
-        {
-            id: 3,
-            name: 'Biển Ngọc',
-            tourDestination: 'Phú Quốc',
-            startDate: '25/01/2023',
-            totalDay: '2',
-            price: '1500',
-            imageUrl:
-                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-            state: 'Đã hủy',
-        },
-        {
-            id: 4,
-            name: 'Biển Ngọc',
-            tourDestination: 'Phú Quốc',
-            startDate: '25/01/2023',
-            totalDay: '2',
-            price: '1500',
-            imageUrl:
-                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-            state: 'Hoàn thành',
-        },
-        {
-            id: 5,
-            name: 'Biển Ngọc',
-            tourDestination: 'Phú Quốc',
-            startDate: '25/01/2023',
-            totalDay: '2',
-            price: '1500',
-            imageUrl:
-                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-            state: 'Đang sử dụng',
-        },
-    ];
-    const tourOrder = {
-        idCustomer: 1,
-        idTour: 1,
-        orderDateTime: '12-12-2023',
-        quantity: 3,
-        note: '',
-        totalMoney: 1500,
-        cancelDate: '',
-        idStatus: 'Đặt thành công',
-    };
+    async function getStatus() {
+        await request
+            .get(API.listStatus + '?type=tourorder')
+            .then((response) => {
+                console.log(response.data);
 
-    const [masterDataSource, setMasterDataSource] = useState(DATA);
-    const [filteredDataSource, setFilteredDataSource] = useState(DATA);
-    const searchFilterFunction = (text) => {
-        // Check if searched text is not blank
-        if (text) {
-            // Inserted text is not blank
-            // Filter the masterDataSource
-            // Update FilteredDataSource
-            const newData = masterDataSource.filter(function (item) {
-                const itemData = item.idStatus ? item.idStatus.toUpperCase() : ''.toUpperCase();
-                const textData = text.toUpperCase();
-                return itemData.indexOf(textData) > -1;
+                if (response.data.status == true) {
+                    setListStatus(listStatus.concat(response.data.data));
+                } else {
+                    Alert.alert('Thông báo!', response.data.message + '', [
+                        { text: 'OK', onPress: () => console.log('OK Pressed') },
+                    ]);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
             });
-            setFilteredDataSource(newData);
-        } else {
-            // Inserted text is blank
-            // Update FilteredDataSource with masterDataSource
-            setFilteredDataSource(props.masterDataSource);
-        }
-    };
+    }
+
+    useEffect(() => {
+        filterData();
+        console.log('historyOrder: ', historyOrder);
+    }, [selected]);
+
+    function filterData() {
+        request
+            .get(API.historyOrder + '?id=' + user.id + '&status=' + selected)
+            .then((response) => {
+                console.log(response.data);
+
+                if (response.data.status == true) {
+                    setHistoryOrder(response.data.data);
+                } else {
+                    Alert.alert('Thông báo!', response.data.message + '', [
+                        { text: 'OK', onPress: () => console.log('OK Pressed') },
+                    ]);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
+    // const DATA = [
+    //     {
+    //         id: 1,
+    //         name: 'Biển Ngọc',
+    //         tourDestination: 'Phú Quốc',
+    //         startDate: '25/01/2023',
+    //         totalDay: '2',
+    //         price: '1500',
+    //         imageUrl:
+    //             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
+    //         state: 'Chờ xác nhận',
+    //     },
+    //     {
+    //         id: 2,
+    //         name: 'Biển Ngọc',
+    //         tourDestination: 'Phú Quốc',
+    //         startDate: '25/01/2023',
+    //         totalDay: '2',
+    //         price: '1500',
+    //         imageUrl:
+    //             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
+    //         state: 'Đã xác nhận',
+    //     },
+    //     {
+    //         id: 3,
+    //         name: 'Biển Ngọc',
+    //         tourDestination: 'Phú Quốc',
+    //         startDate: '25/01/2023',
+    //         totalDay: '2',
+    //         price: '1500',
+    //         imageUrl:
+    //             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
+    //         state: 'Đã hủy',
+    //     },
+    //     {
+    //         id: 4,
+    //         name: 'Biển Ngọc',
+    //         tourDestination: 'Phú Quốc',
+    //         startDate: '25/01/2023',
+    //         totalDay: '2',
+    //         price: '1500',
+    //         imageUrl:
+    //             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
+    //         state: 'Hoàn thành',
+    //     },
+    //     {
+    //         id: 5,
+    //         name: 'Biển Ngọc',
+    //         tourDestination: 'Phú Quốc',
+    //         startDate: '25/01/2023',
+    //         totalDay: '2',
+    //         price: '1500',
+    //         imageUrl:
+    //             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
+    //         state: 'Đang sử dụng',
+    //     },
+    // ];
+    // const tourOrder = {
+    //     idCustomer: 1,
+    //     idTour: 1,
+    //     orderDateTime: '12-12-2023',
+    //     quantity: 3,
+    //     note: '',
+    //     totalMoney: 1500,
+    //     cancelDate: '',
+    //     idStatus: 'Đặt thành công',
+    // };
+
+    // const [masterDataSource, setMasterDataSource] = useState(DATA);
+    // const [filteredDataSource, setFilteredDataSource] = useState(DATA);
+    // const searchFilterFunction = (text) => {
+    //     // Check if searched text is not blank
+    //     if (text) {
+    //         // Inserted text is not blank
+    //         // Filter the masterDataSource
+    //         // Update FilteredDataSource
+    //         const newData = masterDataSource.filter(function (item) {
+    //             const itemData = item.idStatus ? item.idStatus.toUpperCase() : ''.toUpperCase();
+    //             const textData = text.toUpperCase();
+    //             return itemData.indexOf(textData) > -1;
+    //         });
+    //         setFilteredDataSource(newData);
+    //     } else {
+    //         // Inserted text is blank
+    //         // Update FilteredDataSource with masterDataSource
+    //         setFilteredDataSource(props.masterDataSource);
+    //     }
+    // };
 
     return (
         <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
@@ -150,7 +195,7 @@ function HistoryOrderScreen({ navigation }) {
             </View>
             <View style={{ marginLeft: 200 }}>
                 <SelectDropdown
-                    data={countries}
+                    data={listStatus}
                     // defaultValueByIndex={1}
                     defaultValue={'Tất cả'}
                     onSelect={(selectedItem, index) => {
@@ -186,7 +231,7 @@ function HistoryOrderScreen({ navigation }) {
 
             <ScrollView>
                 {historyOrder.map((item) => (
-                    <CardOrder item={item} tourOrder={tourOrder} key={item.idTourOrder} navigation={navigation} />
+                    <CardOrder item={item} key={item.idTourOrder} navigation={navigation} />
                 ))}
             </ScrollView>
         </SafeAreaView>

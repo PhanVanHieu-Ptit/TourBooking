@@ -3,21 +3,30 @@ const JWT = require("../utils/_JWT");
 const token = require("../utils/token");
 const router = express.Router();
 const orderController = require("../controllers/OrderTourController");
+const { authenticateToken } = require("../middlewares/authentication");
 
 // orderController.index;
 
-router.get("/list", orderController.filter);
+router.get("/list", authenticateToken, orderController.filter);
 // router.get("/list", orderController.list);
-router.get("/find", orderController.find);
-router.post("/order", orderController.order);
-router.put("/:id/update", orderController.update);
-router.get("/:id/detail", orderController.detail);
-router.patch("/:id/confirm-using", orderController.confirmUsing);
-router.patch("/:id/confirm-cancel", orderController.cancel);
-router.patch("/:id/confirm", orderController.confirm);
-router.patch("/:id/cancel", orderController.cancel);
-router.patch("/:id/customer-cancel", orderController.cancel);
-router.patch("/:id/customer-need-cancel", orderController.customerNeedCancel);
+router.get("/find", authenticateToken, orderController.find);
+router.post("/order", authenticateToken, orderController.order);
+router.put("/:id/update", authenticateToken, orderController.update);
+router.get("/:id/detail", authenticateToken, orderController.detail);
+router.patch(
+  "/:id/confirm-using",
+  authenticateToken,
+  orderController.confirmUsing
+);
+router.patch("/:id/confirm-cancel", authenticateToken, orderController.cancel);
+router.patch("/:id/confirm", authenticateToken, orderController.confirm);
+router.patch("/:id/cancel", authenticateToken, orderController.cancel);
+router.patch("/:id/customer-cancel", authenticateToken, orderController.cancel);
+router.patch(
+  "/:id/customer-need-cancel",
+  authenticateToken,
+  orderController.customerNeedCancel
+);
 
 router.get("/token", function (req, res) {
   // var user = {

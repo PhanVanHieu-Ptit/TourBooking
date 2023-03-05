@@ -29,7 +29,7 @@ function DetailHistoryOrder({ route, navigation }) {
                 <Text style={stylesAllTour.title}>Chi tiết đơn đặt</Text>
             </View>
             <ImageBackground
-                source={{ uri: `${DATA.imageUrl}` }}
+                source={{ uri: `${DATA.imageUrl[0]}` }}
                 style={{
                     borderRadius: 20,
                     height: 200,

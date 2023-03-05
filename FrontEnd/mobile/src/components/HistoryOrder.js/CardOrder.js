@@ -20,10 +20,12 @@ function CardOrder(props) {
 
     useEffect(() => {
         if (tourOrder.status.name === 'Đặt thành công') setColorState('#32DB61');
-        else if (tourOrder.status.name === 'Đã hủy') setColorState('#E70303');
-        else if (tourOrder.status.name === 'Hoàn thành') setColorState('#32DB61');
-        else if (tourOrder.status.name === 'Chờ xã nhận hủy') setColorState('#E70303');
-    });
+        else if (tourOrder.status.name === 'Đã hủy' || tourOrder.status.name === 'Chờ xã nhận hủy')
+            setColorState('#E70303');
+        else if (tourOrder.status.name === 'Hoàn thành' || tourOrder.status.name === 'Đang sử dụng')
+            setColorState('#32DB61');
+    }, []);
+
     return (
         <View>
             <Text style={styles.title}>Ngày {formatDate(tourOrder.orderDateTime)}</Text>
@@ -88,12 +90,12 @@ function CardOrder(props) {
                     <Text style={styles.content}>Tổng tiền: {tourOrder?.totalMoney} VND</Text>
                     <Text style={styles.content}>Ghi chú: {tourOrder?.note}</Text>
 
-                    {tour.state == 'Chờ xác nhận đặt' ? (
+                    {tourOrder.status.name == 'Chờ xác nhận đặt' ? (
                         <View style={{ flexDirection: 'row' }}>
                             <TouchableOpacity
                                 style={{
                                     backgroundColor: COLOR.primary, //'#FFD336',
-                                    borderRadius: 20,
+                                    borderRadius: 10,
                                     width: 80,
                                     height: 30,
                                     justifyContent: 'center',
@@ -112,7 +114,7 @@ function CardOrder(props) {
                             <TouchableOpacity
                                 style={{
                                     backgroundColor: 'red',
-                                    borderRadius: 20,
+                                    borderRadius: 10,
                                     width: 80,
                                     height: 30,
                                     justifyContent: 'center',
@@ -127,12 +129,12 @@ function CardOrder(props) {
                         ''
                     )}
 
-                    {tour.state == 'Đặt thành công' ? (
+                    {tourOrder.status.name == 'Đặt thành công' ? (
                         <View style={{ flexDirection: 'row' }}>
                             <TouchableOpacity
                                 style={{
                                     backgroundColor: 'red',
-                                    borderRadius: 20,
+                                    borderRadius: 10,
                                     width: 80,
                                     height: 30,
                                     justifyContent: 'center',
@@ -147,12 +149,12 @@ function CardOrder(props) {
                         ''
                     )}
 
-                    {tour.state == 'Đã hủy' ? (
+                    {tourOrder.status.name == 'Đã hủy' ? (
                         <View style={{ flexDirection: 'row' }}>
                             <TouchableOpacity
                                 style={{
                                     backgroundColor: COLOR.primary, //'#FFD336',
-                                    borderRadius: 20,
+                                    borderRadius: 10,
                                     width: 80,
                                     height: 30,
                                     justifyContent: 'center',

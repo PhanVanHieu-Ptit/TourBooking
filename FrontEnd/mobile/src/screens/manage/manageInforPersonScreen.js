@@ -16,12 +16,6 @@ import * as request from '../../services/untils';
 import SelectDropdown from 'react-native-select-dropdown';
 
 function ManageInforPersonScreen({ route, navigation }) {
-    const [open, setOpen] = useState(false);
-    const [value, setValue] = useState(null);
-    const [items, setItems] = useState([
-        { label: 'Apple', value: 'apple' },
-        { label: 'Banana', value: 'banana' },
-    ]);
     const { user, setUser } = useContext(AppContext);
     console.log(user);
     const [listAddress, setListAddress] = useState([]);
@@ -79,17 +73,19 @@ function ManageInforPersonScreen({ route, navigation }) {
             ]);
             return false;
         }
-        if (address.trim().length == 0) {
-            Alert.alert('Thông báo!', 'Không được để trống địa chỉ!', [
-                { text: 'OK', onPress: () => console.log('OK Pressed') },
-            ]);
-            return false;
-        }
-        if (phone.trim().length == 0) {
-            Alert.alert('Thông báo!', 'Không được để trống số điện thoại!', [
-                { text: 'OK', onPress: () => console.log('OK Pressed') },
-            ]);
-            return false;
+        if (user.role == 'customer') {
+            if (address.trim().length == 0) {
+                Alert.alert('Thông báo!', 'Không được để trống địa chỉ!', [
+                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                ]);
+                return false;
+            }
+            if (phone.trim().length == 0) {
+                Alert.alert('Thông báo!', 'Không được để trống số điện thoại!', [
+                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                ]);
+                return false;
+            }
         }
         return true;
     };
@@ -146,29 +142,86 @@ function ManageInforPersonScreen({ route, navigation }) {
         }
     };
 
+    const updateStaff = () => {
+        if (checkValue()) {
+            request
+                .postPrivate(
+                    '/staff/' + user.id + '/update',
+                    { name, imageUrl: user.imageUrl },
+                    { 'Content-Type': 'application/json', authorization: user.accessToken },
+                    'PUT',
+                )
+                .then((response) => {
+                    console.log(response.data);
+
+                    if (response.data.status == true) {
+                        const newUser = {
+                            id: user.id,
+                            name: name,
+                            imageUrl: user.imageUrl,
+                            role: user.role,
+                            email: user.email,
+                            accessToken: user.accessToken,
+                        };
+                        console.log('user: ', newUser);
+
+                        //update user in side client
+                        setUser(newUser);
+
+                        //delete old user
+                        AsyncStorage.removeItem('user')
+                            .then(() => {
+                                console.log('user removed from AsyncStorage');
+                            })
+                            .catch((error) => {
+                                console.error(error);
+                            });
+                        AsyncStorage.setItem('user', JSON.stringify(newUser))
+                            .then(() => console.log('Object stored successfully'))
+                            .catch((error) => console.log('Error storing object: ', error));
+                        Alert.alert('Thông báo!', response.data.message, [
+                            { text: 'OK', onPress: () => console.log('OK Pressed') },
+                        ]);
+                    } else {
+                        Alert.alert('Cập nhật thất bại!', response.data.message + '', [
+                            { text: 'OK', onPress: () => console.log('OK Pressed') },
+                        ]);
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
+    };
+
     const addInfo = () => {
         if (checkValue()) {
             navigation.navigate('Register', { name: name, address: address, phone: phone });
         }
     };
 
-    useEffect(async () => {
-        await request
-            .get(API.listAddress)
-            .then((response) => {
-                console.log(response);
+    useEffect(() => {
+        async function loadProvinces() {
+            await request
+                .get(API.listAddress)
+                .then((response) => {
+                    console.log(response);
 
-                if (response.status == true) {
-                    setListAddress(response.data);
-                } else {
-                    Alert.alert('Thất bại!', response.message + '', [
-                        { text: 'OK', onPress: () => console.log('OK Pressed') },
-                    ]);
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+                    if (response.status == true) {
+                        setListAddress(response.data);
+                    } else {
+                        Alert.alert('Thất bại!', response.message + '', [
+                            { text: 'OK', onPress: () => console.log('OK Pressed') },
+                        ]);
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
+        if (user.role != 'staff') {
+            loadProvinces();
+        }
     }, []);
 
     return (
@@ -259,89 +312,103 @@ function ManageInforPersonScreen({ route, navigation }) {
             ) : (
                 ''
             )}
-            <View style={{ marginTop: 20 }}>
-                <Text style={stylesManage.title}>Địa chỉ</Text>
-                <View
-                    style={[
-                        stylesManage.input,
-                        {
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            padding: 5,
-                        },
-                    ]}
-                >
-                    {/* <TextInput
+            {user.role == 'customer' ? (
+                <View style={{ marginTop: 20 }}>
+                    <Text style={stylesManage.title}>Địa chỉ</Text>
+                    <View
+                        style={[
+                            stylesManage.input,
+                            {
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                padding: 5,
+                            },
+                        ]}
+                    >
+                        {/* <TextInput
                             placeholder="Nhập địa chỉ của bạn"
                             onChangeText={(newText) => setAddress(newText)}
                             defaultValue={address}
                         />
                         <AntDesign name="check" size={20} color="#0D6EFD" /> */}
-                    <SelectDropdown
-                        data={listAddress}
-                        // defaultValueByIndex={1}
-                        defaultValue={address}
-                        onSelect={(selectedItem, index) => {
-                            setAddress(selectedItem);
-                            console.log(selectedItem, index);
-                        }}
-                        defaultButtonText={address}
-                        buttonTextAfterSelection={(selectedItem, index) => {
-                            return selectedItem;
-                        }}
-                        rowTextForSelection={(item, index) => {
-                            return item;
-                        }}
-                        buttonStyle={styles.dropdown1BtnStyle}
-                        buttonTextStyle={styles.dropdown1BtnTxtStyle}
-                        renderDropdownIcon={(isOpened) => {
-                            return (
-                                <FontAwesome name={isOpened ? 'chevron-up' : 'chevron-down'} color={'#444'} size={14} />
-                            );
-                        }}
-                        dropdownIconPosition={'right'}
-                        dropdownStyle={styles.dropdown1DropdownStyle}
-                        rowStyle={styles.dropdown1RowStyle}
-                        rowTextStyle={styles.dropdown1RowTxtStyle}
-                        selectedRowStyle={styles.dropdown1SelectedRowStyle}
-                        search
-                        searchInputStyle={styles.dropdown1searchInputStyleStyle}
-                        searchPlaceHolder={'Tìm kiếm ở đây'}
-                        searchPlaceHolderColor={'darkgrey'}
-                        renderSearchInputLeftIcon={() => {
-                            return <FontAwesome name={'search'} color={'#444'} size={14} />;
-                        }}
-                    />
+                        <SelectDropdown
+                            data={listAddress}
+                            // defaultValueByIndex={1}
+                            defaultValue={address}
+                            onSelect={(selectedItem, index) => {
+                                setAddress(selectedItem);
+                                console.log(selectedItem, index);
+                            }}
+                            defaultButtonText={address}
+                            buttonTextAfterSelection={(selectedItem, index) => {
+                                return selectedItem;
+                            }}
+                            rowTextForSelection={(item, index) => {
+                                return item;
+                            }}
+                            buttonStyle={styles.dropdown1BtnStyle}
+                            buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                            renderDropdownIcon={(isOpened) => {
+                                return (
+                                    <FontAwesome
+                                        name={isOpened ? 'chevron-up' : 'chevron-down'}
+                                        color={'#444'}
+                                        size={14}
+                                    />
+                                );
+                            }}
+                            dropdownIconPosition={'right'}
+                            dropdownStyle={styles.dropdown1DropdownStyle}
+                            rowStyle={styles.dropdown1RowStyle}
+                            rowTextStyle={styles.dropdown1RowTxtStyle}
+                            selectedRowStyle={styles.dropdown1SelectedRowStyle}
+                            search
+                            searchInputStyle={styles.dropdown1searchInputStyleStyle}
+                            searchPlaceHolder={'Tìm kiếm ở đây'}
+                            searchPlaceHolderColor={'darkgrey'}
+                            renderSearchInputLeftIcon={() => {
+                                return <FontAwesome name={'search'} color={'#444'} size={14} />;
+                            }}
+                        />
+                    </View>
                 </View>
-            </View>
-            <View style={{ marginTop: 20 }}>
-                <Text style={stylesManage.title}>Số điện thoại</Text>
-                <View
-                    style={[
-                        stylesManage.input,
-                        {
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            padding: 5,
-                        },
-                    ]}
-                >
-                    <TextInput
-                        placeholder="Nhập số điện thoại của bạn"
-                        onChangeText={(newText) => setPhone(newText)}
-                        value={phone}
-                        keyboardType={'numeric'}
-                        maxLength={10}
-                    />
-                    <AntDesign name="check" size={20} color="#0D6EFD" />
+            ) : (
+                ''
+            )}
+            {user.role == 'customer' ? (
+                <View style={{ marginTop: 20 }}>
+                    <Text style={stylesManage.title}>Số điện thoại</Text>
+                    <View
+                        style={[
+                            stylesManage.input,
+                            {
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                padding: 5,
+                            },
+                        ]}
+                    >
+                        <TextInput
+                            placeholder="Nhập số điện thoại của bạn"
+                            onChangeText={(newText) => setPhone(newText)}
+                            value={phone}
+                            keyboardType={'numeric'}
+                            maxLength={10}
+                        />
+                        <AntDesign name="check" size={20} color="#0D6EFD" />
+                    </View>
                 </View>
-            </View>
+            ) : (
+                ''
+            )}
             <TouchableOpacity
                 onPress={() => {
-                    if (user != undefined) update();
-                    else addInfo();
+                    if (user != undefined) {
+                        if (user.role == 'customer') update();
+                        else updateStaff();
+                    } else addInfo();
                 }}
             >
                 <View style={stylesTour.btn}>

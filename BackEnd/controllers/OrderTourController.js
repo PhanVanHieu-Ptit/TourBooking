@@ -11,6 +11,7 @@ function getInforTour(res, result) {
   const statusPromises = [];
 
   // Loop through each tour order and call Tour.getById() for its ID
+  console.log("result: ", result);
   result.forEach((tourOrder) => {
     tourPromises.push(Tour.getById(tourOrder.idTour));
     customerPromises.push(Customer.getById(tourOrder.idCustomer));
@@ -52,7 +53,7 @@ function getInforTour(res, result) {
 }
 
 class OrderTourController {
-  //[GET] /order-tours/list?status={value}
+  //[GET] /order-tours/list?id={id}&status={value}
   filter(req, res, next) {
     var query = require("url").parse(req.url, true).query;
 

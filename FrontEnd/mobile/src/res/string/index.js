@@ -10,6 +10,7 @@ const API = {
     updateInfoPersonal: '/customer/update',
     listAddress: '/site/list-address',
     changPassword: '/account/change-password',
+    listStatus: '/site/list-status',
 };
 
 export default API;

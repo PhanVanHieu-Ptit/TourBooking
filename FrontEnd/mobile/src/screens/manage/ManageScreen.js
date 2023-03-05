@@ -28,13 +28,15 @@ function ManageScreen({ navigation }) {
     // };
     const [isLogin, setIsLogin] = useState(user != '');
     const [role, setRole] = useState(user.role);
-    const [navigateInforPerson, setNavigateInforPerson] = useState('');
+    const [navigateInforPerson, setNavigateInforPerson] = useState('Profile');
     function setRoleUser() {
         if (user.role == 'customer') {
             setRole('Khách hàng');
-            setNavigateInforPerson('Profile');
+            // setNavigateInforPerson('Profile');
         } else if (user.role == 'staff') {
             setRole('Nhân viên');
+            // setNavigateInforPerson('EditStaff');
+        } else if (user.role == 'admin') {
             setNavigateInforPerson('EditStaff');
         }
     }

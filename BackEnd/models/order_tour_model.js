@@ -50,7 +50,10 @@ OrderTour.getAllFollowCustomer = function (id, result) {
 
 OrderTour.findByStatusFollowCustomer = function (id, status, result) {
   db.query(
-    "SELECT * FROM `tourorder` where idCustomer = ? and idStatus = ( SELECT idStatus FROM `status` where name like ? )",
+    "SELECT `tourorder`.*" +
+      "FROM `tourorder`" +
+      "JOIN `status` ON `tourorder`.`idStatus` = `status`.`idStatus`" +
+      "WHERE `tourorder`.`idCustomer` = ? AND `status`.`name` = ?;",
     [id, status]
   )
     .then(([rows, fields]) => {
