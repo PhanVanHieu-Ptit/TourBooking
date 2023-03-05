@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { SafeAreaView, Image, View, Text, TouchableOpacity, TextInput, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -14,7 +15,7 @@ import stylesTour from '../tourScreen/styles';
 import { AppContext } from '../../../App';
 
 function ManageScreen({ navigation }) {
-    const { user } = useContext(AppContext);
+    const { user, setUser, setHistoryOrder } = useContext(AppContext);
     // const user = {
     //     id: 1,
     //     name: 'Phan Văn Hiểu',
@@ -27,11 +28,14 @@ function ManageScreen({ navigation }) {
     // };
     const [isLogin, setIsLogin] = useState(user != '');
     const [role, setRole] = useState(user.role);
+    const [navigateInforPerson, setNavigateInforPerson] = useState('');
     function setRoleUser() {
         if (user.role == 'customer') {
             setRole('Khách hàng');
+            setNavigateInforPerson('Profile');
         } else if (user.role == 'staff') {
             setRole('Nhân viên');
+            setNavigateInforPerson('EditStaff');
         }
     }
     useEffect(() => {
@@ -55,7 +59,7 @@ function ManageScreen({ navigation }) {
                         <Text style={stylesManage.txt_name}>{user?.name}</Text>
                         <Text style={[stylesManage.txt_name, { fontSize: 16, fontWeight: 'normal' }]}>{role}</Text>
                     </View>
-                    <TouchableOpacity onPress={() => navigation.navigate('Profile', { user: user })}>
+                    <TouchableOpacity onPress={() => navigation.navigate(navigateInforPerson, { user: user })}>
                         <View style={stylesManage.btn}>
                             <View style={{ flexDirection: 'row' }}>
                                 <Icon name="information-circle-outline" size={20} color={COLOR.primary} />
@@ -117,7 +121,7 @@ function ManageScreen({ navigation }) {
                     ) : (
                         ''
                     )}
-                    {user.role === 'Nhân viên' ? (
+                    {user.role === 'staff' ? (
                         <View>
                             <TouchableOpacity onPress={() => navigation.navigate('ManageTour')}>
                                 <View style={stylesManage.btn}>
@@ -147,7 +151,21 @@ function ManageScreen({ navigation }) {
                         ''
                     )}
 
-                    <TouchableOpacity onPress={() => setIsLogin(false)}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            setIsLogin(false);
+                            //delete old user
+                            AsyncStorage.removeItem('user')
+                                .then(() => {
+                                    console.log('user removed from AsyncStorage');
+                                })
+                                .catch((error) => {
+                                    console.error(error);
+                                });
+                            setUser('');
+                            setHistoryOrder([]);
+                        }}
+                    >
                         <View style={[stylesManage.btn, { justifyContent: 'center' }]}>
                             <AntDesign name="logout" size={20} color={COLOR.primary} />
                             <Text style={[stylesTour.txt_btn, { color: COLOR.primary, marginLeft: 5 }]}>Đăng xuất</Text>
@@ -172,7 +190,6 @@ function ManageScreen({ navigation }) {
                     <TouchableOpacity
                         onPress={() => {
                             navigation.navigate('Login');
-                            setIsLogin(true);
                         }}
                     >
                         <View style={[stylesManage.btn, { justifyContent: 'center' }]}>

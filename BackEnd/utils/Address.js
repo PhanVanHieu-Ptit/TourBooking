@@ -10,7 +10,7 @@ async function getListAddress() {
   listAddress = [];
   var id = 1;
   rs.forEach((e) => {
-    listAddress.push({ id: id++, name: e.name });
+    listAddress.push(e.name);
     e.districts.forEach((e) => {
       listAddress.push(e.name);
     });

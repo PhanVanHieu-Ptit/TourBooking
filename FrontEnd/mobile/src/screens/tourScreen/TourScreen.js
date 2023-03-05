@@ -5,7 +5,6 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import stylesButton from '../../components/general/actionButton/styles';
 import stylesAllTour from '../allTour/style';
 import stylesTour from './styles';
-import { SelectList } from 'react-native-dropdown-select-list';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import COLOR from '../../res/color';
 import DatePicker from 'react-native-neat-date-picker';
@@ -136,17 +135,6 @@ function TourScreen({ route, navigation }) {
         console.log('date: ', date);
     };
 
-    const [selected, setSelected] = useState('');
-
-    const data = [
-        { key: '1', value: 'Mobiles', disabled: true },
-        { key: '2', value: 'Appliances' },
-        { key: '3', value: 'Cameras' },
-        { key: '4', value: 'Computers', disabled: true },
-        { key: '5', value: 'Vegetables' },
-        { key: '6', value: 'Diary Products' },
-        { key: '7', value: 'Drinks' },
-    ];
     // const [imgPath, setImgPath] = useState(`https://vnpi-hcm.vn/wp-content/uploads/2018/01/no-image-800x600.png`);
 
     // const [responseImage, setResponseImage] = useState('');
@@ -256,7 +244,7 @@ function TourScreen({ route, navigation }) {
                 <View style={{ width: 320, marginTop: 20 }}>
                     <Text style={stylesTour.title}>Địa điểm đón</Text>
 
-                    <SelectList setSelected={(val) => setSelected(val)} data={data} save="value" />
+                    {/* <SelectList setSelected={(val) => setSelected(val)} data={data} save="value" /> */}
 
                     <TextInput
                         placeholder="Nhập quận huyện vào đây"

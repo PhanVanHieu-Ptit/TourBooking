@@ -28,10 +28,10 @@ export const post = async (path, options = {}) => {
     }
 };
 
-export const postPrivate = async (path, options = {}, header = {}) => {
+export const postPrivate = async (path, options = {}, header = {}, method = 'POST') => {
     try {
         const result = await request(path, {
-            method: 'POST',
+            method: method,
             headers: header,
             data: options,
         });

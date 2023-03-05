@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { SafeAreaView, Image, View, Text, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { SafeAreaView, Image, View, Text, TouchableOpacity, TextInput, Alert, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import stylesButton from '../../components/general/actionButton/styles';
 import stylesAllTour from '../allTour/style';
@@ -12,8 +13,7 @@ import stylesTour from '../tourScreen/styles';
 import { AppContext } from '../../../App';
 import API from '../../res/string';
 import * as request from '../../services/untils';
-import { SelectList } from 'react-native-dropdown-select-list';
-import DropDownPicker from 'react-native-dropdown-picker';
+import SelectDropdown from 'react-native-select-dropdown';
 
 function ManageInforPersonScreen({ route, navigation }) {
     const [open, setOpen] = useState(false);
@@ -152,8 +152,8 @@ function ManageInforPersonScreen({ route, navigation }) {
         }
     };
 
-    useEffect(() => {
-        request
+    useEffect(async () => {
+        await request
             .get(API.listAddress)
             .then((response) => {
                 console.log(response);
@@ -278,13 +278,40 @@ function ManageInforPersonScreen({ route, navigation }) {
                             defaultValue={address}
                         />
                         <AntDesign name="check" size={20} color="#0D6EFD" /> */}
-                    <DropDownPicker
-                        open={open}
-                        value={value}
-                        items={listAddress}
-                        setOpen={setOpen}
-                        setValue={setValue}
-                        setItems={setAddress}
+                    <SelectDropdown
+                        data={listAddress}
+                        // defaultValueByIndex={1}
+                        defaultValue={address}
+                        onSelect={(selectedItem, index) => {
+                            setAddress(selectedItem);
+                            console.log(selectedItem, index);
+                        }}
+                        defaultButtonText={address}
+                        buttonTextAfterSelection={(selectedItem, index) => {
+                            return selectedItem;
+                        }}
+                        rowTextForSelection={(item, index) => {
+                            return item;
+                        }}
+                        buttonStyle={styles.dropdown1BtnStyle}
+                        buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                        renderDropdownIcon={(isOpened) => {
+                            return (
+                                <FontAwesome name={isOpened ? 'chevron-up' : 'chevron-down'} color={'#444'} size={14} />
+                            );
+                        }}
+                        dropdownIconPosition={'right'}
+                        dropdownStyle={styles.dropdown1DropdownStyle}
+                        rowStyle={styles.dropdown1RowStyle}
+                        rowTextStyle={styles.dropdown1RowTxtStyle}
+                        selectedRowStyle={styles.dropdown1SelectedRowStyle}
+                        search
+                        searchInputStyle={styles.dropdown1searchInputStyleStyle}
+                        searchPlaceHolder={'Tìm kiếm ở đây'}
+                        searchPlaceHolderColor={'darkgrey'}
+                        renderSearchInputLeftIcon={() => {
+                            return <FontAwesome name={'search'} color={'#444'} size={14} />;
+                        }}
                     />
                 </View>
             </View>
@@ -324,5 +351,27 @@ function ManageInforPersonScreen({ route, navigation }) {
         </SafeAreaView>
     );
 }
+
+const styles = StyleSheet.create({
+    dropdown1BtnStyle: {
+        width: 330,
+        height: 50,
+        backgroundColor: '#FFF',
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#444',
+    },
+    dropdown1BtnTxtStyle: { color: '#444', textAlign: 'left', fontSize: 14 },
+    dropdown1DropdownStyle: { backgroundColor: '#EFEFEF' },
+    dropdown1RowStyle: { backgroundColor: '#EFEFEF', borderBottomColor: '#C5C5C5' },
+    dropdown1RowTxtStyle: { color: '#444', textAlign: 'left', fontSize: 14 },
+    dropdown1SelectedRowStyle: { backgroundColor: 'rgba(0,0,0,0.1)' },
+    dropdown1searchInputStyleStyle: {
+        backgroundColor: '#EFEFEF',
+        borderRadius: 8,
+        borderBottomWidth: 1,
+        borderBottomColor: '#444',
+    },
+});
 
 export default ManageInforPersonScreen;

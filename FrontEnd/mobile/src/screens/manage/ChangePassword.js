@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { SafeAreaView, Image, View, Text, TouchableOpacity, TextInput } from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
+import { SafeAreaView, Image, View, Text, TouchableOpacity, TextInput, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -9,50 +9,94 @@ import stylesManage from './styles';
 import stylesTour from '../tourScreen/styles';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { ScrollView } from 'react-native-gesture-handler';
+import { AppContext } from '../../../App';
+import * as request from '../../services/untils';
+import API from '../../res/string';
 
 function ChangePassword({ route, navigation }) {
-    const staff = route.params?.staff;
+    const { user } = useContext(AppContext);
+
     const [imageUrl, setImageUrl] = useState(
-        staff != undefined
-            ? staff.imageUrl
-            : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgBhcplevwUKGRs1P-Ps8Mwf2wOwnW_R_JIA&usqp=CAU',
+        user != undefined
+            ? user.imageUrl
+            : 'https://img.freepik.com/free-photo/smiley-little-boy-isolated-pink_23-2148984798.jpg',
     );
-    const [name, setName] = useState(staff != undefined ? staff.name : '');
-    const [email, setEmail] = useState(staff != undefined ? staff.email : '');
-    const [status, setstatus] = useState(staff != undefined ? staff.status : '');
-    const [responseImage, setResponseImage] = useState('');
-    const chooseImage = () => {
-        let options = {
-            title: 'Select Image',
-            customButtons: [{ name: 'customOptionKey', title: 'Choose Photo from Custom Option' }],
-            storageOptions: {
-                skipBackup: true,
-                path: 'images',
-            },
-        };
-        launchImageLibrary(options, (response) => {
-            // console.log('Response = ', response);
-
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-            } else if (response.customButton) {
-                console.log('User tapped custom button: ', response.customButton);
-                Alert.alert(response.customButton);
-            } else {
-                // console.log('source', response.assets[0].uri);
-
-                setImageUrl(response.assets[0].uri);
-                setResponseImage(response);
-            }
-        });
-    };
-
+    const [name, setName] = useState(user != user ? staff.name : '');
     const [seeOldPassWord, setSeeOldPassword] = useState(true);
     const [seeNewPassWord, setSeeNewPassword] = useState(true);
     const [seeConfirmPassWord, setSeeConfirmPassword] = useState(true);
 
+    const [oldPass, setOldPass] = useState('');
+    const [newPass, setNewPass] = useState('');
+    const [confirmNewPass, setConfirmNewPass] = useState('');
+
+    function checkValue() {
+        if (oldPass.trim().length == 0) {
+            Alert.alert('Thông báo!', 'Không được bỏ trống mật khẩu cũ!', [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
+            return false;
+        }
+        if (newPass.trim().length == 0) {
+            Alert.alert('Thông báo!', 'Không được bỏ trống mật khẩu mới!', [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
+            return false;
+        }
+        if (confirmNewPass.trim().length == 0) {
+            Alert.alert('Thông báo!', 'Không được bỏ trống xác nhận mật khẩu mới!', [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
+            return false;
+        }
+        if (confirmNewPass.trim() != newPass.trim()) {
+            Alert.alert('Thông báo!', 'Mật khẩu mới và xác nhận mật khẩu mới không khớp!', [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
+            return false;
+        }
+        return true;
+    }
+
+    function changePass() {
+        if (checkValue()) {
+            request
+                .postPrivate(
+                    API.changPassword,
+                    { username: user.email, newPassword: newPass, oldPassword: oldPass },
+                    { 'Content-Type': 'application/json', authorization: user.accessToken },
+                    'PATCH',
+                )
+                .then((response) => {
+                    console.log(response.data);
+                    console.log('response.data.data: ' + response.data.data[0]);
+                    if (response.data.status == true) {
+                        Alert.alert('Thông báo!', 'Cập nhật thành công!', [
+                            { text: 'OK', onPress: () => console.log('OK Pressed') },
+                        ]);
+                    } else {
+                        Alert.alert('Cập nhật thất bại!', response.data.message + '', [
+                            { text: 'OK', onPress: () => console.log('OK Pressed') },
+                        ]);
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
+    }
+
+    const [role, setRole] = useState(user.role);
+    function setRoleUser() {
+        if (user.role == 'customer') {
+            setRole('Khách hàng');
+        } else if (user.role == 'staff') {
+            setRole('Nhân viên');
+        }
+    }
+    useEffect(() => {
+        setRoleUser();
+    }, []);
     return (
         <ScrollView>
             <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -60,7 +104,7 @@ function ChangePassword({ route, navigation }) {
                     style={{
                         flexDirection: 'row',
                         justifyContent: 'flex-start',
-                        marginLeft: -150,
+                        marginLeft: -180,
                     }}
                 >
                     <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -68,7 +112,7 @@ function ChangePassword({ route, navigation }) {
                             <Icon name="chevron-back" size={25} color="#021A5A" />
                         </View>
                     </TouchableOpacity>
-                    <Text style={[stylesAllTour.title, { marginLeft: 10 }]}>Đổi mật khẩu</Text>
+                    <Text style={[stylesAllTour.title, { marginLeft: 20 }]}>Đổi mật khẩu</Text>
                 </View>
                 <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
                     <Image
@@ -80,7 +124,7 @@ function ChangePassword({ route, navigation }) {
 
                     <Text style={stylesManage.txt_name}>{name}</Text>
 
-                    <Text style={[stylesManage.txt_name, { fontSize: 16, fontWeight: 'normal' }]}>Khách hàng</Text>
+                    <Text style={[stylesManage.txt_name, { fontSize: 16, fontWeight: 'normal' }]}>{role}</Text>
                 </View>
                 <View style={{ marginTop: 20 }}>
                     <Text style={stylesManage.title}>Mật khẩu cũ</Text>
@@ -95,7 +139,11 @@ function ChangePassword({ route, navigation }) {
                             },
                         ]}
                     >
-                        <TextInput placeholder="Nhập mật khẩu cũ của bạn" secureTextEntry={seeOldPassWord} />
+                        <TextInput
+                            placeholder="Nhập mật khẩu cũ của bạn"
+                            secureTextEntry={seeOldPassWord}
+                            onChangeText={(newText) => setOldPass(newText)}
+                        />
                         <TouchableOpacity
                             onPress={() => {
                                 setSeeOldPassword(!seeOldPassWord);
@@ -122,7 +170,11 @@ function ChangePassword({ route, navigation }) {
                             },
                         ]}
                     >
-                        <TextInput placeholder="Nhập mật khẩu mới" secureTextEntry={seeNewPassWord} />
+                        <TextInput
+                            placeholder="Nhập mật khẩu mới"
+                            secureTextEntry={seeNewPassWord}
+                            onChangeText={(newText) => setNewPass(newText)}
+                        />
                         <TouchableOpacity
                             onPress={() => {
                                 setSeeNewPassword(!seeNewPassWord);
@@ -149,7 +201,11 @@ function ChangePassword({ route, navigation }) {
                             },
                         ]}
                     >
-                        <TextInput placeholder="Nhập lại mật khẩu mới" secureTextEntry={seeConfirmPassWord} />
+                        <TextInput
+                            placeholder="Nhập lại mật khẩu mới"
+                            secureTextEntry={seeConfirmPassWord}
+                            onChangeText={(newText) => setConfirmNewPass(newText)}
+                        />
                         <TouchableOpacity
                             onPress={() => {
                                 setSeeConfirmPassword(!seeConfirmPassWord);
@@ -164,7 +220,7 @@ function ChangePassword({ route, navigation }) {
                     </View>
                 </View>
 
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => changePass()}>
                     <View style={[stylesTour.btn, { width: 320 }]}>
                         <Text style={stylesTour.txt_btn}>Xác nhận</Text>
                     </View>

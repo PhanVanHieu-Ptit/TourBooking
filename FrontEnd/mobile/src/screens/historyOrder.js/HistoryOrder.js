@@ -1,46 +1,48 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { FlatList, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { FlatList, SafeAreaView, ScrollView, Text, View, Alert, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import stylesButton from '../../components/general/actionButton/styles';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import stylesAllTour from '../allTour/style';
 import CardOrder from '../../components/HistoryOrder.js/CardOrder';
-import { SelectList } from 'react-native-dropdown-select-list';
 import request from '../../services/untils';
 import API from '../../res/string';
 import { AppContext } from '../../../App';
+import SelectDropdown from 'react-native-select-dropdown';
 
 function HistoryOrderScreen({ navigation }) {
     const { user, historyOrder, setHistoryOrder } = useContext(AppContext);
-    const [selected, setSelected] = React.useState('Chờ xác nhận');
+    const [selected, setSelected] = React.useState('Tất cả');
 
     useEffect(() => {
-        request
-            .get(API.historyOrder, {
-                id: user.id,
-            })
-            .then((response) => {
-                console.log(response.data);
+        if (user == '' || user == undefined || user == null) {
+            Alert.alert('Bạn chưa đăng nhập!', 'Bạn hãy đăng nhập ngay để xem lịch sử đặt của bạn.', [
+                { text: 'OK', onPress: () => navigation.replace('Login') },
+            ]);
+        } else {
+            request
+                .get(API.historyOrder, {
+                    id: user.id,
+                })
+                .then((response) => {
+                    console.log(response.data);
 
-                if (response.data.status == true) {
-                    setHistoryOrder(response.data.data);
-                } else {
-                    Alert.alert('Thông báo!', response.data.message + '', [
-                        { text: 'OK', onPress: () => console.log('OK Pressed') },
-                    ]);
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+                    if (response.data.status == true) {
+                        setHistoryOrder(response.data.data);
+                    } else {
+                        Alert.alert('Thông báo!', response.data.message + '', [
+                            { text: 'OK', onPress: () => console.log('OK Pressed') },
+                        ]);
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
     }, []);
 
-    const data = [
-        { key: '1', value: 'Chờ xác nhận' },
-        { key: '2', value: 'Đã xác nhận' },
-        { key: '3', value: 'Đã hủy' },
-        { key: '4', value: 'Hoàn thành' },
-    ];
+    const countries = ['Tất cả', 'Chờ xác nhận đặt', 'Đã hủy'];
     const DATA = [
         {
             id: 1,
@@ -147,16 +149,38 @@ function HistoryOrderScreen({ navigation }) {
                 <Text style={stylesAllTour.title}>Lịch sử đặt</Text>
             </View>
             <View style={{ marginLeft: 200 }}>
-                <SelectList
-                    defaultOption={{ key: '0', value: 'Tất cả' }}
-                    setSelected={
-                        (val) => {
-                            searchFilterFunction(val);
-                        }
-                        // setSelected(val)
-                    }
-                    data={data}
-                    save="value"
+                <SelectDropdown
+                    data={countries}
+                    // defaultValueByIndex={1}
+                    defaultValue={'Tất cả'}
+                    onSelect={(selectedItem, index) => {
+                        setSelected(selectedItem);
+                        console.log(selectedItem, index);
+                    }}
+                    defaultButtonText={'Chọn trạng thái '}
+                    buttonTextAfterSelection={(selectedItem, index) => {
+                        return selectedItem;
+                    }}
+                    rowTextForSelection={(item, index) => {
+                        return item;
+                    }}
+                    buttonStyle={styles.dropdown1BtnStyle}
+                    buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                    renderDropdownIcon={(isOpened) => {
+                        return <FontAwesome name={isOpened ? 'chevron-up' : 'chevron-down'} color={'#444'} size={14} />;
+                    }}
+                    dropdownIconPosition={'right'}
+                    dropdownStyle={styles.dropdown1DropdownStyle}
+                    rowStyle={styles.dropdown1RowStyle}
+                    rowTextStyle={styles.dropdown1RowTxtStyle}
+                    selectedRowStyle={styles.dropdown1SelectedRowStyle}
+                    search
+                    searchInputStyle={styles.dropdown1searchInputStyleStyle}
+                    searchPlaceHolder={'Tìm kiếm ở đây'}
+                    searchPlaceHolderColor={'darkgrey'}
+                    renderSearchInputLeftIcon={() => {
+                        return <FontAwesome name={'search'} color={'#444'} size={14} />;
+                    }}
                 />
             </View>
 
@@ -168,5 +192,27 @@ function HistoryOrderScreen({ navigation }) {
         </SafeAreaView>
     );
 }
+
+const styles = StyleSheet.create({
+    dropdown1BtnStyle: {
+        width: 160,
+        height: 50,
+        backgroundColor: '#FFF',
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#444',
+    },
+    dropdown1BtnTxtStyle: { color: '#444', textAlign: 'left', fontSize: 14 },
+    dropdown1DropdownStyle: { backgroundColor: '#EFEFEF' },
+    dropdown1RowStyle: { backgroundColor: '#EFEFEF', borderBottomColor: '#C5C5C5' },
+    dropdown1RowTxtStyle: { color: '#444', textAlign: 'left', fontSize: 14 },
+    dropdown1SelectedRowStyle: { backgroundColor: 'rgba(0,0,0,0.1)' },
+    dropdown1searchInputStyleStyle: {
+        backgroundColor: '#EFEFEF',
+        borderRadius: 8,
+        borderBottomWidth: 1,
+        borderBottomColor: '#444',
+    },
+});
 
 export default HistoryOrderScreen;

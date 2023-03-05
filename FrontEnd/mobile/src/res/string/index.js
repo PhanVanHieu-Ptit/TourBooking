@@ -9,6 +9,7 @@ const API = {
     historyOrder: '/order-tours/list',
     updateInfoPersonal: '/customer/update',
     listAddress: '/site/list-address',
+    changPassword: '/account/change-password',
 };
 
 export default API;

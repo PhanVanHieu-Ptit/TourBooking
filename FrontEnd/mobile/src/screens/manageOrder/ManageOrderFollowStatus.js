@@ -1,10 +1,10 @@
 import React from 'react';
-import { FlatList, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { SafeAreaView, ScrollView, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import stylesButton from '../../components/general/actionButton/styles';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import stylesAllTour from '../allTour/style';
-import { SelectList } from 'react-native-dropdown-select-list';
+
 import CardOrder from '../../components/mange/CardOrder';
 
 function ManageOrderFollowStatus({ navigation }) {
@@ -91,10 +91,10 @@ function ManageOrderFollowStatus({ navigation }) {
                         <Icon name="chevron-back" size={25} color="#021A5A" />
                     </View>
                 </TouchableOpacity>
-                <Text style={[stylesAllTour.title, {marginLeft:10}]}>Quản lý đơn đặt theo trạng thái</Text>
+                <Text style={[stylesAllTour.title, { marginLeft: 10 }]}>Quản lý đơn đặt theo trạng thái</Text>
             </View>
             <View style={{ marginLeft: 200 }}>
-                <SelectList setSelected={(val) => setSelected(val)} data={data} save="value" />
+                {/* <SelectList setSelected={(val) => setSelected(val)} data={data} save="value" /> */}
             </View>
 
             <ScrollView>
