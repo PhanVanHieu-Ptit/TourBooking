@@ -1,0 +1,29 @@
+ @import url("https://fonts.googleapis.com/css?family=EB Garamond");
+ @import url('normalize.css');
+
+ :root {
+   --gold: #B5986D;
+   --dark: #232323;
+   --black: #000000;
+   --white: #FFFFFF;
+   --white-opacity: rgba(255, 255, 255, 0.2);
+   --dark-opacity: rgba(0, 0, 0, 0.3);
+   --purple-dark: #41455C;
+   --purple: #CAC0FF;
+   --purple-light: #F4F2FF;
+   --green: #C0FFC0;
+   --red: #F47C7C;
+ }
+
+ * {
+   box-sizing: border-box;
+ }
+
+ html {
+   font-size: 62.5%;
+ }
+
+ body {
+   font-family: 'EB Garamond';
+   font-size: 1.6rem;
+ }
