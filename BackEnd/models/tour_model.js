@@ -68,7 +68,7 @@ Tour.findBykey = function (key) {
       "SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ', ') AS image_list" +
         ' FROM tour' +
         ' JOIN tourpicture ON tour.idTour = tourpicture.idTour ' +
-        +' GROUP BY tour.idTour;'
+        ' GROUP BY tour.idTour;'
     )
     .then(([rows, fields]) => {
       console.log(rows);
