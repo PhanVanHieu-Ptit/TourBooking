@@ -11,7 +11,8 @@ const stylesCard = StyleSheet.create({
     },
     viewStar: {
         flexDirection: 'row',
-        marginStart: 50,
+        // marginStart: 2,
+        // marginEnd: 10,
         marginTop: 5,
         backgroundColor: '#575B66',
         width: 40,

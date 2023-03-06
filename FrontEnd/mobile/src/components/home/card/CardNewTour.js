@@ -16,7 +16,7 @@ function CardNewTour({ navigation, props }) {
                     <Text style={{ color: '#FFFF' }}>5</Text>
                     <Icon name="star" size={15} color="#FFD336" style={{ marginTop: 2 }} />
                 </View>
-                <View style={{ marginTop: 90 }}>
+                <View style={{ marginTop: 70 }}>
                     <Text style={stylesCard.txt1}>{props.name}</Text>
                     <View style={{ flexDirection: 'row' }}>
                         <MaterialIcons name="place" size={15} color="#FFFF" style={{ marginLeft: 10 }} />

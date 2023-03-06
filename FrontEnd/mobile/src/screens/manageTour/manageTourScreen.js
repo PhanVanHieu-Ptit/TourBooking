@@ -34,72 +34,72 @@ function ManageTourScreen({ navigation }) {
             });
     }, []);
 
-    const DATA = [
-        {
-            id: 1,
-            name: 'Biển Ngọc',
-            tourDestination: 'Phú Quốc',
-            startDate: '25/01/2023',
-            totalDay: '2',
-            price: '1500',
-            imageUrl:
-                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-            minQuantity: 1,
-            maxQuantity: 5,
-            normalPenaltyFee: 10,
-            strictPenaltyFee: 30,
-            minDate: 10,
-            dateCreate: '07/02/2023',
-            tourGuide: true,
-            tourIntro: 'Hello',
-            tourDetail: 'Chuyen di co cung hap dan, thu vi',
-            pickUpPoint: 'Ho Chi Minh',
-            tourDestination: 'Phu Quoc',
-            price: 1000,
-            idStaffCreate: 1,
-            idStaffStop: '',
-        },
-        {
-            id: 2,
-            name: 'Biển Ngọc',
-            tourDestination: 'Phú Quốc',
-            startDate: '25/01/2023',
-            totalDay: '2',
-            price: '1500',
-            imageUrl:
-                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-        },
-        {
-            id: 3,
-            name: 'Biển Ngọc',
-            tourDestination: 'Phú Quốc',
-            startDate: '25/01/2023',
-            totalDay: '2',
-            price: '1500',
-            imageUrl:
-                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-        },
-        {
-            id: 4,
-            name: 'Biển Ngọc',
-            tourDestination: 'Phú Quốc',
-            startDate: '25/01/2023',
-            totalDay: '2',
-            price: '1500',
-            imageUrl:
-                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-        },
-        {
-            id: 5,
-            name: 'Biển Ngọc',
-            tourDestination: 'Phú Quốc',
-            startDate: '25/01/2023',
-            totalDay: '2',
-            price: '1500',
-            imageUrl:
-                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-        },
-    ];
+    // const DATA = [
+    //     {
+    //         id: 1,
+    //         name: 'Biển Ngọc',
+    //         tourDestination: 'Phú Quốc',
+    //         startDate: '25/01/2023',
+    //         totalDay: '2',
+    //         price: '1500',
+    //         imageUrl:
+    //             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
+    //         minQuantity: 1,
+    //         maxQuantity: 5,
+    //         normalPenaltyFee: 10,
+    //         strictPenaltyFee: 30,
+    //         minDate: 10,
+    //         dateCreate: '07/02/2023',
+    //         tourGuide: true,
+    //         tourIntro: 'Hello',
+    //         tourDetail: 'Chuyen di co cung hap dan, thu vi',
+    //         pickUpPoint: 'Ho Chi Minh',
+    //         tourDestination: 'Phu Quoc',
+    //         price: 1000,
+    //         idStaffCreate: 1,
+    //         idStaffStop: '',
+    //     },
+    //     {
+    //         id: 2,
+    //         name: 'Biển Ngọc',
+    //         tourDestination: 'Phú Quốc',
+    //         startDate: '25/01/2023',
+    //         totalDay: '2',
+    //         price: '1500',
+    //         imageUrl:
+    //             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
+    //     },
+    //     {
+    //         id: 3,
+    //         name: 'Biển Ngọc',
+    //         tourDestination: 'Phú Quốc',
+    //         startDate: '25/01/2023',
+    //         totalDay: '2',
+    //         price: '1500',
+    //         imageUrl:
+    //             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
+    //     },
+    //     {
+    //         id: 4,
+    //         name: 'Biển Ngọc',
+    //         tourDestination: 'Phú Quốc',
+    //         startDate: '25/01/2023',
+    //         totalDay: '2',
+    //         price: '1500',
+    //         imageUrl:
+    //             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
+    //     },
+    //     {
+    //         id: 5,
+    //         name: 'Biển Ngọc',
+    //         tourDestination: 'Phú Quốc',
+    //         startDate: '25/01/2023',
+    //         totalDay: '2',
+    //         price: '1500',
+    //         imageUrl:
+    //             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
+    //     },
+    // ];
     return (
         <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
             <View
@@ -122,7 +122,7 @@ function ManageTourScreen({ navigation }) {
                 <TouchableOpacity
                     style={[stylesAllTour.title, { marginLeft: 130 }]}
                     onPress={() => {
-                        navigation.navigate('EditTour');
+                        navigation.navigate('EditTour', { type: 'add' });
                     }}
                 >
                     <Icon name="add" size={25} color="#021A5A" />

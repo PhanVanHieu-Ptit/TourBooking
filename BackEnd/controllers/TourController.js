@@ -44,6 +44,8 @@ class TourController {
       res.send(message(err, false, "Xóa thất bại!"));
     });
   }
+
+  //[POST] /tour/add
   async add(req, res, next) {
     try {
       let [rows, fields] = await connection.execute(
@@ -71,7 +73,7 @@ class TourController {
       } = req.body;
 
       [rows, fields] = await connection.execute(
-        `INSERT INTO tour(name,startDate,totalDay,minQuantity,maxQuantity,normalPenaltyFee,strictPenaltyFee,minDate,tourGuide,tourIntro,tourDetail,pickUpPoint,tourDestination,price,idStaffCreate,featured)VALUES('${name}','${startDate}',${totalDay},${minQuantity},${maxQuantity},${normalPenaltyFee},${strictPenaltyFee},${minDate},${tourGuide},'${tourIntro}','${tourDetail}','${pickUpPoint}','${tourDestination}',${price},${idStaffCreate},${featured})`
+        `INSERT INTO tour(name,startDate,totalDay,minQuantity,maxQuantity,normalPenaltyFee,strictPenaltyFee,minDate,tourGuide,tourIntro,tourDetail,pickUpPoint,tourDestination,price,idStaffCreate,featured) VALUES('${name}','${startDate}',${totalDay},${minQuantity},${maxQuantity},${normalPenaltyFee},${strictPenaltyFee},${minDate},${tourGuide},'${tourIntro}','${tourDetail}','${pickUpPoint}','${tourDestination}',${price},${idStaffCreate},${featured})`
       );
       tourPictures.forEach((e) => {
         connection.execute(
@@ -83,6 +85,7 @@ class TourController {
         message({ idTour: rows.insertId }, true, "Thêm tour thành công!")
       );
     } catch (error) {
+      console.log(error);
       return res.send(message(error, false, "Thêm tour thất bại!"));
     }
   }
