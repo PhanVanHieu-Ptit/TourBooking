@@ -1,4 +1,4 @@
-const db = require("../utils/connection");
+const db = require('../utils/connection');
 
 const Tour = function (tour) {
   this.idTour = tour.idTour;
@@ -26,9 +26,9 @@ const Tour = function (tour) {
 Tour.getAll = function (result) {
   db.query(
     "SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ',') AS image_list" +
-      " FROM tour" +
-      " JOIN tourpicture ON tour.idTour = tourpicture.idTour" +
-      " GROUP BY tour.idTour;"
+      ' FROM tour' +
+      ' JOIN tourpicture ON tour.idTour = tourpicture.idTour' +
+      ' GROUP BY tour.idTour;'
   )
     .then(([rows, fields]) => {
       result(rows);
@@ -43,10 +43,10 @@ Tour.getById = function (id) {
   return db
     .query(
       "SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ', ') AS image_list" +
-        " FROM tour" +
-        " JOIN tourpicture ON tour.idTour = tourpicture.idTour" +
-        " WHERE tour.idTour = ?" +
-        " GROUP BY tour.idTour;",
+        ' FROM tour' +
+        ' JOIN tourpicture ON tour.idTour = tourpicture.idTour' +
+        ' WHERE tour.idTour = ?' +
+        ' GROUP BY tour.idTour;',
       id
     )
     .then(([rows, fields]) => {
@@ -60,20 +60,15 @@ Tour.getById = function (id) {
 };
 
 Tour.findBykey = function (key) {
+  let condition = '';
+  if (key)
+    condition = `where name like ${key} OR  tourIntro like ${key} or pickUpPoint like ${key} or tourDestination like ${key}`;
   return db
     .query(
       "SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ', ') AS image_list" +
-        " FROM tour" +
-        " JOIN tourpicture ON tour.idTour = tourpicture.idTour" +
-        "where name like ? OR  tourIntro like ? or tourDetail like ? or pickUpPoint like ? or tourDestination like ?" +
-        " GROUP BY tour.idTour;",
-      [
-        "%" + key + "%",
-        "%" + key + "%",
-        "%" + key + "%",
-        "%" + key + "%",
-        "%" + key + "%",
-      ]
+        ' FROM tour' +
+        ' JOIN tourpicture ON tour.idTour = tourpicture.idTour ' +
+        ' GROUP BY tour.idTour;'
     )
     .then(([rows, fields]) => {
       console.log(rows);
@@ -86,7 +81,7 @@ Tour.findBykey = function (key) {
 };
 
 Tour.remove = function (id, result) {
-  db.query("DELETE FROM tour WHERE idTour= ?", id)
+  db.query('DELETE FROM tour WHERE idTour= ?', id)
     .then(([rows, fields]) => {
       result(rows);
     })
