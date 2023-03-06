@@ -12,6 +12,7 @@ const API = {
     listAddress: '/site/list-address',
     changPassword: '/account/change-password',
     listStatus: '/site/list-status',
+    listTour: '/tour/list',
 };
 
 export default API;

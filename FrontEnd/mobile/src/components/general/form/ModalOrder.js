@@ -18,11 +18,11 @@ import stylesCard from '../../home/card/style';
 import COLOR from '../../../res/color';
 import { formatDate, formatMoney } from '../../../res/untils';
 import { AppContext } from '../../../../App';
-import request from '../../../services/untils';
+import * as request from '../../../services/untils';
 import API from '../../../res/string';
 
 function ModalOrder(props) {
-    const { user } = useContext(AppContext);
+    const { user, setHistoryOrder } = useContext(AppContext);
     const imageUrl = props.DATA.imageUrl[0];
     const [number, setNumber] = useState('');
     const [note, setNote] = useState('');
@@ -33,19 +33,23 @@ function ModalOrder(props) {
             ]);
         } else {
             request
-                .post(API.order, {
-                    idCustomer: user.id,
-                    idTour: props.DATA.idTour,
-                    quantity: number,
-                    note: note,
-                    totalMoney: Number(number) * Number(props.DATA.price),
-                })
+                .postPrivate(
+                    API.order,
+                    {
+                        idCustomer: user.id,
+                        idTour: props.DATA.idTour,
+                        quantity: number,
+                        note: note,
+                        totalMoney: Number(number) * Number(props.DATA.price),
+                    },
+                    { 'Content-Type': 'application/json', authorization: user.accessToken },
+                )
                 .then((response) => {
                     console.log(response.data);
-                    console.log('response.data.data: ' + response.data.data[0]);
                     setNumber('');
                     setNote('');
                     if (response.data.status == true) {
+                        updateListTourOrder();
                         Alert.alert('Thông báo!', 'Đặt thành công!', [
                             { text: 'OK', onPress: () => props.setModalVisible(!props.modalVisible) },
                         ]);
@@ -58,6 +62,26 @@ function ModalOrder(props) {
                 });
         }
     };
+    function updateListTourOrder() {
+        request
+            .get(API.historyOrder + '?id=' + user.id, {
+                headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
+            })
+            .then((response) => {
+                console.log('response.data:', response.data);
+
+                if (response.status == true) {
+                    setHistoryOrder(response.data);
+                } else {
+                    Alert.alert('Thông báo!', response.message + '', [
+                        { text: 'OK', onPress: () => console.log('OK Pressed') },
+                    ]);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
     return (
         <View style={stylesModal.centeredView}>
             <Modal

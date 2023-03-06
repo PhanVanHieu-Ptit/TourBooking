@@ -150,7 +150,7 @@ class OrderTourController {
 
   //[PACTH] /order-tours/:id/confirm-using
   confirmUsing(req, res, next) {
-    OrderTour.confirm(req.params.id, 13)
+    OrderTour.confirm(req.params.id, 12)
       .then(() => {
         OrderTour.getById(req.params.id)
           .then((result) => {
@@ -185,7 +185,7 @@ class OrderTourController {
 
   //[PACTH] /order-tours/:id/confirm
   confirm(req, res, next) {
-    OrderTour.confirm(req.params.id, 10)
+    OrderTour.confirm(req.params.id, 9)
       .then(() => {
         OrderTour.getById(req.params.id)
           .then((result) => {
@@ -202,7 +202,7 @@ class OrderTourController {
 
   //[PACTH] /order-tours/:id/cancel
   cancel(req, res, next) {
-    OrderTour.confirm(req.params.id, 12)
+    OrderTour.confirm(req.params.id, 11)
       .then(() => {
         OrderTour.getById(req.params.id)
           .then((result) => {
@@ -225,7 +225,7 @@ class OrderTourController {
 
   //[PACTH] /order-tours/:id/customer-need-cancel
   customerNeedCancel(req, res, next) {
-    OrderTour.confirm(req.params.id, 11)
+    OrderTour.confirm(req.params.id, 10)
       .then(() => {
         OrderTour.getById(req.params.id)
           .then((result) => {

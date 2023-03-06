@@ -108,7 +108,10 @@ OrderTour.findBykey = function (key) {
 };
 
 OrderTour.create = function (data, result) {
-  db.query("INSERT INTO tourorder SET ?", data)
+  db.query(
+    "INSERT INTO tourorder SET idCustomer=?, idTour=?, quantity=?, note=?, totalMoney=?",
+    [data.idCustomer, data.idTour, data.quantity, data.note, data.totalMoney]
+  )
     .then(([rows, fields]) => {
       console.log(rows);
       result({ id: rows.idTourOrder, ...data });
@@ -142,11 +145,15 @@ OrderTour.update = function (data, result) {
 };
 
 OrderTour.confirm = function (id, idStatus) {
+  let cancelDate = "";
+  if (idStatus == 10) cancelDate = ", cancelDate=NOW()";
   return db
-    .query("UPDATE tourorder SET  idStatus=? where idTourOrder = ?;", [
-      idStatus,
-      id,
-    ])
+    .query(
+      "UPDATE tourorder SET  idStatus=?" +
+        cancelDate +
+        " where idTourOrder = ?;",
+      [idStatus, id]
+    )
     .then(([rows, fields]) => {
       console.log(rows);
       return rows;

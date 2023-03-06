@@ -1,14 +1,39 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { FlatList, SafeAreaView, ScrollView, Text, View } from 'react-native';
-import MyTourCard from '../../components/allTour/Card';
 import Find from '../../components/home/find';
 import Icon from 'react-native-vector-icons/Ionicons';
 import stylesButton from '../../components/general/actionButton/styles';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import stylesAllTour from '../allTour/style';
 import { CardCommingTour } from '../../components/home/card';
+import { AppContext } from '../../../App';
+import API from '../../res/string';
+import * as request from '../../services/untils';
 
 function ManageTourScreen({ navigation }) {
+    const { user, listTour, setListTour } = useContext(AppContext);
+
+    useEffect(() => {
+        request
+            .get(API.listTour, {
+                headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
+            })
+            .then((response) => {
+                console.log(response.data);
+
+                if (response.status == true) {
+                    setListTour(response.data);
+                } else {
+                    Alert.alert('Thông báo!', response.message + '', [
+                        { text: 'OK', onPress: () => console.log('OK Pressed') },
+                    ]);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }, []);
+
     const DATA = [
         {
             id: 1,
@@ -105,8 +130,8 @@ function ManageTourScreen({ navigation }) {
             </View>
             <Find />
             <ScrollView>
-                {DATA.map((item) => (
-                    <CardCommingTour tour={item} key={item.id} navigation={navigation} screen="EditTour" />
+                {listTour.map((item) => (
+                    <CardCommingTour tour={item} key={item.idTour} navigation={navigation} screen="EditTour" />
                 ))}
             </ScrollView>
         </SafeAreaView>

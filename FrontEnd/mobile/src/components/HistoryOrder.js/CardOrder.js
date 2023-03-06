@@ -30,10 +30,10 @@ function CardOrder(props) {
             setColorState('#32DB61');
     }, []);
 
-    function cancel() {
+    function cancel(comand) {
         request
             .postPrivate(
-                API.tourOrder + tourOrder.idTourOrder + '/cancel',
+                API.tourOrder + tourOrder.idTourOrder + comand,
                 { id: tourOrder.idTourOrder },
                 { 'Content-Type': 'application/json', authorization: user.accessToken },
                 'PATCH',
@@ -135,7 +135,7 @@ function CardOrder(props) {
                 <CollapseBody>
                     <Text style={styles.title}>Thông tin đơn đặt</Text>
                     <Text style={styles.content}>Số lượng: {tourOrder?.quantity}</Text>
-                    <Text style={styles.content}>Tổng tiền: {tourOrder?.totalMoney} VND</Text>
+                    <Text style={styles.content}>Tổng tiền: {formatMoney(tourOrder?.totalMoney)}</Text>
                     <Text style={styles.content}>Ghi chú: {tourOrder?.note}</Text>
 
                     {tourOrder.status.name == 'Chờ xác nhận đặt' ? (
@@ -154,6 +154,7 @@ function CardOrder(props) {
                                     props.navigation.navigate('DetailHistoryOrder', {
                                         tour: tour,
                                         tourOrder: tourOrder,
+                                        status: 'update',
                                     })
                                 }
                             >
@@ -170,7 +171,15 @@ function CardOrder(props) {
                                     margin: 10,
                                 }}
                                 onPress={() => {
-                                    cancel();
+                                    Alert.alert('Thông báo!', 'Bạn có chắc chắn muốn hủy không?', [
+                                        {
+                                            text: 'Có',
+                                            onPress: () => {
+                                                cancel('/customer-cancel');
+                                            },
+                                        },
+                                        { text: 'Không', onPress: () => {} },
+                                    ]);
                                 }}
                             >
                                 <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Hủy</Text>
@@ -191,6 +200,21 @@ function CardOrder(props) {
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                     margin: 10,
+                                }}
+                                onPress={() => {
+                                    Alert.alert(
+                                        'Thông báo!',
+                                        'Bạn sẽ mất phí để hủy. Bạn có chắc chắn muốn yêu cầu hủy không?',
+                                        [
+                                            {
+                                                text: 'Có',
+                                                onPress: () => {
+                                                    cancel('/customer-need-cancel');
+                                                },
+                                            },
+                                            { text: 'Không', onPress: () => {} },
+                                        ],
+                                    );
                                 }}
                             >
                                 <Text style={{ color: '#FFFFFF', fontSize: 12 }}>Yêu cầu hủy</Text>
@@ -216,6 +240,7 @@ function CardOrder(props) {
                                     props.navigation.navigate('DetailHistoryOrder', {
                                         tour: tour,
                                         tourOrder: tourOrder,
+                                        status: 'order',
                                     })
                                 }
                             >

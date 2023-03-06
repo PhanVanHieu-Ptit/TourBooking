@@ -15,6 +15,7 @@ import { AppContext } from '../../../App';
 function DetailHistoryOrder({ route, navigation }) {
     const { user, setHistoryOrder } = useContext(AppContext);
     const DATA = route.params.tour;
+    const status = route.params.status;
     const [number, setNumber] = useState(route.params.tourOrder.quantity + '');
     const [note, setNote] = useState(route.params.tourOrder.note);
 
@@ -68,6 +69,41 @@ function DetailHistoryOrder({ route, navigation }) {
                 console.log(err);
             });
     }
+    const order = () => {
+        if (number.length == 0) {
+            Alert.alert('Thông báo!', 'Không được để trống số lượng!', [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
+        } else {
+            request
+                .postPrivate(
+                    API.order,
+                    {
+                        idCustomer: user.id,
+                        idTour: DATA.idTour,
+                        quantity: number,
+                        note: note,
+                        totalMoney: Number(number) * Number(DATA.price),
+                    },
+                    { 'Content-Type': 'application/json', authorization: user.accessToken },
+                )
+                .then((response) => {
+                    console.log('response.data: ', response.data);
+
+                    // setNumber('');
+                    // setNote('');
+                    if (response.data.status == true) {
+                        updateListTourOrder();
+                        Alert.alert('Thông báo!', 'Đặt thành công!', [{ text: 'OK', onPress: () => {} }]);
+                    } else {
+                        Alert.alert('Đặt thất bại!', response.data.message, [{ text: 'OK', onPress: () => {} }]);
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
+    };
     return (
         <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center' }}>
             <View
@@ -147,7 +183,10 @@ function DetailHistoryOrder({ route, navigation }) {
                     backgroundColor: COLOR.primary,
                     borderRadius: 20,
                 }}
-                onPress={() => updateOrderTour()}
+                onPress={() => {
+                    if (status == 'update') updateOrderTour();
+                    else if (status == 'order') order();
+                }}
             >
                 <Text style={stylesModal.textStyle}>Xác nhận</Text>
             </TouchableOpacity>
