@@ -62,12 +62,13 @@ Tour.getById = function (id) {
 Tour.findBykey = function (key) {
   let condition = '';
   if (key)
-    condition = `where name like ${key} OR  tourIntro like ${key} or pickUpPoint like ${key} or tourDestination like ${key}`;
+    condition = `where name like '%${key}%' OR  tourIntro like '%${key}%' or pickUpPoint like '%${key}%' or tourDestination like '%${key}%'`;
   return db
     .query(
       "SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ', ') AS image_list" +
         ' FROM tour' +
         ' JOIN tourpicture ON tour.idTour = tourpicture.idTour ' +
+        condition +
         ' GROUP BY tour.idTour;'
     )
     .then(([rows, fields]) => {

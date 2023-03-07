@@ -5,12 +5,6 @@ import DefaultLayout from './layouts/client';
 import axios from './utils/axiosConfig';
 
 function App() {
-  axios
-    .get('/tour/list')
-    .then((response) => response.json())
-    .then((result) => console.log(result))
-    .catch((error) => console.log('error', error));
-
   return (
     <Router>
       <div className='App'>

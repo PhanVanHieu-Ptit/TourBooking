@@ -1,5 +1,5 @@
  @import url("https://fonts.googleapis.com/css?family=EB Garamond");
-
+ @import url('normalize.css');
 
  :root {
    --gold: #B5986D;
@@ -15,20 +15,21 @@
    --red: #F47C7C;
  }
 
- body {
-   font-family: 'EB Garamond';
+ * {
+   box-sizing: border-box;
  }
 
+ html {
+   font-size: 62.5%;
+ }
 
- * {
-   margin: 0;
-   padding: 0;
-   box-sizing: border-box;
+ body {
+   font-family: 'EB Garamond';
+   font-size: 1.6rem;
  }
 
  a {
    text-decoration: none;
-   color: var(--white);
  }
 
  img {
@@ -124,7 +125,7 @@
    height: 100%;
 
  }
- 
+
  .mt--0 {
    margin-top: 0 !important;
  }
