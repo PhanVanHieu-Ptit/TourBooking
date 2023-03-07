@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS `managetour`.`tour` (
   `pickUpPoint` VARCHAR(50) NOT NULL COMMENT 'điểm đón',
   `detailPickUpPoint` VARCHAR(100) NOT NULL,
   `tourDestination` VARCHAR(50) NOT NULL COMMENT 'điểm đến',
-  `detailTourDetination` VARCHAR(100) NOT NULL,
+  `detailTourDestination` VARCHAR(100) NOT NULL,
   `price` INT NOT NULL COMMENT 'giá',
   `idStaffCreate` INT NOT NULL COMMENT 'nhân viên tạo tour',
   `idStaffCancel` INT NULL DEFAULT NULL COMMENT 'nhân viên dừng tour',
