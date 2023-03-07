@@ -1,5 +1,15 @@
-import React, { useState } from 'react';
-import { Image, SafeAreaView, ScrollView, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import {
+    Image,
+    SafeAreaView,
+    ScrollView,
+    Text,
+    View,
+    TextInput,
+    TouchableOpacity,
+    Alert,
+    StyleSheet,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import stylesButton from '../../components/general/actionButton/styles';
@@ -10,9 +20,17 @@ import COLOR from '../../res/color';
 import DatePicker from 'react-native-neat-date-picker';
 import moment from 'moment';
 import CheckBox from 'react-native-check-box';
+import * as request from '../../services/untils';
+import API from '../../res/string';
+import SelectDropdown from 'react-native-select-dropdown';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { AppContext } from '../../../App';
 
 let nextId = 0;
 function TourScreen({ route, navigation }) {
+    const { user, setListTour } = useContext(AppContext);
+    const type = route.params?.type;
+
     const tour = route.params?.tour;
 
     const [date, setDate] = useState(new Date());
@@ -30,6 +48,7 @@ function TourScreen({ route, navigation }) {
     const [tourGuide, setTourGuide] = useState(tour != undefined ? tour.tourGuide : false);
     const [price, setPrice] = useState(tour != undefined ? tour.price + '' : '');
     const [tourDestination, setTourDestination] = useState(tour != undefined ? tour.tourDestination : '');
+    const [featured, setFeatured] = useState(tour != undefined ? tour.featured : false);
 
     const checkData = () => {
         if (name.trim().length == 0) {
@@ -180,6 +199,138 @@ function TourScreen({ route, navigation }) {
         });
     };
 
+    const [listAddress, setListAddress] = useState([]);
+
+    useEffect(() => {
+        async function loadProvinces() {
+            await request
+                .get(API.listAddress)
+                .then((response) => {
+                    console.log(response);
+
+                    if (response.status == true) {
+                        setListAddress(response.data);
+                    } else {
+                        Alert.alert('Thất bại!', response.message + '', [
+                            { text: 'OK', onPress: () => console.log('OK Pressed') },
+                        ]);
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
+
+        loadProvinces();
+    }, []);
+
+    function addTour() {
+        request
+            .postPrivate(
+                API.addTour,
+                {
+                    name: name,
+                    startDate: moment(date).format('yyyy-MM-DD HH:mm:ss'),
+                    totalDay: totalDay,
+                    minQuantity: minQuantity,
+                    maxQuantity: maxQuantity,
+                    normalPenaltyFee: normalPenaltyFee,
+                    strictPenaltyFee: strictPenaltyFee,
+                    minDate: minDate,
+                    tourGuide: tourGuide,
+                    tourIntro: tourIntro,
+                    tourDetail: tourDetail,
+                    pickUpPoint: pickUpPoint,
+                    tourDestination: tourDestination,
+                    price: price,
+                    featured: featured,
+                    tourPictures: [
+                        'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg?20200913095930',
+                    ],
+                    // role: 'staff',
+                },
+                { 'Content-Type': 'application/json', authorization: user.accessToken },
+            )
+            .then((response) => {
+                console.log(response.data);
+                updateListTour();
+
+                if (response.data.status == true) {
+                    Alert.alert('Thông báo!', 'Thêm thành công!', [{ text: 'OK', onPress: () => {} }]);
+                } else {
+                    Alert.alert('Thêm thất bại!', response.data.message, [{ text: 'OK', onPress: () => {} }]);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
+    function updateTour() {
+        request
+            .postPrivate(
+                '/tour/' + tour.idTour + '/update',
+                {
+                    idTour: tour.idTour,
+                    name: name,
+                    startDate: moment(date).format('yyyy-MM-DD HH:mm:ss'),
+                    totalDay: totalDay,
+                    minQuantity: minQuantity,
+                    maxQuantity: maxQuantity,
+                    normalPenaltyFee: normalPenaltyFee,
+                    strictPenaltyFee: strictPenaltyFee,
+                    minDate: minDate,
+                    tourGuide: tourGuide,
+                    tourIntro: tourIntro,
+                    tourDetail: tourDetail,
+                    pickUpPoint: pickUpPoint,
+                    tourDestination: tourDestination,
+                    price: price,
+                    featured: featured,
+                    tourPictures: [
+                        'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg?20200913095930',
+                    ],
+                    // role: 'staff',
+                },
+                { 'Content-Type': 'application/json', authorization: user.accessToken },
+                'PUT',
+            )
+            .then((response) => {
+                console.log(response.data);
+                updateListTour();
+
+                if (response.data.status == true) {
+                    Alert.alert('Thông báo!', 'Cập nhật thành công!', [{ text: 'OK', onPress: () => {} }]);
+                } else {
+                    Alert.alert('Cập nhật thất bại!', response.data.message, [{ text: 'OK', onPress: () => {} }]);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
+    function updateListTour() {
+        request
+            .get(API.listTour, {
+                headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
+            })
+            .then((response) => {
+                console.log(response.data);
+
+                if (response.status == true) {
+                    setListTour(response.data);
+                } else {
+                    Alert.alert('Thông báo!', response.message + '', [
+                        { text: 'OK', onPress: () => console.log('OK Pressed') },
+                    ]);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
     return (
         <ScrollView>
             <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -200,11 +351,14 @@ function TourScreen({ route, navigation }) {
                             <Icon name="chevron-back" size={25} color="#021A5A" />
                         </View>
                     </TouchableOpacity>
-                    <Text style={stylesAllTour.title}>Thêm tour</Text>
+                    <Text style={stylesAllTour.title}>{type == 'edit' ? 'Cập nhật tour' : 'Thêm tour'}</Text>
                 </View>
 
                 <View style={{ width: 320, marginTop: 20 }}>
-                    <Text style={stylesTour.title}>Tên tour</Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={stylesTour.title}>Tên tour</Text>
+                        <Text style={{}}>#{tour.idTour}</Text>
+                    </View>
                     <TextInput
                         placeholder="Nhập tên tour vào đây"
                         style={stylesTour.input}
@@ -225,15 +379,52 @@ function TourScreen({ route, navigation }) {
                 <View style={{ width: 320, marginTop: 20 }}>
                     <Text style={stylesTour.title}>Mô tả lịch trình</Text>
                     <TextInput
+                        multiline
+                        numberOfLines={20}
                         placeholder="Nhập mô tả tour vào đây"
-                        style={stylesTour.input}
+                        style={[stylesTour.input, { height: 200 }]}
                         value={tourDetail}
                         onChangeText={(newText) => setTourDetail(newText)}
                     />
                 </View>
                 <View style={{ width: 320, marginTop: 20 }}>
                     <Text style={stylesTour.title}>Địa điểm đến</Text>
-                    <SelectList setSelected={(val) => setSelected(val)} data={data} save="value" />
+                    {/* <SelectList setSelected={(val) => setSelected(val)} data={data} save="value" /> */}
+                    <SelectDropdown
+                        data={listAddress}
+                        // defaultValueByIndex={1}
+                        // defaultValue={address}
+                        onSelect={(selectedItem, index) => {
+                            setTourDestination(selectedItem);
+                            console.log(selectedItem, index);
+                        }}
+                        defaultButtonText={'Chọn tỉnh/thành phố'}
+                        buttonTextAfterSelection={(selectedItem, index) => {
+                            return selectedItem;
+                        }}
+                        rowTextForSelection={(item, index) => {
+                            return item;
+                        }}
+                        buttonStyle={styles.dropdown1BtnStyle}
+                        buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                        renderDropdownIcon={(isOpened) => {
+                            return (
+                                <FontAwesome name={isOpened ? 'chevron-up' : 'chevron-down'} color={'#444'} size={14} />
+                            );
+                        }}
+                        dropdownIconPosition={'right'}
+                        dropdownStyle={styles.dropdown1DropdownStyle}
+                        rowStyle={styles.dropdown1RowStyle}
+                        rowTextStyle={styles.dropdown1RowTxtStyle}
+                        selectedRowStyle={styles.dropdown1SelectedRowStyle}
+                        search
+                        searchInputStyle={styles.dropdown1searchInputStyleStyle}
+                        searchPlaceHolder={'Tìm kiếm ở đây'}
+                        searchPlaceHolderColor={'darkgrey'}
+                        renderSearchInputLeftIcon={() => {
+                            return <FontAwesome name={'search'} color={'#444'} size={14} />;
+                        }}
+                    />
                     <TextInput
                         placeholder="Nhập quận huyện vào đây"
                         style={[stylesTour.input, { marginTop: 5 }]}
@@ -245,6 +436,41 @@ function TourScreen({ route, navigation }) {
                     <Text style={stylesTour.title}>Địa điểm đón</Text>
 
                     {/* <SelectList setSelected={(val) => setSelected(val)} data={data} save="value" /> */}
+                    <SelectDropdown
+                        data={listAddress}
+                        // defaultValueByIndex={1}
+                        // defaultValue={address}
+                        onSelect={(selectedItem, index) => {
+                            setPickUpPoint(selectedItem);
+                            console.log(selectedItem, index);
+                        }}
+                        defaultButtonText={'Chọn tỉnh/thành phố'}
+                        buttonTextAfterSelection={(selectedItem, index) => {
+                            return selectedItem;
+                        }}
+                        rowTextForSelection={(item, index) => {
+                            return item;
+                        }}
+                        buttonStyle={styles.dropdown1BtnStyle}
+                        buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                        renderDropdownIcon={(isOpened) => {
+                            return (
+                                <FontAwesome name={isOpened ? 'chevron-up' : 'chevron-down'} color={'#444'} size={14} />
+                            );
+                        }}
+                        dropdownIconPosition={'right'}
+                        dropdownStyle={styles.dropdown1DropdownStyle}
+                        rowStyle={styles.dropdown1RowStyle}
+                        rowTextStyle={styles.dropdown1RowTxtStyle}
+                        selectedRowStyle={styles.dropdown1SelectedRowStyle}
+                        search
+                        searchInputStyle={styles.dropdown1searchInputStyleStyle}
+                        searchPlaceHolder={'Tìm kiếm ở đây'}
+                        searchPlaceHolderColor={'darkgrey'}
+                        renderSearchInputLeftIcon={() => {
+                            return <FontAwesome name={'search'} color={'#444'} size={14} />;
+                        }}
+                    />
 
                     <TextInput
                         placeholder="Nhập quận huyện vào đây"
@@ -424,6 +650,24 @@ function TourScreen({ route, navigation }) {
                         isChecked={tourGuide}
                     />
                 </View>
+                <View
+                    style={{
+                        width: 320,
+                        marginTop: 20,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                    }}
+                >
+                    <Text style={stylesTour.title}>Đánh dấu tour nổi bật</Text>
+
+                    <CheckBox
+                        style={{ flex: 1, padding: 10 }}
+                        onClick={() => {
+                            setFeatured(!featured);
+                        }}
+                        isChecked={featured}
+                    />
+                </View>
                 <View style={{ width: 320, marginTop: 20 }}>
                     <Text style={stylesTour.title}>Giá</Text>
                     <TextInput
@@ -434,32 +678,63 @@ function TourScreen({ route, navigation }) {
                         onChangeText={(newText) => setPrice(newText)}
                     />
                 </View>
-                <TouchableOpacity>
-                    <View
-                        style={[
-                            stylesTour.btn,
-                            {
-                                backgroundColor: '#FFFFFF',
-                                borderWidth: 1,
-                                borderColor: COLOR.primary,
-                            },
-                        ]}
-                    >
-                        <Text style={[stylesTour.txt_btn, { color: COLOR.primary }]}>Xóa tour</Text>
-                    </View>
-                </TouchableOpacity>
+                {type == 'edit' ? (
+                    <TouchableOpacity>
+                        <View
+                            style={[
+                                stylesTour.btn,
+                                {
+                                    backgroundColor: '#FFFFFF',
+                                    borderWidth: 1,
+                                    borderColor: COLOR.primary,
+                                },
+                            ]}
+                        >
+                            <Text style={[stylesTour.txt_btn, { color: COLOR.primary }]}>Xóa tour</Text>
+                        </View>
+                    </TouchableOpacity>
+                ) : (
+                    ''
+                )}
+
                 <TouchableOpacity
                     onPress={() => {
-                        checkData();
+                        if (type == 'add') {
+                            addTour();
+                        } else if (type == 'edit') {
+                            updateTour();
+                        }
                     }}
                 >
                     <View style={stylesTour.btn}>
-                        <Text style={stylesTour.txt_btn}>Cập nhật</Text>
+                        <Text style={stylesTour.txt_btn}>{type == 'edit' ? 'Cập nhật' : 'Thêm tour'}</Text>
                     </View>
                 </TouchableOpacity>
             </SafeAreaView>
         </ScrollView>
     );
 }
+
+const styles = StyleSheet.create({
+    dropdown1BtnStyle: {
+        width: 330,
+        height: 50,
+        backgroundColor: '#FFF',
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#444',
+    },
+    dropdown1BtnTxtStyle: { color: '#444', textAlign: 'left', fontSize: 14 },
+    dropdown1DropdownStyle: { backgroundColor: '#EFEFEF' },
+    dropdown1RowStyle: { backgroundColor: '#EFEFEF', borderBottomColor: '#C5C5C5' },
+    dropdown1RowTxtStyle: { color: '#444', textAlign: 'left', fontSize: 14 },
+    dropdown1SelectedRowStyle: { backgroundColor: 'rgba(0,0,0,0.1)' },
+    dropdown1searchInputStyleStyle: {
+        backgroundColor: '#EFEFEF',
+        borderRadius: 8,
+        borderBottomWidth: 1,
+        borderBottomColor: '#444',
+    },
+});
 
 export default TourScreen;

@@ -1,81 +1,90 @@
-import React from 'react';
-import { SafeAreaView, ScrollView, Text, View } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { SafeAreaView, ScrollView, Text, View, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import stylesButton from '../../components/general/actionButton/styles';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import stylesAllTour from '../allTour/style';
-
+import SelectDropdown from 'react-native-select-dropdown';
 import CardOrder from '../../components/mange/CardOrder';
+import { AppContext } from '../../../App';
+import * as request from '../../services/untils';
+import API from '../../res/string';
 
 function ManageOrderFollowStatus({ navigation }) {
-    const DATA = [
-        {
-            id: 1,
-            orderDate: '20/01/2023',
-            name: 'Biển Ngọc',
-            tourDestination: 'Phú Quốc',
-            startDate: '25/01/2023',
-            totalDay: '2',
-            price: '1.500.000',
-            imageUrl:
-                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-            user: {
-                name: 'Phan Văn Hiểu',
-                phone: '0123454123',
-                email: 'phanvanhieu@gmail.com',
-            },
-            number: 2,
-            note: '',
-        },
-        {
-            id: 2,
-            orderDate: '20/01/2023',
-            name: 'Biển Ngọc',
-            tourDestination: 'Phú Quốc',
-            startDate: '25/01/2023',
-            totalDay: '2',
-            price: '1500',
-            imageUrl:
-                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-            user: {
-                name: 'Phan Văn Hiểu',
-                phone: '0123454123',
-                email: 'phanvanhieu@gmail.com',
-            },
-            number: 3,
-            note: '',
-        },
-        {
-            id: 3,
-            orderDate: '20/01/2023',
-            name: 'Biển Ngọc',
-            tourDestination: 'Phú Quốc',
-            startDate: '25/01/2023',
-            totalDay: '2',
-            price: '1500',
-            imageUrl:
-                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-            user: {
-                name: 'Phan Văn Hiểu',
-                phone: '0123454123',
-                email: 'phanvanhieu@gmail.com',
-            },
-            number: 5,
-            note: '',
-        },
-    ];
+    const { user, listOrder, setListOrder } = useContext(AppContext);
+    const [selected, setSelected] = useState('Tất cả');
+    const [listStatus, setListStatus] = useState(['Tất cả']);
 
-    const [selected, setSelected] = React.useState('');
+    useEffect(() => {
+        request
+            .get(API.historyOrder, {
+                headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
+            })
+            .then((response) => {
+                console.log(response.data);
 
-    const data = [
-        { key: '1', value: 'Mobiles', disabled: true },
-        { key: '2', value: 'Appliances' },
-        { key: '3', value: 'Cameras' },
-        { key: '4', value: 'Computers', disabled: true },
-        { key: '5', value: 'Vegetables' },
-        { key: '6', value: 'Diary Products' },
-        { key: '7', value: 'Drinks' },
-    ];
+                if (response.status == true) {
+                    setListOrder(response.data);
+                } else {
+                    Alert.alert('Thông báo!', response.message + '', [
+                        { text: 'OK', onPress: () => console.log('OK Pressed') },
+                    ]);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+
+        getStatus();
+    }, []);
+
+    async function getStatus() {
+        await request
+            .get(API.listStatus + '?type=tourorder')
+            .then((response) => {
+                console.log(response.data);
+
+                if (response.status == true) {
+                    setListStatus(listStatus.concat(response.data));
+                } else {
+                    Alert.alert('Thông báo!', response.message + '', [
+                        { text: 'OK', onPress: () => console.log('OK Pressed') },
+                    ]);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
+    useEffect(() => {
+        if (!(user == '' || user == undefined || user == null)) {
+            filterData();
+            console.log('listStatus: ', listStatus);
+        }
+    }, [selected]);
+
+    function filterData() {
+        request
+            .get(API.historyOrder + '?status=' + selected, {
+                headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
+            })
+            .then((response) => {
+                console.log(response.data);
+
+                if (response.status == true) {
+                    setListOrder(response.data);
+                } else {
+                    Alert.alert('Thông báo!', response.message + '', [
+                        { text: 'OK', onPress: () => console.log('OK Pressed') },
+                    ]);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
 
     return (
         <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
@@ -94,16 +103,70 @@ function ManageOrderFollowStatus({ navigation }) {
                 <Text style={[stylesAllTour.title, { marginLeft: 10 }]}>Quản lý đơn đặt theo trạng thái</Text>
             </View>
             <View style={{ marginLeft: 200 }}>
-                {/* <SelectList setSelected={(val) => setSelected(val)} data={data} save="value" /> */}
+                <SelectDropdown
+                    data={listStatus}
+                    // defaultValueByIndex={1}
+                    defaultValue={'Tất cả'}
+                    onSelect={(selectedItem, index) => {
+                        setSelected(selectedItem);
+                        console.log(selectedItem, index);
+                    }}
+                    defaultButtonText={'Chọn trạng thái '}
+                    buttonTextAfterSelection={(selectedItem, index) => {
+                        return selectedItem;
+                    }}
+                    rowTextForSelection={(item, index) => {
+                        return item;
+                    }}
+                    buttonStyle={styles.dropdown1BtnStyle}
+                    buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                    renderDropdownIcon={(isOpened) => {
+                        return <FontAwesome name={isOpened ? 'chevron-up' : 'chevron-down'} color={'#444'} size={14} />;
+                    }}
+                    dropdownIconPosition={'right'}
+                    dropdownStyle={styles.dropdown1DropdownStyle}
+                    rowStyle={styles.dropdown1RowStyle}
+                    rowTextStyle={styles.dropdown1RowTxtStyle}
+                    selectedRowStyle={styles.dropdown1SelectedRowStyle}
+                    search
+                    searchInputStyle={styles.dropdown1searchInputStyleStyle}
+                    searchPlaceHolder={'Tìm kiếm ở đây'}
+                    searchPlaceHolderColor={'darkgrey'}
+                    renderSearchInputLeftIcon={() => {
+                        return <FontAwesome name={'search'} color={'#444'} size={14} />;
+                    }}
+                />
             </View>
 
             <ScrollView>
-                {DATA.map((item) => (
-                    <CardOrder props={item} key={item.id} />
+                {listOrder.map((item) => (
+                    <CardOrder props={item} key={item.idTourOrder} />
                 ))}
             </ScrollView>
         </SafeAreaView>
     );
 }
+
+const styles = StyleSheet.create({
+    dropdown1BtnStyle: {
+        width: 160,
+        height: 50,
+        backgroundColor: '#FFF',
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#444',
+    },
+    dropdown1BtnTxtStyle: { color: '#444', textAlign: 'left', fontSize: 14 },
+    dropdown1DropdownStyle: { backgroundColor: '#EFEFEF' },
+    dropdown1RowStyle: { backgroundColor: '#EFEFEF', borderBottomColor: '#C5C5C5' },
+    dropdown1RowTxtStyle: { color: '#444', textAlign: 'left', fontSize: 14 },
+    dropdown1SelectedRowStyle: { backgroundColor: 'rgba(0,0,0,0.1)' },
+    dropdown1searchInputStyleStyle: {
+        backgroundColor: '#EFEFEF',
+        borderRadius: 8,
+        borderBottomWidth: 1,
+        borderBottomColor: '#444',
+    },
+});
 
 export default ManageOrderFollowStatus;

@@ -17,7 +17,6 @@ import SelectDropdown from 'react-native-select-dropdown';
 
 function ManageInforPersonScreen({ route, navigation }) {
     const { user, setUser } = useContext(AppContext);
-    console.log(user);
     const [listAddress, setListAddress] = useState([]);
     const [name, setName] = useState(user != undefined ? user.name : '');
     const [email, setEmail] = useState(user != undefined ? user.email : '1');
@@ -29,7 +28,7 @@ function ManageInforPersonScreen({ route, navigation }) {
             : `https://img.freepik.com/free-photo/smiley-little-boy-isolated-pink_23-2148984798.jpg`,
     );
 
-    const [selected, setSelected] = useState('');
+    // const [selected, setSelected] = useState('');
 
     const [responseImage, setResponseImage] = useState('');
     const chooseImage = () => {

@@ -13,6 +13,7 @@ const API = {
     changPassword: '/account/change-password',
     listStatus: '/site/list-status',
     listTour: '/tour/list',
+    addTour: '/tour/add',
 };
 
 export default API;

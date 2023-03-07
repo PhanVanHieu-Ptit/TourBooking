@@ -14,7 +14,7 @@ function CardCommingTour(props) {
     return (
         <TouchableOpacity
             onPress={() => {
-                props.navigation.navigate(props.screen, { tour: tour });
+                props.navigation.navigate(props.screen, { tour: tour, type: 'edit' });
             }}
         >
             <View style={stylesCard.card2}>
@@ -22,7 +22,9 @@ function CardCommingTour(props) {
 
                 <View>
                     <View style={{ flexDirection: 'row', margin: 5 }}>
-                        <Text style={stylesCard.txt3}>{tour.name}</Text>
+                        <Text style={stylesCard.txt3} numberOfLines={2}>
+                            {tour.name}
+                        </Text>
                         <View style={stylesCard.viewStar}>
                             <Text style={{ color: '#FFFF' }}>5</Text>
                             <Icon name="star" size={15} color="#FFD336" style={{ marginTop: 2 }} />

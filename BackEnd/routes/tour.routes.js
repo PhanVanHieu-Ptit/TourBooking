@@ -17,7 +17,19 @@ router.delete(
   managerCheck,
   tourController.delete
 );
-router.post("/add", authenticateToken, managerCheck, tourInsert, tourController.add);
-router.post("/update", authenticateToken, staffCheck, tourInsert, tourController.update);
+router.post(
+  "/add",
+  authenticateToken,
+  staffCheck,
+  tourInsert,
+  tourController.add
+);
+router.put(
+  "/:id/update",
+  authenticateToken,
+  staffCheck,
+  tourInsert,
+  tourController.update
+);
 
 module.exports = router;
