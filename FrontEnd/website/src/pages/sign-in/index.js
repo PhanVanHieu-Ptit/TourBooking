@@ -10,9 +10,9 @@ function SignIn() {
             <MainBackground></MainBackground>
             <main>
                 <img src={heroSvg} alt='' />
-                {/* <SignInFrm></SignInFrm> */}
+                <SignInFrm></SignInFrm>
                 <SignUpFrm></SignUpFrm>
-                {/* <ForgotPasswordFrm></ForgotPasswordFrm> */}
+                <ForgotPasswordFrm></ForgotPasswordFrm>
             </main>
         </>
     );

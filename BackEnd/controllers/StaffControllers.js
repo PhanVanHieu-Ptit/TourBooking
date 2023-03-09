@@ -10,8 +10,9 @@ class StaffController {
     async getListStaff(req, res) {
         const key = req.query.key || '';
         let [rows, fields] = await connection.execute(
-            `SELECT * FROM staff where idstaff like '%${key}%' or name like '%${key}%' or email like '%${key}%'`,
+            `select staff.*, status.name as status from staff inner join status on staff.idStatus = status.idStatus where idstaff like '%${key}%' or staff.name like '%${key}%' or email like '%${key}%'`,
         );
+
         return res.send(message(rows, true, 'Key:' + key));
     }
     async addStaff(req, res) {
