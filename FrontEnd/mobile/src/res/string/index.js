@@ -14,6 +14,8 @@ const API = {
     listStatus: '/site/list-status',
     listTour: '/tour/list',
     addTour: '/tour/add',
+    listStaff: '/staff/list',
+    addStaff: '/staff/add',
 };
 
 export default API;

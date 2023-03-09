@@ -25,7 +25,7 @@ OrderTour.getAll = function (result) {
 
 OrderTour.findByStatus = function (status, result) {
   db.query(
-    "SELECT * FROM `tourorder` where idStatus = ( SELECT idStatus FROM `status` where name like ? )",
+    "SELECT * FROM `tourorder` WHERE idStatus IN (SELECT idStatus FROM `status` WHERE name LIKE ? )",
     status
   )
     .then(([rows, fields]) => {

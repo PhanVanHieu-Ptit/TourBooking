@@ -11,6 +11,7 @@ const AppContextProvider = ({ children }) => {
     const [historyOrder, setHistoryOrder] = useState([]);
     const [listTour, setListTour] = useState([]);
     const [listOrder, setListOrder] = useState([]);
+    const [listStaff, setListStaff] = useState([]);
 
     const contextValues = {
         user,
@@ -25,6 +26,8 @@ const AppContextProvider = ({ children }) => {
         setListTour,
         listOrder,
         setListOrder,
+        listStaff,
+        setListStaff,
     };
 
     return <AppContext.Provider value={contextValues}>{children}</AppContext.Provider>;

@@ -61,29 +61,35 @@ function ManageScreen({ navigation }) {
                         <Text style={stylesManage.txt_name}>{user?.name}</Text>
                         <Text style={[stylesManage.txt_name, { fontSize: 16, fontWeight: 'normal' }]}>{role}</Text>
                     </View>
-                    <TouchableOpacity onPress={() => navigation.navigate(navigateInforPerson, { user: user })}>
-                        <View style={stylesManage.btn}>
-                            <View style={{ flexDirection: 'row' }}>
-                                <Icon name="information-circle-outline" size={20} color={COLOR.primary} />
-                                <Text style={[stylesTour.txt_btn, { color: COLOR.primary, marginLeft: 5 }]}>
-                                    Thông tin cá nhân
-                                </Text>
-                            </View>
-                            <AntDesign name="right" size={20} color={COLOR.primary} />
+                    {user?.role != 'admin' ? (
+                        <View>
+                            <TouchableOpacity onPress={() => navigation.navigate(navigateInforPerson, { user: user })}>
+                                <View style={stylesManage.btn}>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Icon name="information-circle-outline" size={20} color={COLOR.primary} />
+                                        <Text style={[stylesTour.txt_btn, { color: COLOR.primary, marginLeft: 5 }]}>
+                                            Thông tin cá nhân
+                                        </Text>
+                                    </View>
+                                    <AntDesign name="right" size={20} color={COLOR.primary} />
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => navigation.navigate('Changepassword')}>
+                                <View style={stylesManage.btn}>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Icon name="information-circle-outline" size={20} color={COLOR.primary} />
+                                        <Text style={[stylesTour.txt_btn, { color: COLOR.primary, marginLeft: 5 }]}>
+                                            Đổi mật khẩu
+                                        </Text>
+                                    </View>
+                                    <AntDesign name="right" size={20} color={COLOR.primary} />
+                                </View>
+                            </TouchableOpacity>
                         </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('Changepassword')}>
-                        <View style={stylesManage.btn}>
-                            <View style={{ flexDirection: 'row' }}>
-                                <Icon name="information-circle-outline" size={20} color={COLOR.primary} />
-                                <Text style={[stylesTour.txt_btn, { color: COLOR.primary, marginLeft: 5 }]}>
-                                    Đổi mật khẩu
-                                </Text>
-                            </View>
-                            <AntDesign name="right" size={20} color={COLOR.primary} />
-                        </View>
-                    </TouchableOpacity>
-                    {user?.role === 'Admin' ? (
+                    ) : (
+                        ''
+                    )}
+                    {user?.role === 'admin' ? (
                         <View>
                             <TouchableOpacity onPress={() => navigation.navigate('ManageTour')}>
                                 <View style={stylesManage.btn}>
@@ -137,7 +143,7 @@ function ManageScreen({ navigation }) {
                                 </View>
                             </TouchableOpacity>
 
-                            <TouchableOpacity onPress={() => navigation.navigate('ManageOrder')}>
+                            <TouchableOpacity onPress={() => navigation.navigate('ManageOrderFollowStatus')}>
                                 <View style={stylesManage.btn}>
                                     <View style={{ flexDirection: 'row' }}>
                                         <Entypo name="ticket" size={20} color={COLOR.primary} />

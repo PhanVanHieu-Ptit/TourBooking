@@ -1,30 +1,38 @@
-import React from 'react';
-import { FlatList, SafeAreaView, ScrollView, Text, View } from 'react-native';
-import MyTourCard from '../../components/allTour/Card';
+import React, { useContext, useState, useEffect } from 'react';
+import { FlatList, SafeAreaView, ScrollView, Text, View, Alert } from 'react-native';
 import Find from '../../components/home/find';
 import Icon from 'react-native-vector-icons/Ionicons';
 import stylesButton from '../../components/general/actionButton/styles';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import stylesAllTour from '../allTour/style';
 import CardStaff from '../../components/mange/CardStaff';
+import { AppContext } from '../../../App';
+import * as request from '../../services/untils';
+import API from '../../res/string';
 
 function ManageStaffScreen({ navigation }) {
-    const DATA = [
-        {
-            id: 1,
-            name: 'Phan Văn Hiểu',
-            imageUrl: 'https://img.freepik.com/free-photo/smiley-little-boy-isolated-pink_23-2148984798.jpg',
-            email: '123@gmail.com',
-            status: 'Đang hoạt động',
-        },
-        {
-            id: 2,
-            name: 'Nguyễn Văn A',
-            imageUrl: 'https://img.freepik.com/free-photo/smiley-little-boy-isolated-pink_23-2148984798.jpg',
-            email: '123@gmail.com',
-            status: 'Khóa tài khoản',
-        },
-    ];
+    const { user, listStaff, setListStaff } = useContext(AppContext);
+
+    useEffect(() => {
+        request
+            .get(API.listStaff, {
+                headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
+            })
+            .then((response) => {
+                console.log(response.data);
+
+                if (response.status == true) {
+                    setListStaff(response.data);
+                } else {
+                    Alert.alert('Thông báo!', response.message + '', [
+                        { text: 'OK', onPress: () => console.log('OK Pressed') },
+                    ]);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }, []);
     return (
         <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
             <View
@@ -43,7 +51,7 @@ function ManageStaffScreen({ navigation }) {
                 <TouchableOpacity
                     style={[stylesAllTour.title, { marginLeft: 130 }]}
                     onPress={() => {
-                        navigation.navigate('EditStaff');
+                        navigation.navigate('EditStaff', { type: 'add' });
                     }}
                 >
                     <Icon name="add" size={25} color="#021A5A" />
@@ -51,8 +59,8 @@ function ManageStaffScreen({ navigation }) {
             </View>
             <Find />
             <ScrollView>
-                {DATA.map((item) => (
-                    <CardStaff staff={item} key={item.id} navigation={navigation} />
+                {listStaff.map((item) => (
+                    <CardStaff staff={item} key={item.idStaff} navigation={navigation} />
                 ))}
             </ScrollView>
         </SafeAreaView>

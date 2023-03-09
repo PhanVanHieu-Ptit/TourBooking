@@ -10,6 +10,7 @@ import CardOrder from '../../components/mange/CardOrder';
 import { AppContext } from '../../../App';
 import * as request from '../../services/untils';
 import API from '../../res/string';
+import Find from '../../components/home/find';
 
 function ManageOrderFollowStatus({ navigation }) {
     const { user, listOrder, setListOrder } = useContext(AppContext);
@@ -102,6 +103,7 @@ function ManageOrderFollowStatus({ navigation }) {
                 </TouchableOpacity>
                 <Text style={[stylesAllTour.title, { marginLeft: 10 }]}>Quản lý đơn đặt theo trạng thái</Text>
             </View>
+            <Find />
             <View style={{ marginLeft: 200 }}>
                 <SelectDropdown
                     data={listStatus}
