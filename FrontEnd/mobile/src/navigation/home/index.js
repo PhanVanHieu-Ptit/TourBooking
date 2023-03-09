@@ -1,6 +1,5 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import Home from '../../screens/home';
 import Register from '../../screens/auth/register';
 import Login from '../../screens/auth/Login';
 import ForgotPassword from '../../screens/auth/forgotPassword';
@@ -14,12 +13,8 @@ import ManageOrder from '../../screens/manage/ManageOrder';
 import ManageTourScreen from '../../screens/manageTour/manageTourScreen';
 import TourScreen from '../../screens/tourScreen/TourScreen';
 import DetailHistoryOrder from '../../screens/historyOrder.js/DetailHistoryOrder';
-import HistoryOrderScreen from '../../screens/historyOrder.js/HistoryOrder';
 import ManageOrderFollowStatus from '../../screens/manageOrder/ManageOrderFollowStatus';
-import ManageOrderFollowTour from '../../screens/manageOrder/ManageOrderFollowTour';
 import ChangePassword from '../../screens/manage/ChangePassword';
-import DetailOrderFollowTour from '../../screens/manageOrder/DetailOrderFollowTour';
-import CustomerFollowTour from '../../screens/manageOrder/CustomerFollowTour';
 
 const Stack = createStackNavigator();
 function HomeNavigation() {
@@ -41,8 +36,8 @@ function HomeNavigation() {
             {/* <Stack.Screen name="HistoryOrderScreen" component={HistoryOrderScreen} /> */}
             <Stack.Screen name="Changepassword" component={ChangePassword} />
             <Stack.Screen name="ManageOrderFollowStatus" component={ManageOrderFollowStatus} />
-            <Stack.Screen name="ManageOrderFollowTour" component={ManageOrderFollowTour} />
-            <Stack.Screen name="DetailOrderFollowTour" component={DetailOrderFollowTour} />
+            {/* <Stack.Screen name="ManageOrderFollowTour" component={ManageOrderFollowTour} />
+            <Stack.Screen name="DetailOrderFollowTour" component={DetailOrderFollowTour} /> */}
             {/* <Stack.Screen name="CustomerFollowTour" component={CustomerFollowTour} /> */}
         </Stack.Navigator>
     );

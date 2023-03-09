@@ -357,7 +357,7 @@ function TourScreen({ route, navigation }) {
                 <View style={{ width: 320, marginTop: 20 }}>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         <Text style={stylesTour.title}>Tên tour</Text>
-                        <Text style={{}}>#{tour.idTour}</Text>
+                        <Text style={{}}>#{tour?.idTour}</Text>
                     </View>
                     <TextInput
                         placeholder="Nhập tên tour vào đây"

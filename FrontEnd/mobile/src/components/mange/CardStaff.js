@@ -9,7 +9,7 @@ import stylesCard from '../home/card/style';
 function CardStaff(route) {
     const staff = route.staff;
     return (
-        <TouchableOpacity onPress={() => route.navigation.navigate('EditStaff', { staff: staff })}>
+        <TouchableOpacity onPress={() => route.navigation.navigate('EditStaff', { staff: staff, type: 'edit' })}>
             <View style={[stylesCard.card2, { justifyContent: 'flex-start' }]}>
                 <Image source={{ uri: `${staff.imageUrl}` }} style={[stylesCard.img2, { borderRadius: 50 }]} />
 

@@ -23,11 +23,12 @@ class AccountControllers {
         "insert into customer(name, email, phoneNumber,imageUrl,address) values (?,?,?,?,?)",
         [name, email, phoneNumber, imageUrl, address]
       );
-      return res.send(message(
-        { idCustomer: rows.insertId, username: email },
-        true,
-        "Đăng ký thành công"
-      )
+      return res.send(
+        message(
+          { idCustomer: rows.insertId, username: email },
+          true,
+          "Đăng ký thành công"
+        )
       );
     } catch (error) {
       return res.send(message(error, false));
@@ -35,7 +36,6 @@ class AccountControllers {
   }
   async signIn(req, res) {
     try {
-
       const { username, password } = req.body;
       console.log("sign-in: " + username + " " + password);
       //check valid data form
@@ -53,32 +53,35 @@ class AccountControllers {
         return res.send(message("", false, "Sai tên đăng nhập hoặc mật khẩu!"));
       }
       const role = rows[0].role;
-      if (role == 'customer')
+      if (role == "customer")
         [rows, fields] = await connection.execute(
           `select * from customer  where email='${username}'`
         );
-      else
+      else if (role == "staff")
         [rows, fields] = await connection.execute(
           `select * from staff  where email='${username}'`
         );
-      if (rows.length == 0) {
+      if (rows.length == 0 && role != "admin") {
         return res.send(message("", false, "Không có thông tin user!"));
       }
-      if (role == 'staff' && rows[0].idStatus == 7) {
+      if (role == "staff" && rows[0].idStatus == 7) {
         return res.send(message("", false, "Tài khoản bị khóa!"));
       }
       const { name, imageUrl, phoneNumber, email, address } = rows[0];
       let id = rows[0].idStaff;
-      if (role == 'customer') {
+      if (role == "customer") {
         id = rows[0].idCustomer;
       }
       //set token for client
       const token = getToken(username, false, role);
       res.setHeader("Authorization", token);
       return res.send(
-        message({ id, name, imageUrl, role, phoneNumber, email, address }, true, 'Đăng nhập thành công')
+        message(
+          { id, name, imageUrl, role, phoneNumber, email, address },
+          true,
+          "Đăng nhập thành công"
+        )
       );
-
     } catch (error) {
       return res.send(message(error, false));
     }
@@ -86,7 +89,9 @@ class AccountControllers {
   async changePassword(req, res) {
     const { email: username, newPassword, oldPassword } = req.body;
     if (!newPassword || !oldPassword) {
-      return res.send(message("", false, "Mật khẩu mới và mật khẩu cũ không được để trống"));
+      return res.send(
+        message("", false, "Mật khẩu mới và mật khẩu cũ không được để trống")
+      );
     }
     //check valid old password
     let [rows, fields] = await connection.execute(
@@ -135,7 +140,7 @@ class AccountControllers {
       return res.send(message(error, false, "Đổi mật khẩu thất bại"));
     }
   }
-  async provideStaffAccount(req, res) { }
+  async provideStaffAccount(req, res) {}
   async forgotPassword(req, res) {
     const { username } = req.body;
     // check valid email
@@ -143,7 +148,7 @@ class AccountControllers {
       `select * from account where username='${username}'`
     );
     if (rows.length == 0) {
-      return res.send(message('', false, 'Email không hợp lệ!'));
+      return res.send(message("", false, "Email không hợp lệ!"));
     }
 
     const token = getToken(username, true);
