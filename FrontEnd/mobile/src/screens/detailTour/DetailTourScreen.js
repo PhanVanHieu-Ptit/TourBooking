@@ -15,14 +15,14 @@ import { formatDate, formatMoney } from '../../res/untils';
 function DetailTourScreen({ route, navigation }) {
     const tour = route.params.tour;
     const [modalVisible, setModalVisible] = useState(false);
-    const listImage = tour.imageUrl;
+    const listImage = tour.tourpictures;
     const [selectImage, setSelectImage] = useState(listImage[0]);
     return (
         <ScrollView>
             <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center' }}>
                 <ModalOrder modalVisible={modalVisible} setModalVisible={setModalVisible} DATA={tour} />
                 <ImageBackground
-                    source={{ uri: `${selectImage}` }}
+                    source={{ uri: `${selectImage.imageUrl}` }}
                     style={{
                         borderRadius: 20,
                         height: 320,
@@ -72,7 +72,7 @@ function DetailTourScreen({ route, navigation }) {
                             }}
                         >
                             <Image
-                                source={{ uri: `${item}` }}
+                                source={{ uri: `${item.imageUrl}` }}
                                 style={{ height: 50, width: 50, margin: 5, borderRadius: 6 }}
                             />
                         </TouchableOpacity>

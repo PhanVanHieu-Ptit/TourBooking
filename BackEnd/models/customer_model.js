@@ -13,7 +13,7 @@ Customer.getById = function (id) {
   return db
     .query("SELECT * FROM `customer` where idCustomer= ?", id)
     .then(([rows, fields]) => {
-      console.log("rows: ", rows);
+      // console.log("rows: ", rows);
       return rows;
     })
     .catch((err) => {
