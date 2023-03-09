@@ -13,7 +13,7 @@ Status.getById = function (id, type) {
       [id, type]
     )
     .then(([rows, fields]) => {
-      console.log("rows: ", rows);
+      // console.log("rows: ", rows);
       return rows;
     })
     .catch((err) => {

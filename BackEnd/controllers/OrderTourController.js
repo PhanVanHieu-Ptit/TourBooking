@@ -4,14 +4,29 @@ var OrderTour = require("../models/order_tour_model");
 var Tour = require("../models/tour_model");
 var Customer = require("../models/customer_model");
 var Status = require("../models/status_model");
+var Picture = require("../models/picturetour_model");
+
+function getImageTour(tour) {
+  // Call Picture.getByIdTour() for the tour ID
+  return Picture.getByIdTour(tour.idTour)
+    .then((pictureResponses) => {
+      // Add the tour pictures to the tour object
+      tour["tourpictures"] = pictureResponses;
+      return tour;
+    })
+    .catch((err) => {
+      console.log(err);
+      return tour;
+    });
+}
 
 function getInforTour(res, result) {
   const tourPromises = [];
   const customerPromises = [];
   const statusPromises = [];
+  const picturePromises = [];
 
   // Loop through each tour order and call Tour.getById() for its ID
-  console.log("result: ", result);
   result.forEach((tourOrder) => {
     tourPromises.push(Tour.getById(tourOrder.idTour));
     customerPromises.push(Customer.getById(tourOrder.idCustomer));
@@ -25,27 +40,25 @@ function getInforTour(res, result) {
   ])
     .then(([tourResponses, customerResponses, statusResponse]) => {
       // Loop through each tour order and add its tour information to the response
-      let tourOrders = result.map((tourOrder, index) => {
-        tourOrder["tour"] = tourResponses[index][0];
-        tourOrder["customer"] = customerResponses[index][0];
-        tourOrder["status"] = statusResponse[index][0];
-        return tourOrder;
+      const tourOrdersPromises = result.map((tourOrder, index) => {
+        const tour = tourResponses[index][0];
+
+        return getImageTour(tour).then((tourWithPictures) => {
+          tourOrder["tour"] = tourWithPictures;
+          tourOrder["customer"] = customerResponses[index][0];
+          tourOrder["status"] = statusResponse[index][0];
+          return tourOrder;
+        });
       });
 
-      tourOrders = result.map((tourOrder, index) => {
-        const tour = tourOrder.tour;
-        const image_list = tour.image_list;
-        const imgUrl = image_list.split(",");
-        tour["imageUrl"] = imgUrl;
-        delete tour.image_list;
-        delete tourOrder.idTour;
-        delete tourOrder.idCustomer;
-        delete tourOrder.idStatus;
-        return tourOrder;
-      });
-
-      // Send the response with the tour orders and their tour information
-      res.send(message(tourOrders, true, "Thành công!"));
+      // Wait for all tour orders to be processed and send the response
+      Promise.all(tourOrdersPromises)
+        .then((tourOrders) => {
+          res.send(message(tourOrders, true, "Thành công!"));
+        })
+        .catch((err) => {
+          res.send(message(err, false, "Thất bại!"));
+        });
     })
     .catch((err) => {
       res.send(message(err, false, "Thất bại!"));

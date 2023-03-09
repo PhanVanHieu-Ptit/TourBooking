@@ -27,16 +27,16 @@ function ManageScreen({ navigation }) {
     //     role: 'Admin',
     // };
     const [isLogin, setIsLogin] = useState(user != '');
-    const [role, setRole] = useState(user.role);
+    const [role, setRole] = useState(user?.role);
     const [navigateInforPerson, setNavigateInforPerson] = useState('Profile');
     function setRoleUser() {
-        if (user.role == 'customer') {
+        if (user?.role == 'customer') {
             setRole('Khách hàng');
             // setNavigateInforPerson('Profile');
-        } else if (user.role == 'staff') {
+        } else if (user?.role == 'staff') {
             setRole('Nhân viên');
             // setNavigateInforPerson('EditStaff');
-        } else if (user.role == 'admin') {
+        } else if (user?.role == 'admin') {
             setNavigateInforPerson('EditStaff');
         }
     }
@@ -83,7 +83,7 @@ function ManageScreen({ navigation }) {
                             <AntDesign name="right" size={20} color={COLOR.primary} />
                         </View>
                     </TouchableOpacity>
-                    {user.role === 'Admin' ? (
+                    {user?.role === 'Admin' ? (
                         <View>
                             <TouchableOpacity onPress={() => navigation.navigate('ManageTour')}>
                                 <View style={stylesManage.btn}>
@@ -123,7 +123,7 @@ function ManageScreen({ navigation }) {
                     ) : (
                         ''
                     )}
-                    {user.role === 'staff' ? (
+                    {user?.role === 'staff' ? (
                         <View>
                             <TouchableOpacity onPress={() => navigation.navigate('ManageTour')}>
                                 <View style={stylesManage.btn}>
