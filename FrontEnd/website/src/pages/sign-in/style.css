@@ -1,4 +1,4 @@
-@import "../shared/customer-side.css";
+@import "../../components/style/customer.css";
 
 main {
   position: absolute;

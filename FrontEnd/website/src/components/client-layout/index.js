@@ -1,13 +1,13 @@
 import Header from './Header';
 import Footer from './Footer';
 function DefaultLayout({children}) {
-  return (
-    <div>
-      <Header />
-      {children}
-      <Footer />
-    </div>
-  );
+    return (
+        <>
+            <Header />
+            {children}
+            <Footer />
+        </>
+    );
 }
 
 export default DefaultLayout;
