@@ -1,4 +1,4 @@
-@import "../shared/customer-side.css";
+@import url('../../components/style/customer.css');
 
 /* header */
 header {

@@ -1,4 +1,4 @@
-@import "both-side.css";
+@import "./global.css";
 
 body {
   color: var(--purple-dark);

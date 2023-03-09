@@ -7,6 +7,17 @@ const instance = axios.create({
     'Content-Type': 'application/json',
   },
 });
+instance.interceptors.request.use(
+  function (config) {
+    // Do something before request is sent
+    config.headers.Authorization = `${localStorage.getItem('Authorization')}`;
+    return config;
+  },
+  function (error) {
+    // Do something with request error
+    return Promise.reject(error);
+  }
+);
 instance.interceptors.response.use(
   function (response) {
     return response.data;

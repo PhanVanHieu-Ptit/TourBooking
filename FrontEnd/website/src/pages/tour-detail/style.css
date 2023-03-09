@@ -1,4 +1,4 @@
-@import "../shared/customer-side.css";
+@import "../../components/style/customer.css";
 
 body {
   color: var(--white);
@@ -22,7 +22,6 @@ body {
 .tour-destination {
   font-size: larger;
   font-weight: bold;
-  ;
 }
 
 .main-details {

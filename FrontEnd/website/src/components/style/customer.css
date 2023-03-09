@@ -1,4 +1,4 @@
-@import "both-side.css";
+@import "./global.css";
 
 
 .main-bg {
@@ -8,4 +8,8 @@
   object-fit: cover;
   object-position: center;
   max-height: 100vh;
+}
+
+a {
+  color: var(--white)
 }
