@@ -27,6 +27,8 @@ function ManageOrderFollowStatus({ navigation }) {
 
                 if (response.status == true) {
                     setListOrder(response.data);
+                    setMasterDataSource(response.data);
+                    setFilteredDataSource(response.data);
                 } else {
                     Alert.alert('Thông báo!', response.message + '', [
                         { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -76,6 +78,8 @@ function ManageOrderFollowStatus({ navigation }) {
 
                 if (response.status == true) {
                     setListOrder(response.data);
+                    setMasterDataSource(response.data);
+                    setFilteredDataSource(response.data);
                 } else {
                     Alert.alert('Thông báo!', response.message + '', [
                         { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -86,6 +90,8 @@ function ManageOrderFollowStatus({ navigation }) {
                 console.log(err);
             });
     }
+    const [masterDataSource, setMasterDataSource] = useState(listOrder);
+    const [filteredDataSource, setFilteredDataSource] = useState(listOrder);
 
     return (
         <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
@@ -103,7 +109,11 @@ function ManageOrderFollowStatus({ navigation }) {
                 </TouchableOpacity>
                 <Text style={[stylesAllTour.title, { marginLeft: 10 }]}>Quản lý đơn đặt theo trạng thái</Text>
             </View>
-            <Find />
+            <Find
+                masterDataSource={masterDataSource}
+                setMasterDataSource={setMasterDataSource}
+                setFilteredDataSource={setFilteredDataSource}
+            />
             <View style={{ marginLeft: 200 }}>
                 <SelectDropdown
                     data={listStatus}
@@ -141,7 +151,7 @@ function ManageOrderFollowStatus({ navigation }) {
             </View>
 
             <ScrollView>
-                {listOrder.map((item) => (
+                {filteredDataSource.map((item) => (
                     <CardOrder props={item} key={item.idTourOrder} />
                 ))}
             </ScrollView>

@@ -13,7 +13,7 @@ function MyTourCard({ navigation, props }) {
             }}
         >
             <View style={stylesAllTour.card}>
-                <Image source={{ uri: `${props.imageUrl}` }} style={stylesCard.img}></Image>
+                <Image source={{ uri: `${props.tourpictures[0].imageUrl}` }} style={stylesCard.img}></Image>
                 <Text style={stylesAllTour.title}>{props.name}</Text>
                 <View style={{ flexDirection: 'row', marginLeft: 10 }}>
                     <Icon name="star" size={15} color="#FFD336" style={{ marginTop: 2 }} />

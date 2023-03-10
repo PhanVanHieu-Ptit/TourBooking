@@ -14,8 +14,21 @@ function Find(props) {
             // Update FilteredDataSource
             const newData = props.masterDataSource.filter(function (item) {
                 const itemData = item.name ? item.name.toUpperCase() : ''.toUpperCase();
+                const tourDestination = item?.tourDestination ? item?.tourDestination.toUpperCase() : ''.toUpperCase();
                 const textData = text.toUpperCase();
-                return itemData.indexOf(textData) > -1;
+                const tour = item?.tour;
+                const customer = item?.customer;
+                if (tour != undefined && customer != undefined) {
+                    return (
+                        tour.name.toUpperCase().indexOf(textData) > -1 ||
+                        tour.tourDestination.toUpperCase().indexOf(textData) > -1 ||
+                        customer.email.toUpperCase().indexOf(textData) > -1 ||
+                        customer.phoneNumber.toUpperCase().indexOf(textData) > -1 ||
+                        customer.name.toUpperCase().indexOf(textData) > -1
+                    );
+                }
+
+                return itemData.indexOf(textData) > -1 || tourDestination.indexOf(textData) > -1;
             });
             props.setFilteredDataSource(newData);
             setSearch(text);
@@ -33,7 +46,7 @@ function Find(props) {
                 <Icon name="search" size={25} color="#021A5A" />
                 <TextInput
                     style={stylesFind.input}
-                    placeholder="Bạn đang muốn đi đâu ..."
+                    placeholder="Bạn đang muốn tìm gì ..."
                     onChangeText={(text) => searchFilterFunction(text)}
                     autoFocus={props.isFind}
                 />

@@ -263,7 +263,7 @@ function EditInforStaffScreen({ route, navigation }) {
                             },
                         ]}
                     >
-                        <TextInput placeholder="Chọn trạng thái" editable={false} />
+                        <TextInput defaultValue={staff?.status} editable={false} />
                         <AntDesign name="check" size={20} color="#0D6EFD" />
                     </View>
                 </View>
@@ -275,7 +275,7 @@ function EditInforStaffScreen({ route, navigation }) {
                 <View style={{ flexDirection: 'row', marginTop: 20 }}>
                     <TouchableOpacity
                         onPress={() => {
-                            changeStateStaff();
+                            if (staff.idStatus == 7) changeStateStaff();
                         }}
                     >
                         <View style={[stylesTour.btn, { width: 150 }]}>
@@ -284,7 +284,7 @@ function EditInforStaffScreen({ route, navigation }) {
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => {
-                            changeStateStaff();
+                            if (staff.idStatus == 5) changeStateStaff();
                         }}
                     >
                         <View style={[stylesTour.btn, { width: 150 }]}>
