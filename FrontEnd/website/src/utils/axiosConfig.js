@@ -1,31 +1,64 @@
 import axios from 'axios';
+import {Hypnosis} from 'react-cssfx-loading';
+import {useState} from 'react';
+import {toast} from 'react-toastify';
+
+var displayLoading, setDisplayLoading;
+function AxiosLoading() {
+    const [isLoading, setIsLoading] = useState(false);
+    setDisplayLoading = setIsLoading;
+    displayLoading = isLoading;
+    return (
+        <>
+            {displayLoading && (
+                <div div className='loading-overlay'>
+                    <Hypnosis color='var(--gold)' width='35px' height='35px' />
+                </div>
+            )}
+        </>
+    );
+}
 
 const instance = axios.create({
-  baseURL: 'http://localhost:3000',
-  timeout: 5000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+    baseURL: 'http://localhost:3000',
+    timeout: 10000,
+    headers: {
+        'Content-Type': 'application/json',
+    },
 });
+
 instance.interceptors.request.use(
-  function (config) {
-    // Do something before request is sent
-    config.headers.Authorization = `${localStorage.getItem('Authorization')}`;
-    return config;
-  },
-  function (error) {
-    // Do something with request error
-    return Promise.reject(error);
-  }
+    function (config) {
+        setDisplayLoading(true);
+        config.headers.Authorization = `${localStorage.getItem('Authorization')}`;
+        return config;
+    },
+    function (error) {
+        // Do something with request error
+        setDisplayLoading(false);
+        return toast.error(error.message);
+    },
 );
 instance.interceptors.response.use(
-  function (response) {
-    return response.data;
-  },
-  function (error) {
-    console.log(error);
-    return Promise.reject(error);
-  }
+    async function (response) {
+        console.log(response);
+        setTimeout(() => setDisplayLoading(false), 500);
+        // console.log(response.headers.get('Authorization'));
+        if (response.headers.get('Authorization')) {
+            response.data = {...response.data, Authorization: response.headers.get('Authorization')};
+        }
+        // if (response.data.message)
+        if (response.data.status) {
+            toast.success(response.data.message);
+        } else {
+            toast.error(response.data.message);
+        }
+        return response.data;
+    },
+    function (error) {
+        setDisplayLoading(false);
+        return toast.error(error.message);
+    },
 );
 
-export default instance;
+export {instance as axios, AxiosLoading};

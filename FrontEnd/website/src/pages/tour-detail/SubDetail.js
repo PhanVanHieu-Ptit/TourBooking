@@ -1,10 +1,11 @@
+import css from './style.module.css';
 function SubDetail() {
     return (
-        <div className='sub-details'>
-            <div className='left-area'>
-                <div className='image-area'>
-                    <img src='https://i.ibb.co/p1hDgsD/tour2.jpg' alt='' className='big-display' />
-                    <div className='images'>
+        <div className={css['sub-details']}>
+            <div className={css['left-area']}>
+                <div className={css['image-area']}>
+                    <img src='https://i.ibb.co/p1hDgsD/tour2.jpg' alt='' className={css['big-display']} />
+                    <div className={css['images']}>
                         <img src='https://i.ibb.co/p1hDgsD/tour2.jpg' />
                         <img src='https://i.ibb.co/v1tjn0n/tour1.jpg' />
                         <img src='https://i.ibb.co/WFKrxDP/tour5.jpg' />
@@ -14,7 +15,7 @@ function SubDetail() {
                     </div>
                 </div>
                 <h1>Chi tiết</h1>
-                <div className='description'>
+                <div className={css['description']}>
                     ĐÊM 01 | TP HỒ CHÍ MINH – BẠC LIÊU (NGHỈ ĐÊM TRÊN XE) Tối: 22h00 Xe và hướng dẫn viên (HDV) Vietnam
                     Booking đón quý khách tại điểm hẹn, khởi hành đi tour Cha Diệp Mẹ Nam Hải ở Bạc Liêu. Các địa điểm
                     đón khách: Cây Xăng Comeco – Ngã 4 Hàng Xanh, Quận Bình Thạnh, TP Hồ Chí Minh. Nhà Văn Hóa Thanh
@@ -39,9 +40,9 @@ function SubDetail() {
                     cho phù hợp với tình hình thực tế, nhưng vẫn đảm bảo đủ điểm đến tham quan!
                 </div>
             </div>
-            <div className='right-area'>
+            <div className={css['right-area']}>
                 <h1>Giới thiệu</h1>
-                <p className='intro'>
+                <p className={css['intro']}>
                     Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sed voluptates, earum maxime expedita
                     quisquam iste non ipsam. Hic sunt ullam minus repellendus, tempora debitis natus doloremque atque
                     sequi earum tenetur? Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus qui
@@ -53,7 +54,7 @@ function SubDetail() {
                     quaerat pariatur officiis veniam repudiandae numquam quod, iure praesentium sapiente. Tempore ea
                     quos, porro possimus eius laudantium ipsum?
                 </p>
-                <form action className='booking-frm'>
+                <form action className={css['booking-frm']}>
                     <label htmlFor='quantity'>Số người</label>
                     <input type='number' name='quantity' />
                     <label htmlFor='note'>Ghi chú</label>

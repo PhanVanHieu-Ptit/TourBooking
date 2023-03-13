@@ -1,0 +1,156 @@
+@import url('../../components/style/customer.module.css');
+
+
+.main-heading {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* search box */
+.search-container {
+  position: absolute;
+  left: 50%;
+  padding: 24px 32px;
+  background-color: var(--white-opacity);
+  transform: translate(-50%, -120%);
+  border: 2px solid var(--gold);
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search-container input {
+  padding: 8px 12px;
+  background-color: var(--dark);
+  color: var(--white);
+  margin-right: 32px;
+  border: none;
+  width: 50vw;
+}
+
+/* featured tour */
+.featured-tours {
+  position: relative;
+  margin-top: -6px;
+  height: 120vh;
+}
+
+.featured-tours::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 50%;
+  position: relative;
+  z-index: -5;
+}
+
+.featured-tours::before {
+  background-color: var(--dark);
+}
+
+.featured-tours-content {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+
+.featured-tours-heading {
+  text-align: center;
+  margin-bottom: 7%;
+  margin-top: 5%;
+  position: relative;
+  color: var(--white);
+}
+
+.featured-tours-heading::before {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 5%;
+  border: 1px solid var(--gold);
+  left: 50%;
+  transform: translateX(-50%);
+  top: -30%;
+}
+
+.tours {
+  display: flex;
+  justify-content: space-between;
+  width: 106%;
+  position: relative;
+  left: -3%;
+}
+
+.tour {
+  width: 19%;
+  height: 60vh;
+  position: relative;
+  border-radius: 15px;
+  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.8);
+
+}
+
+.tour:nth-child(2) {
+  margin-right: 18%;
+}
+
+.tour:nth-child(3) {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(1.2);
+  z-index: 5;
+
+}
+
+.tour:nth-child(3)::before {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 85%;
+  height: 110%;
+  border: 2px solid;
+  border-image-slice: 1;
+  border-image-source:
+    linear-gradient(to bottom,
+      var(--white), var(--gold));
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
+.tour img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 5;
+  filter: brightness(70%);
+  border-radius: 15px;
+
+}
+
+.tour-name {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--white);
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.tour a {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 15;
+}

@@ -1,50 +1,56 @@
-@import "../../components/style/customer.css";
+@import "../../components/style/customer.module.css";
 
-main {
+.main {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 23%;
   height: 92vh;
-  background-color: var(--white);
+  background-color: rgba(0, 0, 0, 0.6);
   padding: 38px 24px;
   border-radius: 32px;
+  min-width: 300px;
 }
 
-main>img {
+.main .hero {
   position: relative;
   left: 50%;
   transform: translateX(-50%);
-  margin-bottom: 64px;
+  margin-bottom: 32px;
 }
 
-form {
+.main form {
   display: flex;
   flex-direction: column;
 }
 
-h1 {
+.main h1 {
   text-align: center;
+  margin-bottom: 16px;
+  color: var(--gold);
 }
 
-a {
+.main a {
   text-align: center;
   color: var(--gold);
   margin-top: 16px;
 }
 
-form label {
+.main form label {
   padding-left: 8px;
-  margin-top: 32px;
+  margin: 12px 0 4px;
+  color: var(--gold);
 }
 
-input {
+.main input,
+.main select {
   width: 100%;
   border-radius: 32px;
-  border: 1.5px solid var(--gold);
+  border: 2px solid var(--gold);
   height: 40px;
   padding: 4px 8px;
+  margin: 6px 6px 0 0;
 }
 
 
@@ -59,8 +65,16 @@ input {
   transform: translateY(-50%);
 }
 
-button {
-  margin: 64px auto 0;
+.main form button {
+  margin: 64px auto 12px;
   width: 50%;
+}
 
+.swapper {
+  border: none;
+  color: var(--gold);
+  background: none;
+  margin: 12px 0;
+  width: 100%;
+  cursor: pointer;
 }

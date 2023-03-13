@@ -1,5 +1,3 @@
-@import "./global.css";
-
 body {
   color: var(--purple-dark);
   background-color: rgb(245, 245, 245);

@@ -1,8 +1,6 @@
-@import "../../components/style/customer.css";
+@import "../../components/style/customer.module.css";
 
-body {
-  color: var(--white);
-}
+
 
 .tour-heading {
   position: absolute;
@@ -10,6 +8,7 @@ body {
   top: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
+  color: var(--white);
 }
 
 .tour-name {
@@ -36,6 +35,7 @@ body {
   display: flex;
   justify-content: space-between;
   padding: 12px 24px;
+  color: var(--white);
 }
 
 .main-detail {
@@ -144,6 +144,7 @@ body {
   border: none;
   font-family: 'Times New Roman', Times, serif;
   font-size: large;
+  border-radius: 8px;
 }
 
 .booking-frm textarea {

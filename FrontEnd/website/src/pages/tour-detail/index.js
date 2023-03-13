@@ -1,5 +1,4 @@
-import './style.css';
-import MainBackground from '../../components/MainBackground';
+import MainBackground from '../components/MainBackground';
 import DefaultClientLayout from '../../components/client-layout';
 import MainDetail from './MainDetail';
 import Heading from './Heading';

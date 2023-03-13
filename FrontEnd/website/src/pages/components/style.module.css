@@ -1,0 +1,78 @@
+.booked-tours-client {
+    max-height: 90%;
+    overflow-y: scroll;
+}
+
+.booked-tours-client .tour {
+    width: 100%;
+    height: 240px;
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 32px;
+}
+
+
+.booked-tours-client .name {
+    font-size: x-large;
+    text-transform: capitalize;
+    margin-bottom: 16px;
+}
+
+.booked-tours-client button {
+    position: absolute;
+    top: 12px;
+    right: 18px;
+    z-index: 10;
+}
+
+.booked-tours-client .bg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(70%);
+}
+
+.booked-tours-client .details {
+    width: max-content;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--white);
+    background-color: var(--dark-opacity);
+    border: 1px solid var(--gold);
+    border-radius: 16px;
+    padding: 12px;
+
+}
+
+.booked-tours-client .body {
+    display: flex;
+    justify-content: space-between;
+}
+
+.booked-tours-client .body .wrapper+.wrapper {
+    margin-left: 24px;
+}
+
+
+.booked-tours-client .body img,
+.booked-tours-client .body p {
+    margin: 0;
+    margin-left: 6px;
+
+}
+
+.booked-tours-client .detail {
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.booked-tours-client .value {
+    margin-left: 12px;
+    text-align: right;
+    flex: 1;
+}
