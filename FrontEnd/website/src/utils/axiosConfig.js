@@ -47,7 +47,15 @@ instance.interceptors.response.use(
         if (response.headers.get('Authorization')) {
             response.data = {...response.data, Authorization: response.headers.get('Authorization')};
         }
-        // if (response.data.message)
+        response.data.data.forEach((e, i) => {
+            for (let prop in e) {
+                if (typeof e[prop] == 'string') {
+                    if (e[prop].includes('.000Z')) {
+                        response.data.data[i][prop] = e[prop].replace('T', ' ').replace('.000Z', '');
+                    }
+                }
+            }
+        });
         if (response.data.status) {
             toast.success(response.data.message);
         } else {

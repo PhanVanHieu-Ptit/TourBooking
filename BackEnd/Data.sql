@@ -5,16 +5,8 @@ INSERT INTO `status` VALUES (5,'Chờ cấp tài khoản','staff'),(1,'Chờ kh�
 
 
 -- //img
-insert into tourpicture(idTour,imageUrl) values(1,'https://ibb.co/WnT2JmJ');
-insert into tourpicture(idTour,imageUrl) values(1,'https://ibb.co/Zf2s3ws');
-insert into tourpicture(idTour,imageUrl) values(1,'https://ibb.co/4fMz0rv');
-insert into tourpicture(idTour,imageUrl) values(1,'https://ibb.co/SvH9WjV');
-insert into tourpicture(idTour,imageUrl) values(1,'https://ibb.co/mtznDvX');
-insert into tourpicture(idTour,imageUrl) values(1,'https://ibb.co/Z1t2hqb');
-
-"https://ibb.co/WnT2JmJ",
-"https://ibb.co/Zf2s3ws",
-"https://ibb.co/4fMz0rv",
-"https://ibb.co/SvH9WjV",
-"https://ibb.co/mtznDvX",
-"https://ibb.co/Z1t2hqb"
+insert into tourpicture(idTour,imageUrl) values(1,'https://i.ibb.co/p1hDgsD/tour2.jpg');
+insert into tourpicture(idTour,imageUrl) values(1,'https://i.ibb.co/v1tjn0n/tour1.jpg');
+insert into tourpicture(idTour,imageUrl) values(1,'https://i.ibb.co/PY4KVHX/tour3.jpg');
+insert into tourpicture(idTour,imageUrl) values(1,'https://i.ibb.co/WFKrxDP/tour5.jpg');
+insert into tourpicture(idTour,imageUrl) values(1,'https://i.ibb.co/vzfKgFL/tour4.jpg');

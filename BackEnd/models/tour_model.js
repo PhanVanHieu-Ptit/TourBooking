@@ -29,7 +29,6 @@ Tour.getAll = function (result) {
             result(rows);
         })
         .catch((err) => {
-            console.log;
             result(err);
         });
 };
@@ -38,7 +37,7 @@ Tour.getById = function (id) {
     return db
         .query('SELECT * FROM tour WHERE tour.idTour = ?', id)
         .then(([rows, fields]) => {
-            console.log('findTourByID:' + rows.lenght);
+            console.log('findTourByID:');
             return rows;
         })
         .catch((err) => {
@@ -60,7 +59,7 @@ Tour.findBykey = function (key) {
                 ' GROUP BY tour.idTour;',
         )
         .then(([rows, fields]) => {
-            console.log('findTourBykey:' + rows.lenght);
+            console.log('findTourBykey:');
             return rows;
         })
         .catch((err) => {
@@ -75,7 +74,6 @@ Tour.remove = function (id, result) {
             result(rows);
         })
         .catch((err) => {
-            console.log;
             result(err);
         });
 };

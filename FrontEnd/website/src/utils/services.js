@@ -15,3 +15,6 @@ export async function getListAddress() {
 export async function getListTour() {
     return axios.get('/tour/list');
 }
+export async function getTour(id) {
+    return axios.get(`/tour/${id}/detail`);
+}

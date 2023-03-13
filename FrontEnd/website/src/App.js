@@ -12,7 +12,7 @@ function App() {
             <Router>
                 <Routes>
                     <Route path='/' element={<HomePage />} />
-                    <Route path='/tour-detail' element={<TourDetail />} />
+                    <Route path='/tour-detail/:idTour' element={<TourDetail />} />
                     <Route path='/sign-in' element={<SignIn />} />
                     <Route path='/sign-up' element={<SignIn initFormType='register' />} />
                 </Routes>
