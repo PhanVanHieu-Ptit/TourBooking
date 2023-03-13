@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { FlatList, SafeAreaView, ScrollView, Text, View } from 'react-native';
 import Find from '../../components/home/find';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -15,14 +15,14 @@ function ManageTourScreen({ navigation }) {
 
     useEffect(() => {
         request
-            .get(API.listTour, {
-                headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
-            })
+            .get(API.listTour, {})
             .then((response) => {
                 console.log(response.data);
 
                 if (response.status == true) {
                     setListTour(response.data);
+                    setMasterDataSource(response.data);
+                    setFilteredDataSource(response.data);
                 } else {
                     Alert.alert('Thông báo!', response.message + '', [
                         { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -34,72 +34,9 @@ function ManageTourScreen({ navigation }) {
             });
     }, []);
 
-    // const DATA = [
-    //     {
-    //         id: 1,
-    //         name: 'Biển Ngọc',
-    //         tourDestination: 'Phú Quốc',
-    //         startDate: '25/01/2023',
-    //         totalDay: '2',
-    //         price: '1500',
-    //         imageUrl:
-    //             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-    //         minQuantity: 1,
-    //         maxQuantity: 5,
-    //         normalPenaltyFee: 10,
-    //         strictPenaltyFee: 30,
-    //         minDate: 10,
-    //         dateCreate: '07/02/2023',
-    //         tourGuide: true,
-    //         tourIntro: 'Hello',
-    //         tourDetail: 'Chuyen di co cung hap dan, thu vi',
-    //         pickUpPoint: 'Ho Chi Minh',
-    //         tourDestination: 'Phu Quoc',
-    //         price: 1000,
-    //         idStaffCreate: 1,
-    //         idStaffStop: '',
-    //     },
-    //     {
-    //         id: 2,
-    //         name: 'Biển Ngọc',
-    //         tourDestination: 'Phú Quốc',
-    //         startDate: '25/01/2023',
-    //         totalDay: '2',
-    //         price: '1500',
-    //         imageUrl:
-    //             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-    //     },
-    //     {
-    //         id: 3,
-    //         name: 'Biển Ngọc',
-    //         tourDestination: 'Phú Quốc',
-    //         startDate: '25/01/2023',
-    //         totalDay: '2',
-    //         price: '1500',
-    //         imageUrl:
-    //             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-    //     },
-    //     {
-    //         id: 4,
-    //         name: 'Biển Ngọc',
-    //         tourDestination: 'Phú Quốc',
-    //         startDate: '25/01/2023',
-    //         totalDay: '2',
-    //         price: '1500',
-    //         imageUrl:
-    //             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-    //     },
-    //     {
-    //         id: 5,
-    //         name: 'Biển Ngọc',
-    //         tourDestination: 'Phú Quốc',
-    //         startDate: '25/01/2023',
-    //         totalDay: '2',
-    //         price: '1500',
-    //         imageUrl:
-    //             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-    //     },
-    // ];
+    const [masterDataSource, setMasterDataSource] = useState(listTour);
+    const [filteredDataSource, setFilteredDataSource] = useState(listTour);
+
     return (
         <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
             <View
@@ -128,9 +65,13 @@ function ManageTourScreen({ navigation }) {
                     <Icon name="add" size={25} color="#021A5A" />
                 </TouchableOpacity>
             </View>
-            <Find />
+            <Find
+                masterDataSource={masterDataSource}
+                setMasterDataSource={setMasterDataSource}
+                setFilteredDataSource={setFilteredDataSource}
+            />
             <ScrollView>
-                {listTour.map((item) => (
+                {filteredDataSource.map((item) => (
                     <CardCommingTour tour={item} key={item.idTour} navigation={navigation} screen="EditTour" />
                 ))}
             </ScrollView>

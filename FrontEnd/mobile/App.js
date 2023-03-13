@@ -12,6 +12,7 @@ const AppContextProvider = ({ children }) => {
     const [listTour, setListTour] = useState([]);
     const [listOrder, setListOrder] = useState([]);
     const [listStaff, setListStaff] = useState([]);
+    const [listAllTour, setListAllTour] = useState([]);
 
     const contextValues = {
         user,

@@ -1,68 +1,43 @@
-import React, { useState } from 'react';
-import { FlatList, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
+import { FlatList, SafeAreaView, ScrollView, Text, View, Alert } from 'react-native';
 import MyTourCard from '../../components/allTour/Card';
 import Find from '../../components/home/find';
 import stylesAllTour from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import stylesButton from '../../components/general/actionButton/styles';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { AppContext } from '../../../App';
+import * as request from '../../services/untils';
+import API from '../../res/string';
 
 function AllTourScreen({ route, navigation }) {
-    const DATA = [
-        {
-            id: 1,
-            name: 'Biển Ngọc',
-            tourDestination: 'Phú Quốc',
-            startDate: '25/01/2023',
-            totalDay: '2',
-            price: '1500',
-            imageUrl:
-                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-        },
-        {
-            id: 2,
-            name: 'Biển Do',
-            tourDestination: 'Phú Quốc',
-            startDate: '25/01/2023',
-            totalDay: '2',
-            price: '1500',
-            imageUrl:
-                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-        },
-        {
-            id: 3,
-            name: 'Biển Ngọc',
-            tourDestination: 'Phú Quốc',
-            startDate: '25/01/2023',
-            totalDay: '2',
-            price: '1500',
-            imageUrl:
-                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-        },
-        {
-            id: 4,
-            name: 'Biển Den',
-            tourDestination: 'Phú Quốc',
-            startDate: '25/01/2023',
-            totalDay: '2',
-            price: '1500',
-            imageUrl:
-                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-        },
-        {
-            id: 5,
-            name: 'Biển Ngọc',
-            tourDestination: 'Phú Quốc',
-            startDate: '25/01/2023',
-            totalDay: '2',
-            price: '1500',
-            imageUrl:
-                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-5vKEr-jLhY6GMshlfHI2HK4O-iwckHUrZaCbUUI9oehxv3QuVe5LglbSOkx5bSAu8k&usqp=CAU',
-        },
-    ];
+    const { listTour, setListTour } = useContext(AppContext);
+    useEffect(() => {
+        async function getListTour() {
+            await request
+                .get(API.listTour, {})
+                .then((response) => {
+                    console.log(response.data);
 
-    const [masterDataSource, setMasterDataSource] = useState(DATA);
-    const [filteredDataSource, setFilteredDataSource] = useState(DATA);
+                    if (response.status == true) {
+                        setListTour(response.data);
+                        setMasterDataSource(response.data);
+                        setFilteredDataSource(response.data);
+                    } else {
+                        Alert.alert('Thông báo!', response.message + '', [
+                            { text: 'OK', onPress: () => console.log('OK Pressed') },
+                        ]);
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
+        getListTour();
+    }, []);
+
+    const [masterDataSource, setMasterDataSource] = useState(listTour);
+    const [filteredDataSource, setFilteredDataSource] = useState(listTour);
     return (
         <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
             <View

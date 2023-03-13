@@ -14,6 +14,9 @@ import { AppContext } from '../../../App';
 import API from '../../res/string';
 import * as request from '../../services/untils';
 import SelectDropdown from 'react-native-select-dropdown';
+import { uploadImage, deleteImage } from '../../services/untils/uploadImage';
+
+const FormData = require('form-data');
 
 function ManageInforPersonScreen({ route, navigation }) {
     const { user, setUser } = useContext(AppContext);
@@ -51,7 +54,13 @@ function ManageInforPersonScreen({ route, navigation }) {
                 console.log('User tapped custom button: ', response.customButton);
                 Alert.alert(response.customButton);
             } else {
-                // console.log('source', response.assets[0].uri);
+                // console.log('source', response);
+                const formData = new FormData();
+                formData.append('image', {
+                    uri: response.uri,
+                    type: response.type,
+                    name: response.fileName || 'image.jpg',
+                });
 
                 setImgPath(response.assets[0].uri);
                 setResponseImage(response);
@@ -88,12 +97,16 @@ function ManageInforPersonScreen({ route, navigation }) {
         }
         return true;
     };
-    const update = () => {
+    const update = async () => {
         if (checkValue()) {
+            const url = await uploadImage(imgPath);
+            console.log('url: ', url);
+            await deleteImage('nM0hvJF');
+
             request
                 .postPrivate(
                     API.updateInfoPersonal,
-                    { name, address, phoneNumber: phone },
+                    { name, address, phoneNumber: phone, imageUrl: url },
                     { 'Content-Type': 'application/json', authorization: user.accessToken },
                 )
                 .then((response) => {
@@ -101,14 +114,14 @@ function ManageInforPersonScreen({ route, navigation }) {
                     console.log('response.data.data: ' + response.data.data[0]);
                     if (response.data.status == true) {
                         const newUser = {
-                            id: response.data.data[0].id,
+                            id: user.id,
                             name: response.data.data[0].name,
                             imageUrl: response.data.data[0].imageUrl,
-                            role: response.data.data[0].role,
+                            role: user.role,
                             phoneNumber: response.data.data[0].phoneNumber,
                             email: response.data.data[0].email,
                             address: response.data.data[0].address,
-                            accessToken: response.headers.authorization,
+                            accessToken: user.accessToken,
                         };
                         console.log('user: ', newUser);
 

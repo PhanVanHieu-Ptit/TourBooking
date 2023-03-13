@@ -145,16 +145,16 @@ function CardOrder({ props }) {
                     <View style={{ flexDirection: 'row' }}>
                         <View>
                             <Text style={styles.title}>Thông tin đơn đặt</Text>
-                            <Text style={styles.content}>Họ tên: {user?.name}</Text>
-                            <Text style={styles.content}>Số điện thoại: {user?.phoneNumber}</Text>
-                            <Text style={styles.content}>Email: {user?.email}</Text>
+                            <Text style={styles.content}>Họ tên: {props?.customer.name}</Text>
+                            <Text style={styles.content}>Số điện thoại: {props?.customer.phoneNumber}</Text>
+                            <Text style={styles.content}>Email: {props?.customer.email}</Text>
                             <Text style={styles.content}>Số lượng: {props?.quantity}</Text>
                             <Text style={styles.content}>
                                 Tổng tiền: {formatMoney(props?.quantity * props?.tour.price)}
                             </Text>
                             <Text style={styles.content}>Ghi chú: {props?.note}</Text>
                         </View>
-                        <Image source={{ uri: `${user.imageUrl}` }} style={stylesCard.img2} />
+                        <Image source={{ uri: `${props?.customer.imageUrl}` }} style={stylesCard.img2} />
                     </View>
 
                     {props.status.name == 'Yêu cầu hủy' ? (
