@@ -5,6 +5,7 @@ import destinationSvg from '../../assets/svg/destination.svg';
 import tourGuideSvg from '../../assets/svg/tour-guide.svg';
 import moneySvg from '../../assets/svg/money.svg';
 import css from './style.module.css';
+import formatMoney from '../../utils/formatMoney';
 function MainDetail({memoizedOptions}) {
     const data = memoizedOptions;
     return (
@@ -48,7 +49,7 @@ function MainDetail({memoizedOptions}) {
                 <p className={css['main-detail-heading']}>Giá</p>
                 <div className={css['main-detail-wrapper']}>
                     <img className={css['main-detail-icon']} src={moneySvg} />
-                    <div className={css['main-detail-value']}>{data.price} VNĐ</div>
+                    <div className={css['main-detail-value']}>{formatMoney(data.price)}</div>
                 </div>
             </div>
         </div>

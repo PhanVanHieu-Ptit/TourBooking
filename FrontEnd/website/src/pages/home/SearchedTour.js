@@ -4,14 +4,16 @@ import css from './style.module.css';
 import calendarSvg from '../../assets/svg/calendar.svg';
 import destinationSvg from '../../assets/svg/destination.svg';
 import hourglassSvg from '../../assets/svg/hourglass.svg';
+import formatMoney from './../../utils/formatMoney';
 
 function SearchedTour({searchKey, tours}) {
     searchKey = searchKey.toLowerCase();
     tours = tours.filter((e) => {
-        return e.name.toLowerCase().includes(searchKey);
-        // ||
-        // e.tourDestination.toLowerCase().includes(searchKey) ||
-        // e.tourIntro.toLowerCase().includes(searchKey)
+        return (
+            e.name.toLowerCase().includes(searchKey) ||
+            e.tourDestination.toLowerCase().includes(searchKey) ||
+            e.tourIntro.toLowerCase().includes(searchKey)
+        );
     });
     return (
         <div>
@@ -35,12 +37,7 @@ function SearchedTour({searchKey, tours}) {
                                     <img src={calendarSvg} alt='' /> &nbsp;&nbsp;
                                     {e.startDate.split(' ')[0]}
                                 </div>
-                                <label className={css.price}>
-                                    {e.price.toLocaleString('vi-VN', {
-                                        style: 'currency',
-                                        currency: 'VND',
-                                    })}{' '}
-                                </label>
+                                <label className={css.price}>{formatMoney(e.price)}</label>
                             </div>
                         </a>
                     );

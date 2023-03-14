@@ -1,8 +1,8 @@
-function Popup({content, onClose}) {
+function Popup({name, content, onClose}) {
     return (
         <div className='popup' onClick={onClose}>
             <div className='popup-content' onClick={(e) => e.stopPropagation()}>
-                <div className='popup-heading'>Lịch sử đặt tour</div>
+                <div className='popup-heading'>{name}</div>
                 <button className='popup-btn-close' onClick={onClose}>
                     &times;
                 </button>

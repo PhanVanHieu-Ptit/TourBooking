@@ -3,12 +3,12 @@ import Popup from '../Popup';
 import {useState} from 'react';
 import BookedToursClient from '../../pages/components/BookedToursClient';
 import Hero from '../Hero';
+import ChangeUserInfo from './../../pages/components/ChangeUserInfor';
 
 function Header() {
-    const [showPopup, setShowPopup] = useState(false);
-    const togglePopup = () => {
-        setShowPopup(!showPopup);
-    };
+    const [showOrderedTourPopup, setShowOrderedTourPopup] = useState(false);
+    const [showChangeUserInforPopup, setShowChangeUserInforPopup] = useState(false);
+
     return (
         <>
             <header>
@@ -16,11 +16,14 @@ function Header() {
                 <nav>
                     {localStorage.token ? (
                         <div className='signed-in-container'>
-                            <a href='#' className='user'>
+                            <a
+                                href='#'
+                                className='user'
+                                onClick={() => setShowChangeUserInforPopup(!showChangeUserInforPopup)}>
                                 <img src={localStorage.imageUrl == 'null' ? userSvg : localStorage.imageUrl} alt='' />
                                 <span className='user-name'>{localStorage.name}</span>
                             </a>
-                            <a href='#' onClick={togglePopup}>
+                            <a href='#' onClick={() => setShowOrderedTourPopup(!showOrderedTourPopup)}>
                                 Lịch sử đặt tour
                             </a>
                             <a href='/sign-in' onClick={() => localStorage.removeItem('token')} className='btn--gold'>
@@ -37,7 +40,18 @@ function Header() {
                     )}
                 </nav>
             </header>
-            {showPopup && <Popup content={<BookedToursClient />} onClose={togglePopup}></Popup>}
+            {showOrderedTourPopup && (
+                <Popup
+                    name='Lịch Sử Đặt Tour'
+                    content={<BookedToursClient />}
+                    onClose={() => setShowOrderedTourPopup(!showOrderedTourPopup)}></Popup>
+            )}
+            {showChangeUserInforPopup && (
+                <Popup
+                    name='Đổi thông tin cá nhân'
+                    content={<ChangeUserInfo />}
+                    onClose={() => setShowChangeUserInforPopup(!showChangeUserInforPopup)}></Popup>
+            )}
         </>
     );
 }

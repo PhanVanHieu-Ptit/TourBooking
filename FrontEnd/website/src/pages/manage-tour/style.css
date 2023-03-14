@@ -87,17 +87,6 @@ main .title {
 
 
 
-/* cập nhật thông tin */
-.update-info .wrapper {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 24px;
-}
-
-.update-info a {
-  text-decoration: underline;
-  font-weight: bold;
-}
 
 
 /* tour */
