@@ -7,11 +7,11 @@
 5,	"Hiện hành","staff"
 7,	"Đã khóa tài khoản","staff"
 8,	"Chờ xác nhận đặt","tourorder"
-10,	"Đặt thành công","tourorder"
-11,	"Yêu cầu hủy","tourorder"
-12,	"Đã hủy","tourorder"
-13,	"Đang sử dụng ","tourorder"
-14,	"Hoàn thành","tourorder""
+9,	"Đặt thành công","tourorder"
+10,	"Yêu cầu hủy","tourorder"
+11,	"Đã hủy","tourorder"
+12,	"Đang sử dụng ","tourorder"
+13,	"Hoàn thành","tourorder""
 
 
 
