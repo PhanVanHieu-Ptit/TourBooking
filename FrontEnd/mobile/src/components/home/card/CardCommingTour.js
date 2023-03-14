@@ -18,7 +18,7 @@ function CardCommingTour(props) {
             }}
         >
             <View style={stylesCard.card2}>
-                <Image source={{ uri: `${tour.tourpictures[0].imageUrl}` }} style={stylesCard.img2} />
+                <Image source={{ uri: `${tour.imageUrl[0]}` }} style={stylesCard.img2} />
 
                 <View>
                     <View style={{ flexDirection: 'row', margin: 5 }}>
