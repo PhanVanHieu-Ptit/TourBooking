@@ -76,3 +76,37 @@
     text-align: right;
     flex: 1;
 }
+
+/* cập nhật thông tin */
+.update-info .wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 24px;
+}
+
+.update-info a {
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+.update-info img {
+    width: 350px;
+}
+
+.update-info label {
+    cursor: pointer;
+    display: block;
+    margin-top: 12px;
+}
+
+.update-info input,
+.update-info select {
+    color: var(--white);
+    background-color: var(--dark);
+    padding: 10px 12px;
+    border: none;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: large;
+    border-radius: 8px;
+    display: block;
+}

@@ -19,19 +19,21 @@ function SubDetail({memoizedOptions, idTour}) {
         e.preventDefault();
         orderTour(formData);
     };
+
+    const [image, setImage] = useState(data.tourpictures[0].imageUrl);
     return (
         <div className={css['sub-details']}>
             <div className={css['left-area']}>
                 <div className={css['image-area']}>
-                    <img src={data.tourpictures[0].imageUrl} alt='' className={css['big-display']} />
+                    <img src={image} alt='' className={css['big-display']} />
                     <div className={css['images']}>
                         {data.tourpictures.map((e, i) => (
-                            <img key={i} src={e.imageUrl} alt='Hình Ảnh Tour' />
+                            <img key={i} src={e.imageUrl} alt='Hình Ảnh Tour' onClick={(e) => setImage(e.target.src)} />
                         ))}
                     </div>
                 </div>
                 <h1>Chi tiết</h1>
-                <div className={css['description']}>{data.tourDetail}</div>
+                <div className={css.description}>{data.tourDetail}</div>
             </div>
             <div className={css['right-area']}>
                 <h1>Giới thiệu</h1>
