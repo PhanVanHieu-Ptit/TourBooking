@@ -2,6 +2,7 @@ import axios from 'axios';
 import {Hypnosis} from 'react-cssfx-loading';
 import {useState} from 'react';
 import {toast} from 'react-toastify';
+import {useNavigate} from 'react-router-dom';
 
 var displayLoading, setDisplayLoading;
 function AxiosLoading() {
@@ -11,7 +12,7 @@ function AxiosLoading() {
     return (
         <>
             {displayLoading && (
-                <div div className='loading-overlay'>
+                <div className='loading-overlay'>
                     <Hypnosis color='var(--gold)' width='35px' height='35px' />
                 </div>
             )}
@@ -29,8 +30,9 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
     function (config) {
+        console.log('Call API: ' + config.url);
         setDisplayLoading(true);
-        config.headers.Authorization = `${localStorage.getItem('Authorization')}`;
+        config.headers.Authorization = localStorage.token;
         return config;
     },
     function (error) {
@@ -41,12 +43,13 @@ instance.interceptors.request.use(
 );
 instance.interceptors.response.use(
     async function (response) {
-        console.log(response);
         setTimeout(() => setDisplayLoading(false), 500);
         // console.log(response.headers.get('Authorization'));
         if (response.headers.get('Authorization')) {
             response.data = {...response.data, Authorization: response.headers.get('Authorization')};
         }
+
+        //fix lại ngày
         response.data.data.forEach((e, i) => {
             for (let prop in e) {
                 if (typeof e[prop] == 'string') {
@@ -56,10 +59,16 @@ instance.interceptors.response.use(
                 }
             }
         });
+
+        //toast message
         if (response.data.status) {
             toast.success(response.data.message);
         } else {
             toast.error(response.data.message);
+        }
+        //token hết hạn thì rediect về trang đăng nhập
+        if (response.data.message.includes('Token')) {
+            window.location.href = '/sign-in';
         }
         return response.data;
     },

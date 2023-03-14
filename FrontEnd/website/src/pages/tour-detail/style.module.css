@@ -67,7 +67,6 @@
 
 .main-detail-wrapper img {
   width: 1.5rem;
-
 }
 
 .main-detail-value {
@@ -78,12 +77,12 @@
 .sub-details {
   color: var(--black);
   display: flex;
-  padding: 42px 8px;
-  text-align: justify;
+  margin: 24px auto;
+  width: 1200px;
 }
 
 .left-area {
-  width: 120%;
+  width: 60%;
 }
 
 .images {
@@ -100,25 +99,19 @@
   border-radius: 8px;
 }
 
-.description {
-  /* font-family: 'EB Garamond'; */
-  /* font-size: 16px; */
-  /* text-align: justify; */
-}
 
 .big-display {
   width: 100%;
-  height: 600px;
+  height: 480px;
   object-fit: cover;
   object-position: bottom;
   margin-bottom: 16px;
-  border-radius: 32px;
+  border-radius: 16px;
 }
 
 .right-area {
   position: relative;
-  padding: 0 32px;
-  max-width: 50%;
+  margin-left: 32px;
 }
 
 .right-area h1 {

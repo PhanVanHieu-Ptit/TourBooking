@@ -1,14 +1,32 @@
 import css from './style.module.css';
-function SubDetail({memoizedOptions}) {
+import {useState} from 'react';
+import {orderTour} from '../../utils/services';
+
+function SubDetail({memoizedOptions, idTour}) {
     const data = memoizedOptions;
+    const [formData, setFormData] = useState({
+        idTour,
+        quantity: 1,
+        note: '',
+    });
+    const handleValueChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value,
+        });
+    };
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        orderTour(formData);
+    };
     return (
         <div className={css['sub-details']}>
             <div className={css['left-area']}>
                 <div className={css['image-area']}>
                     <img src={data.tourpictures[0].imageUrl} alt='' className={css['big-display']} />
                     <div className={css['images']}>
-                        {data.tourpictures.map((e) => (
-                            <img src={e.imageUrl} alt='Hình Ảnh Tour' />
+                        {data.tourpictures.map((e, i) => (
+                            <img key={i} src={e.imageUrl} alt='Hình Ảnh Tour' />
                         ))}
                     </div>
                 </div>
@@ -18,11 +36,11 @@ function SubDetail({memoizedOptions}) {
             <div className={css['right-area']}>
                 <h1>Giới thiệu</h1>
                 <p className={css['intro']}>{data.tourIntro}</p>
-                <form className={css['booking-frm']}>
+                <form className={css['booking-frm']} onSubmit={handleSubmit}>
                     <label htmlFor='quantity'>Số người</label>
-                    <input type='number' name='quantity' />
+                    <input type='number' name='quantity' onChange={handleValueChange} value={formData.quantity} />
                     <label htmlFor='note'>Ghi chú</label>
-                    <textarea cols={30} rows={10} defaultValue={''} />
+                    <textarea cols={30} rows={10} name='note' onChange={handleValueChange} value={formData.note} />
                     <button className='btn--gold' type='submit'>
                         Đặt ngay
                     </button>

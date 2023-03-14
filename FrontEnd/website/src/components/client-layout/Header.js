@@ -14,24 +14,27 @@ function Header() {
             <header>
                 <Hero />
                 <nav>
-                    <div className='signed-in-container'>
-                        <a href='#' className='user'>
-                            <img src={userSvg} alt='' />
-                            <span className='user-name'>User name</span>
-                        </a>
-                        <a href='/#tourhistory' onClick={togglePopup}>
-                            Lịch sử đặt tour
-                        </a>
-                        <a href='/sign-in' onClick={() => localStorage.removeItem('token')}>
-                            Đăng xuất
-                        </a>
-                    </div>
-                    <div className='non-signed-in-container'>
-                        <a href='/sign-in'>Đăng nhập</a>
-                        <a href='/sign-up' className='btn--gold'>
-                            Đăng ký
-                        </a>
-                    </div>
+                    {localStorage.token ? (
+                        <div className='signed-in-container'>
+                            <a href='#' className='user'>
+                                <img src={localStorage.imageUrl == 'null' ? userSvg : localStorage.imageUrl} alt='' />
+                                <span className='user-name'>{localStorage.name}</span>
+                            </a>
+                            <a href='#' onClick={togglePopup}>
+                                Lịch sử đặt tour
+                            </a>
+                            <a href='/sign-in' onClick={() => localStorage.removeItem('token')} className='btn--gold'>
+                                Đăng xuất
+                            </a>
+                        </div>
+                    ) : (
+                        <div className='non-signed-in-container'>
+                            <a href='/sign-in'>Đăng nhập</a>
+                            <a href='/sign-up' className='btn--gold'>
+                                Đăng ký
+                            </a>
+                        </div>
+                    )}
                 </nav>
             </header>
             {showPopup && <Popup content={<BookedToursClient />} onClose={togglePopup}></Popup>}

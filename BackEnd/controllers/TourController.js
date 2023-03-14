@@ -142,6 +142,10 @@ class TourController {
                 featured,
                 tourPictures,
             } = req.body;
+            await connection.execute('delete from tourpicture where idTour=?', [idTour]);
+            tourPictures.forEach((imageUrl) => {
+                connection.execute('insert into tourpicture(idTour,imageUrl) values(?,?)', [idTour, imageUrl]);
+            });
             let [rows, fields] = await connection.execute(
                 'update tour set name=?,startDate=?,totalDay=?,minQuantity=?,maxQuantity=?,normalPenaltyFee=?,strictPenaltyFee=?,minDate=?,tourGuide=?,tourIntro=?,tourDetail=?,pickUpPoint=?,tourDestination=?,detailPickUpPoint=?,detailTourDestination=?,price=?,featured=? where idTour=?',
                 [
@@ -165,7 +169,8 @@ class TourController {
                     idTour,
                 ],
             );
-            if (rows.changedRows < 1) return res.send(message(rows, false, 'Không có thay đổi!'));
+
+            // if (rows.changedRows < 1) return res.send(message(rows, true, 'Không có thay đổi!'));
             return res.send(message(rows, true, 'Cập nhật tour thành công'));
         } catch (error) {
             console.log(error.message);

@@ -18,7 +18,13 @@ function useAuth() {
             return;
         }
         localStorage.setItem('token', rs.Authorization);
-        console.log(localStorage.getItem('token'));
+        localStorage.setItem('id', rs.data[0].id);
+        localStorage.setItem('name', rs.data[0].name);
+        localStorage.setItem('imageUrl', rs.data[0].imageUrl);
+        localStorage.setItem('role', rs.data[0].role);
+        localStorage.setItem('email', rs.data[0].email);
+
+        console.log('set token:', localStorage.getItem('token'));
 
         navigate('/');
     };

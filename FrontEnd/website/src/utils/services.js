@@ -12,9 +12,15 @@ export async function forgotPassword(data) {
 export async function getListAddress() {
     return axios.get('/site/list-address');
 }
-export async function getListTour() {
-    return axios.get('/tour/list');
+export async function getListTour(searchKey = '') {
+    return axios.get('/tour/list?key=' + searchKey);
 }
 export async function getTour(id) {
     return axios.get(`/tour/${id}/detail`);
+}
+export async function orderTour(data) {
+    return axios.post('/order-tours/order', data);
+}
+export async function orderedTour(data) {
+    return axios.get('/order-tours/ordered-tour', data);
 }

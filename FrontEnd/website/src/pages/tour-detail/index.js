@@ -13,9 +13,8 @@ function TourDetail({children}) {
         getTour(idTour).then((rs) => setTour(rs.data));
     }, []);
     const memoizedOptions = useMemo(() => tour, [tour]);
-    console.log(memoizedOptions);
     if (memoizedOptions.length == 0) {
-        return <p>Không tìm thấy tour</p>;
+        return <></>;
     }
     return (
         <DefaultClientLayout>
@@ -23,7 +22,7 @@ function TourDetail({children}) {
                 <MainBackground />
                 <MainDetail memoizedOptions={memoizedOptions[0]}></MainDetail>
                 <Heading memoizedOptions={memoizedOptions[0]}></Heading>
-                <SubDetail memoizedOptions={memoizedOptions[0]}></SubDetail>
+                <SubDetail memoizedOptions={memoizedOptions[0]} idTour={idTour}></SubDetail>
             </main>
         </DefaultClientLayout>
     );
