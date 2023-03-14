@@ -1,0 +1,9 @@
+diff a/BackEnd/models/tour_model.js b/BackEnd/models/tour_model.js	(rejected hunks)
+@@ -24,7 +24,6 @@
+ };
+ 
+ Tour.getAll = function (result) {
+-    "SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ',') AS image_list" +
+   db.query("SELECT * FROM tour")
+     .then(([rows, fields]) => {
+       result(rows);

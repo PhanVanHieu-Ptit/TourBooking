@@ -85,7 +85,7 @@ function CardOrder({ props }) {
             <Text style={styles.title}>Ngày {formatDate(props.orderDateTime)}</Text>
             <TouchableOpacity>
                 <View style={[stylesCard.card2, { height: 140 }]}>
-                    <Image source={{ uri: `${props.tour.tourpictures[0].imageUrl}` }} style={stylesCard.img2} />
+                    <Image source={{ uri: `${props.tour.imageUrl[0]}` }} style={stylesCard.img2} />
 
                     <View>
                         <View style={{ flexDirection: 'row', margin: 5 }}>
