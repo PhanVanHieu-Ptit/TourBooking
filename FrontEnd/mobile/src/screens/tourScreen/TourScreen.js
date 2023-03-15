@@ -311,7 +311,6 @@ function TourScreen({ route, navigation }) {
                     price: price,
                     featured: featured,
                     tourPictures: listUrlImages,
-
                     // role: 'staff',
                 },
                 { 'Content-Type': 'application/json', authorization: user.accessToken },

@@ -1,5 +1,15 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { FlatList, SafeAreaView, ScrollView, Text, View, TouchableOpacity, StatusBar, Alert } from 'react-native';
+import {
+    FlatList,
+    SafeAreaView,
+    ScrollView,
+    Text,
+    View,
+    TouchableOpacity,
+    StatusBar,
+    Alert,
+    ActivityIndicator,
+} from 'react-native';
 import Find from '../../components/home/find';
 import Header from '../../components/home/header';
 import stylesHome from './style';
@@ -13,12 +23,14 @@ import API from '../../res/string';
 
 function Home({ navigation }) {
     const { toursOutStanding, setToursOutStanding, toursComing, setToursComming } = useContext(AppContext);
+    const [isLoading1, setIsLoading1] = useState(true);
+    const [isLoading2, setIsLoading2] = useState(true);
     useEffect(() => {
         request
-            .get(API.toursOutStanding)
+            .get(API.toursOutStanding + '?key=featured')
             .then((response) => {
                 console.log(response.data);
-
+                setIsLoading1(false);
                 if (response.data.status == true) {
                     setToursOutStanding(response.data.data);
                 } else {
@@ -31,22 +43,22 @@ function Home({ navigation }) {
                 console.log(err);
             });
 
-        // request
-        //     .get(API.toursComing)
-        //     .then((response) => {
-        //         console.log(response.data);
-
-        //         if (response.data.status == true) {
-        //             setToursComming(response.data.data);
-        //         } else {
-        //             Alert.alert('Thông báo!', response.data.message + '', [
-        //                 { text: 'OK', onPress: () => console.log('OK Pressed') },
-        //             ]);
-        //         }
-        //     })
-        //     .catch((err) => {
-        //         console.log(err);
-        //     });
+        request
+            .get(API.toursOutStanding)
+            .then((response) => {
+                console.log(response.data);
+                setIsLoading2(false);
+                if (response.data.status == true) {
+                    setToursComming(response.data.data);
+                } else {
+                    Alert.alert('Thông báo!', response.data.message + '', [
+                        { text: 'OK', onPress: () => console.log('OK Pressed') },
+                    ]);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }, []);
 
     return (
@@ -82,19 +94,35 @@ function Home({ navigation }) {
                     <View>
                         <Text style={stylesHome.txt2}>Các tour nổi bật</Text>
                     </View>
-                    <FlatList
-                        horizontal
-                        // style={{flex: 1}}
-                        data={toursOutStanding}
-                        renderItem={({ item }) => <CardNewTour props={item} navigation={navigation} />}
-                        keyExtractor={(item) => item.idTour}
-                    />
+                    {isLoading1 ? (
+                        <ActivityIndicator size="small" color={COLOR.primary} />
+                    ) : (
+                        <FlatList
+                            horizontal
+                            // style={{flex: 1}}
+                            data={toursOutStanding}
+                            renderItem={({ item }) => <CardNewTour props={item} navigation={navigation} />}
+                            keyExtractor={(item) => item.idTour}
+                        />
+                    )}
+
                     <View style={{ marginTop: 50 }}>
                         <Text style={stylesHome.txt2}>Các tour sắp diễn ra</Text>
                     </View>
-                    {toursOutStanding.map((item) => (
-                        <CardCommingTour tour={item} key={item.idTour} navigation={navigation} screen="DetailTour" />
-                    ))}
+                    {isLoading2 ? (
+                        <ActivityIndicator size="small" color={COLOR.primary} />
+                    ) : (
+                        <View>
+                            {toursComing.map((item) => (
+                                <CardCommingTour
+                                    tour={item}
+                                    key={item.idTour}
+                                    navigation={navigation}
+                                    screen="DetailTour"
+                                />
+                            ))}
+                        </View>
+                    )}
                 </View>
             </SafeAreaView>
         </ScrollView>
