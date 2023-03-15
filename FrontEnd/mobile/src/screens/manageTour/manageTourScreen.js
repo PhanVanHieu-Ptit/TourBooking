@@ -21,7 +21,7 @@ function ManageTourScreen({ navigation }) {
 
                 if (response.status == true) {
                     setListTour(response.data);
-                    setMasterDataSource(response.data);
+                    // setMasterDataSource(response.data);
                     setFilteredDataSource(response.data);
                 } else {
                     Alert.alert('Thông báo!', response.message + '', [
@@ -34,7 +34,11 @@ function ManageTourScreen({ navigation }) {
             });
     }, []);
 
-    const [masterDataSource, setMasterDataSource] = useState(listTour);
+    useEffect(() => {
+        setFilteredDataSource(listTour);
+    }, [listTour]);
+
+    // const [masterDataSource, setMasterDataSource] = useState(listTour);
     const [filteredDataSource, setFilteredDataSource] = useState(listTour);
 
     return (
@@ -66,8 +70,8 @@ function ManageTourScreen({ navigation }) {
                 </TouchableOpacity>
             </View>
             <Find
-                masterDataSource={masterDataSource}
-                setMasterDataSource={setMasterDataSource}
+                masterDataSource={listTour}
+                // setMasterDataSource={setMasterDataSource}
                 setFilteredDataSource={setFilteredDataSource}
             />
             <ScrollView>
