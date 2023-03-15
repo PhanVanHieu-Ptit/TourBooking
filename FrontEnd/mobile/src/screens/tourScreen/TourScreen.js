@@ -25,6 +25,7 @@ import API from '../../res/string';
 import SelectDropdown from 'react-native-select-dropdown';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { AppContext } from '../../../App';
+import { uploadImage } from '../../services/untils/uploadImage';
 
 let nextId = 0;
 function TourScreen({ route, navigation }) {
@@ -45,98 +46,98 @@ function TourScreen({ route, navigation }) {
     const [normalPenaltyFee, setNormalPenaltyFee] = useState(tour != undefined ? tour.normalPenaltyFee + '' : '');
     const [strictPenaltyFee, setStrictPenaltyFee] = useState(tour != undefined ? tour.strictPenaltyFee + '' : '');
     const [minDate, setMinDate] = useState(tour != undefined ? tour.minDate + '' : '');
-    const [tourGuide, setTourGuide] = useState(tour != undefined ? tour.tourGuide : false);
+    const [tourGuide, setTourGuide] = useState(tour != undefined ? (tour.tourGuide == '1' ? true : false) : false);
     const [price, setPrice] = useState(tour != undefined ? tour.price + '' : '');
     const [tourDestination, setTourDestination] = useState(tour != undefined ? tour.tourDestination : '');
-    const [featured, setFeatured] = useState(tour != undefined ? tour.featured : false);
+    const [featured, setFeatured] = useState(tour != undefined ? (tour.featured == '1' ? true : false) : false);
 
-    const checkData = () => {
-        if (name.trim().length == 0) {
-            Alert.alert('Thông báo!', 'Không được để trống tên tour!', [
-                { text: 'OK', onPress: () => console.log('OK Pressed') },
-            ]);
-            return false;
-        }
-        if (tourIntro.trim().length == 0) {
-            Alert.alert('Thông báo!', 'Không được để trống giới thiệu tour!', [
-                { text: 'OK', onPress: () => console.log('OK Pressed') },
-            ]);
-            return false;
-        }
-        if (tourDetail.trim().length == 0) {
-            Alert.alert('Thông báo!', 'Không được để trống chi tiết tour!', [
-                { text: 'OK', onPress: () => console.log('OK Pressed') },
-            ]);
-            return false;
-        }
-        if (pickUpPoint.trim().length == 0) {
-            Alert.alert('Thông báo!', 'Không được để trống điểm đón!', [
-                { text: 'OK', onPress: () => console.log('OK Pressed') },
-            ]);
-            return false;
-        }
-        if (tourDestination.trim().length == 0) {
-            Alert.alert('Thông báo!', 'Không được để trống điểm đến!', [
-                { text: 'OK', onPress: () => console.log('OK Pressed') },
-            ]);
-            return false;
-        }
-        if (Number(totalDay) <= 0) {
-            Alert.alert('Thông báo!', 'Số ngày phải lớn hơn 0!', [
-                { text: 'OK', onPress: () => console.log('OK Pressed') },
-            ]);
-            return false;
-        }
-        if (Number(minQuantity) <= 0) {
-            Alert.alert('Thông báo!', 'Số người tối thiểu phải lớn hơn 0!', [
-                { text: 'OK', onPress: () => console.log('OK Pressed') },
-            ]);
-            return false;
-        }
-        if (Number(maxQuantity) <= 0) {
-            Alert.alert('Thông báo!', 'Số người tối đa ngày phải lớn hơn 0!', [
-                { text: 'OK', onPress: () => console.log('OK Pressed') },
-            ]);
-            return false;
-        }
-        if (Number(maxQuantity) < Number(minQuantity)) {
-            Alert.alert('Thông báo!', 'Số người tối đa  phải lớn hơn hoặc bằng số  người tối thiểu!', [
-                { text: 'OK', onPress: () => console.log('OK Pressed') },
-            ]);
-            return false;
-        }
-        if (Number(normalPenaltyFee) <= 0) {
-            Alert.alert('Thông báo!', 'Mức hủy 1 phải lớn hơn 0!', [
-                { text: 'OK', onPress: () => console.log('OK Pressed') },
-            ]);
-            return false;
-        }
-        if (Number(strictPenaltyFee) <= 0) {
-            Alert.alert('Thông báo!', 'Mức hủy 2 phải lớn hơn 0!', [
-                { text: 'OK', onPress: () => console.log('OK Pressed') },
-            ]);
-            return false;
-        }
-        if (Number(strictPenaltyFee) < Number(strictPenaltyFee)) {
-            Alert.alert('Thông báo!', 'Mức hủy 2 phải lớn hơn 0!', [
-                { text: 'OK', onPress: () => console.log('OK Pressed') },
-            ]);
-            return false;
-        }
-        if (Number(minDate) <= 0) {
-            Alert.alert('Thông báo!', 'Thời điểm áp dụng mức hủy 2 phải lớn hơn 0!', [
-                { text: 'OK', onPress: () => console.log('OK Pressed') },
-            ]);
-            return false;
-        }
-        if (Number(price) <= 0) {
-            Alert.alert('Thông báo!', 'Giá phải lớn hơn 0!', [
-                { text: 'OK', onPress: () => console.log('OK Pressed') },
-            ]);
-            return false;
-        }
-        return true;
-    };
+    // const checkData = () => {
+    //     if (name.trim().length == 0) {
+    //         Alert.alert('Thông báo!', 'Không được để trống tên tour!', [
+    //             { text: 'OK', onPress: () => console.log('OK Pressed') },
+    //         ]);
+    //         return false;
+    //     }
+    //     if (tourIntro.trim().length == 0) {
+    //         Alert.alert('Thông báo!', 'Không được để trống giới thiệu tour!', [
+    //             { text: 'OK', onPress: () => console.log('OK Pressed') },
+    //         ]);
+    //         return false;
+    //     }
+    //     if (tourDetail.trim().length == 0) {
+    //         Alert.alert('Thông báo!', 'Không được để trống chi tiết tour!', [
+    //             { text: 'OK', onPress: () => console.log('OK Pressed') },
+    //         ]);
+    //         return false;
+    //     }
+    //     if (pickUpPoint.trim().length == 0) {
+    //         Alert.alert('Thông báo!', 'Không được để trống điểm đón!', [
+    //             { text: 'OK', onPress: () => console.log('OK Pressed') },
+    //         ]);
+    //         return false;
+    //     }
+    //     if (tourDestination.trim().length == 0) {
+    //         Alert.alert('Thông báo!', 'Không được để trống điểm đến!', [
+    //             { text: 'OK', onPress: () => console.log('OK Pressed') },
+    //         ]);
+    //         return false;
+    //     }
+    //     if (Number(totalDay) <= 0) {
+    //         Alert.alert('Thông báo!', 'Số ngày phải lớn hơn 0!', [
+    //             { text: 'OK', onPress: () => console.log('OK Pressed') },
+    //         ]);
+    //         return false;
+    //     }
+    //     if (Number(minQuantity) <= 0) {
+    //         Alert.alert('Thông báo!', 'Số người tối thiểu phải lớn hơn 0!', [
+    //             { text: 'OK', onPress: () => console.log('OK Pressed') },
+    //         ]);
+    //         return false;
+    //     }
+    //     if (Number(maxQuantity) <= 0) {
+    //         Alert.alert('Thông báo!', 'Số người tối đa ngày phải lớn hơn 0!', [
+    //             { text: 'OK', onPress: () => console.log('OK Pressed') },
+    //         ]);
+    //         return false;
+    //     }
+    //     if (Number(maxQuantity) < Number(minQuantity)) {
+    //         Alert.alert('Thông báo!', 'Số người tối đa  phải lớn hơn hoặc bằng số  người tối thiểu!', [
+    //             { text: 'OK', onPress: () => console.log('OK Pressed') },
+    //         ]);
+    //         return false;
+    //     }
+    //     if (Number(normalPenaltyFee) <= 0) {
+    //         Alert.alert('Thông báo!', 'Mức hủy 1 phải lớn hơn 0!', [
+    //             { text: 'OK', onPress: () => console.log('OK Pressed') },
+    //         ]);
+    //         return false;
+    //     }
+    //     if (Number(strictPenaltyFee) <= 0) {
+    //         Alert.alert('Thông báo!', 'Mức hủy 2 phải lớn hơn 0!', [
+    //             { text: 'OK', onPress: () => console.log('OK Pressed') },
+    //         ]);
+    //         return false;
+    //     }
+    //     if (Number(strictPenaltyFee) < Number(strictPenaltyFee)) {
+    //         Alert.alert('Thông báo!', 'Mức hủy 2 phải lớn hơn 0!', [
+    //             { text: 'OK', onPress: () => console.log('OK Pressed') },
+    //         ]);
+    //         return false;
+    //     }
+    //     if (Number(minDate) <= 0) {
+    //         Alert.alert('Thông báo!', 'Thời điểm áp dụng mức hủy 2 phải lớn hơn 0!', [
+    //             { text: 'OK', onPress: () => console.log('OK Pressed') },
+    //         ]);
+    //         return false;
+    //     }
+    //     if (Number(price) <= 0) {
+    //         Alert.alert('Thông báo!', 'Giá phải lớn hơn 0!', [
+    //             { text: 'OK', onPress: () => console.log('OK Pressed') },
+    //         ]);
+    //         return false;
+    //     }
+    //     return true;
+    // };
 
     const openDatePicker = () => {
         setShowDatePicker(true);
@@ -202,14 +203,15 @@ function TourScreen({ route, navigation }) {
     const [listAddress, setListAddress] = useState([]);
 
     useEffect(() => {
-        async function loadProvinces() {
-            await request
+        function loadProvinces() {
+            request
                 .get(API.listAddress)
                 .then((response) => {
                     console.log(response);
 
                     if (response.status == true) {
                         setListAddress(response.data);
+                        updateListImage();
                     } else {
                         Alert.alert('Thất bại!', response.message + '', [
                             { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -220,11 +222,29 @@ function TourScreen({ route, navigation }) {
                     console.log(err);
                 });
         }
-
+        const updateListImage = () => {
+            if (tour != undefined) {
+                let list = [];
+                for (const img in tour.imageUrl) {
+                    list.push({ id: nextId++, uri: tour.imageUrl[img] });
+                }
+                setListImage([...list]);
+            }
+        };
         loadProvinces();
+        // updateListImage();
     }, []);
 
-    function addTour() {
+    const addImage = async () => {
+        var images = [];
+        for (let i in listImage) {
+            const url = await uploadImage(listImage[i].uri);
+            images.push(url);
+        }
+        return images;
+    };
+    const addTour = async () => {
+        const listUrlImages = await addImage();
         request
             .postPrivate(
                 API.addTour,
@@ -242,11 +262,11 @@ function TourScreen({ route, navigation }) {
                     tourDetail: tourDetail,
                     pickUpPoint: pickUpPoint,
                     tourDestination: tourDestination,
+                    detailPickUpPoint: pickUpPoint,
+                    detailTourDestination: tourDestination,
                     price: price,
                     featured: featured,
-                    tourPictures: [
-                        'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg?20200913095930',
-                    ],
+                    tourPictures: listUrlImages,
                     // role: 'staff',
                 },
                 { 'Content-Type': 'application/json', authorization: user.accessToken },
@@ -264,9 +284,10 @@ function TourScreen({ route, navigation }) {
             .catch((err) => {
                 console.log(err);
             });
-    }
+    };
 
-    function updateTour() {
+    const updateTour = async () => {
+        const listUrlImages = await addImage();
         request
             .postPrivate(
                 '/tour/' + tour.idTour + '/update',
@@ -285,11 +306,12 @@ function TourScreen({ route, navigation }) {
                     tourDetail: tourDetail,
                     pickUpPoint: pickUpPoint,
                     tourDestination: tourDestination,
+                    detailPickUpPoint: pickUpPoint,
+                    detailTourDestination: tourDestination,
                     price: price,
                     featured: featured,
-                    tourPictures: [
-                        'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg?20200913095930',
-                    ],
+                    tourPictures: listUrlImages,
+
                     // role: 'staff',
                 },
                 { 'Content-Type': 'application/json', authorization: user.accessToken },
@@ -308,7 +330,7 @@ function TourScreen({ route, navigation }) {
             .catch((err) => {
                 console.log(err);
             });
-    }
+    };
 
     function updateListTour() {
         request
@@ -565,7 +587,7 @@ function TourScreen({ route, navigation }) {
                             keyboardType="numeric"
                             placeholder="Nhập số người tối thiểu"
                             style={stylesTour.input}
-                            value={minQuantity}
+                            defaultValue={minQuantity}
                             onChangeText={(newText) => setMinQuantity(newText)}
                         />
                     </View>
@@ -575,7 +597,7 @@ function TourScreen({ route, navigation }) {
                             keyboardType="numeric"
                             placeholder="Nhập số người tối đa"
                             style={stylesTour.input}
-                            value={maxQuantity}
+                            defaultValue={maxQuantity}
                             onChangeText={(newText) => setMaxQuantity(newText)}
                         />
                     </View>

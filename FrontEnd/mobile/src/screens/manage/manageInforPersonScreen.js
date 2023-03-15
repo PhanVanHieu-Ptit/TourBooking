@@ -101,7 +101,7 @@ function ManageInforPersonScreen({ route, navigation }) {
         if (checkValue()) {
             const url = await uploadImage(imgPath);
             console.log('url: ', url);
-            await deleteImage('nM0hvJF');
+            // await deleteImage('nM0hvJF');
 
             request
                 .postPrivate(
@@ -154,12 +154,14 @@ function ManageInforPersonScreen({ route, navigation }) {
         }
     };
 
-    const updateStaff = () => {
+    const updateStaff = async () => {
         if (checkValue()) {
+            const url = await uploadImage(imgPath);
+            console.log('url: ', url);
             request
                 .postPrivate(
                     '/staff/' + user.id + '/update',
-                    { name, imageUrl: user.imageUrl },
+                    { name, imageUrl: url },
                     { 'Content-Type': 'application/json', authorization: user.accessToken },
                     'PUT',
                 )
@@ -170,7 +172,7 @@ function ManageInforPersonScreen({ route, navigation }) {
                         const newUser = {
                             id: user.id,
                             name: name,
-                            imageUrl: user.imageUrl,
+                            imageUrl: url,
                             role: user.role,
                             email: user.email,
                             accessToken: user.accessToken,
