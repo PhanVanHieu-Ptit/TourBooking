@@ -91,28 +91,34 @@ class OrderTourController {
 
     var id = query.id;
     var status = query.status;
+    var paging = query.paging;
 
     switch (id) {
       case undefined:
         if (status == "Tất cả" || status == undefined) {
-          OrderTour.getAll(function (result) {
+          OrderTour.getAll(paging, function (result) {
             getInforTour(res, result);
           });
         } else {
-          OrderTour.findByStatus(status, function (result) {
+          OrderTour.findByStatus(status, paging, function (result) {
             getInforTour(res, result);
           });
         }
         break;
       default:
         if (status == "Tất cả" || status == undefined) {
-          OrderTour.getAllFollowCustomer(id, function (result) {
+          OrderTour.getAllFollowCustomer(id, paging, function (result) {
             getInforTour(res, result);
           });
         } else {
-          OrderTour.findByStatusFollowCustomer(id, status, function (result) {
-            getInforTour(res, result);
-          });
+          OrderTour.findByStatusFollowCustomer(
+            id,
+            status,
+            paging,
+            function (result) {
+              getInforTour(res, result);
+            }
+          );
         }
     }
   }
@@ -131,8 +137,9 @@ class OrderTourController {
   find(req, res, next) {
     var query = require("url").parse(req.url, true).query;
     var key = query.key;
+    var paging = query.paging;
 
-    OrderTour.findBykey(key)
+    OrderTour.findBykey(key, paging)
       .then((result) => {
         getInforTour(res, result);
       })

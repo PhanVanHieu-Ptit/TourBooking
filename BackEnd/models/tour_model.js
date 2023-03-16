@@ -1,3 +1,4 @@
+const calculateStart = require("../utils/calculateStart");
 const db = require("../utils/connection");
 
 const Tour = function (tour) {
@@ -23,13 +24,15 @@ const Tour = function (tour) {
   this.featured = tour.featured;
 };
 
-Tour.getAll = function (result) {
+Tour.getAll = function (paging, result) {
   db.query(
     "SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ',') AS image_list" +
       " FROM tour" +
       " JOIN tourpicture ON tour.idTour = tourpicture.idTour" +
       " GROUP BY tour.idTour" +
-      " ORDER BY tour.dateCreate DESC;"
+      " ORDER BY tour.dateCreate DESC " +
+      "LIMIT 1 OFFSET ?;",
+    calculateStart(paging)
   )
     .then(([rows, fields]) => {
       result(rows);
@@ -59,7 +62,7 @@ Tour.getById = function (id) {
     });
 };
 
-Tour.findBykey = function (key) {
+Tour.findBykey = function (key, paging) {
   let condition = "";
   if (key)
     condition = `where name like '%${key}%' OR  tourIntro like '%${key}%' or pickUpPoint like '%${key}%' or tourDestination like '%${key}%'`;
@@ -70,7 +73,9 @@ Tour.findBykey = function (key) {
         " JOIN tourpicture ON tour.idTour = tourpicture.idTour " +
         condition +
         " GROUP BY tour.idTour" +
-        " ORDER BY tour.dateCreate DESC;"
+        " ORDER BY tour.dateCreate DESC " +
+        "LIMIT 1 OFFSET ?;",
+      calculateStart(paging)
     )
     .then(([rows, fields]) => {
       console.log("findTourBykey:");
@@ -82,7 +87,7 @@ Tour.findBykey = function (key) {
     });
 };
 
-Tour.getListFeatured = function () {
+Tour.getListFeatured = function (paging) {
   return db
     .query(
       "SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ', ') AS image_list" +
@@ -90,7 +95,9 @@ Tour.getListFeatured = function () {
         " JOIN tourpicture ON tour.idTour = tourpicture.idTour " +
         "WHERE featured = 1" +
         " GROUP BY tour.idTour" +
-        " ORDER BY tour.dateCreate DESC;"
+        " ORDER BY tour.dateCreate DESC " +
+        "LIMIT 5 OFFSET ?;",
+      calculateStart(paging)
     )
     .then(([rows, fields]) => {
       return rows;
@@ -114,6 +121,18 @@ Tour.remove = function (id, result) {
     })
     .catch((err) => {
       result(err);
+    });
+};
+
+Tour.getNumberTour = function () {
+  return db
+    .query("SELECT COUNT(*) as number FROM tour WHERE featured =1")
+    .then(([rows, fields]) => {
+      return rows;
+    })
+    .catch((err) => {
+      console.log(err);
+      return err;
     });
 };
 
