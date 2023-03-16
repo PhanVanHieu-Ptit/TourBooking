@@ -78,10 +78,10 @@
 }
 
 /* cập nhật thông tin */
-.update-info .wrapper {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 24px;
+
+.update-info {
+    width: 340px;
+    margin: 0 auto;
 }
 
 .update-info a {
@@ -90,9 +90,10 @@
 }
 
 .update-info img {
-    width: 350px;
+    width: 220px;
 }
 
+/* 
 .update-info label {
     cursor: pointer;
     display: block;
@@ -109,4 +110,26 @@
     font-size: large;
     border-radius: 8px;
     display: block;
+} */
+
+
+.update-info label {
+    padding-left: 8px;
+    margin: 12px 0 4px;
+    color: var(--gold);
+}
+
+.update-info input,
+.update-info select {
+    width: 100%;
+    border-radius: 32px;
+    border: 2px solid var(--gold);
+    height: 40px;
+    padding: 4px 8px;
+    margin: 6px 6px 0 0;
+}
+
+
+.input-gr {
+    position: relative;
 }

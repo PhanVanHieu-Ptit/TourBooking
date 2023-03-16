@@ -1,6 +1,7 @@
 const message = require('../utils/message');
 const {getListAddress} = require('../utils/address');
 var Status = require('../models/status_model');
+const connection = require('../utils/connection');
 
 class SiteControllers {
     index(req, res) {
@@ -18,6 +19,19 @@ class SiteControllers {
             console.log('result: ', result);
             res.send(message(result, true, 'Thành công!'));
         });
+    }
+    async getOwnInfor(req, res) {
+        let {email} = req.body;
+        try {
+            let rows, fields;
+            if (req.body.role == 'customer')
+                [rows, fields] = await connection.execute('select * from customer where email = ?', [email]);
+            else [rows, fields] = await connection.execute('select * from staff where email = ?', [email]);
+
+            return res.send(message(rows[0], true, ''));
+        } catch (error) {
+            return res.send(message('', false, error.message));
+        }
     }
 }
 

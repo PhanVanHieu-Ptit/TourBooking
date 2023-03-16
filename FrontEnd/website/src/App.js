@@ -5,6 +5,8 @@ import HomePage from './pages/home/index';
 import {AxiosLoading} from './utils/axiosConfig';
 import SignIn from './pages/sign-in';
 import {ToastContainer} from 'react-toastify';
+import ManageTour from './pages/manage-tour/index';
+import ManageStaff from './pages/manage-staff/index';
 
 function App() {
     return (
@@ -14,10 +16,12 @@ function App() {
                     <Route path='/' element={<HomePage />} />
                     <Route path='/tour-detail/:idTour' element={<TourDetail />} />
                     <Route path='/sign-in' element={<SignIn />} />
+                    <Route path='/manage-staff' element={<ManageTour />} />
+                    <Route path='/manage-tour' element={<ManageStaff />} />
                     <Route path='/sign-up' element={<SignIn initFormType='register' />} />
                 </Routes>
             </Router>
-            <ToastContainer />
+            <ToastContainer position='top-left' autoClose={1000} />
             <AxiosLoading />
         </>
     );

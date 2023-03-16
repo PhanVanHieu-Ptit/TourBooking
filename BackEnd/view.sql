@@ -11,9 +11,9 @@ o.idTourOrder AS idTourOrder,o.orderDateTime AS orderDateTime,o.quantity AS quan
 
 
 --dùng trong quản lý tour
+create view v_tour as 
 select t.*,messageCount  from tour t inner join 
-(select idTour, count(*) as messageCount from tourorder where idStatus=8 or idStatus=11 group by idTour) o 
-on t.idTour = o.idtour 
-
+(select idTour, count(*) as messageCount from tourorder where idStatus=8 or idStatus=10 group by idTour) o 
+on t.idTour = o.idtour  
 
 

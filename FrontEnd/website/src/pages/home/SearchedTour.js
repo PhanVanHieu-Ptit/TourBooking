@@ -22,7 +22,7 @@ function SearchedTour({searchKey, tours}) {
                 {tours.map((e, i) => {
                     return (
                         <a className={css.card} href={'/tour-detail/' + e.idTour}>
-                            <img src={e.tourpictures[0].imageUrl} alt='' className={css.bg} />
+                            <img src={e.imageUrl[0]} alt='' className={css.bg} />
                             <div className={css.infor}>
                                 <h2>{e.name}</h2>
                                 <div className='row-wrapper flex-align-l mt--12'>
