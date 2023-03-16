@@ -12,7 +12,7 @@ function FeaturedTour({memoizedOptions}) {
                             ++count;
                             return (
                                 <a key={i} className={css['tour']} href={'/tour-detail/' + e.idTour}>
-                                    <img src={e.tourpictures[0].imageUrl} alt='tour2' border={0} />
+                                    <img src={e.imageUrl[0]} alt='tour2' border={0} />
                                     <div className={css['tour-name']}>{e.name}</div>
                                 </a>
                             );

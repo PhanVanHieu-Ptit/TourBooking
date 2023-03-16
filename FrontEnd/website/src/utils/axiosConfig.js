@@ -50,15 +50,16 @@ instance.interceptors.response.use(
         }
 
         //fix lại ngày
-        response.data.data.forEach((e, i) => {
-            for (let prop in e) {
-                if (typeof e[prop] == 'string') {
-                    if (e[prop].includes('.000Z')) {
-                        response.data.data[i][prop] = e[prop].replace('T', ' ').replace('.000Z', '');
+        if (response.data.data)
+            response.data.data.forEach((e, i) => {
+                for (let prop in e) {
+                    if (typeof e[prop] == 'string') {
+                        if (e[prop].includes('.000Z')) {
+                            response.data.data[i][prop] = e[prop].replace('T', ' ').replace('.000Z', '');
+                        }
                     }
                 }
-            }
-        });
+            });
 
         //toast message
         if (response.data.status) {
@@ -67,7 +68,7 @@ instance.interceptors.response.use(
             toast.error(response.data.message);
         }
         //token hết hạn thì rediect về trang đăng nhập
-        if (response.data.message.includes('Token')) {
+        if (response.data.message && response.data.message.includes('Token')) {
             window.location.href = '/sign-in';
         }
         return response.data;

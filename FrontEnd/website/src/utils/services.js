@@ -21,6 +21,15 @@ export async function getTour(id) {
 export async function orderTour(data) {
     return axios.post('/order-tours/order', data);
 }
-export async function orderedTour(data) {
-    return axios.get('/order-tours/ordered-tour', data);
+export async function getListOrderTour(id = '', status = '') {
+    return axios.get(`/order-tours/list?id=${id}&status=${status}`);
+}
+export async function getOwnInfor() {
+    return axios.get(`/customer/get-own-infor`);
+}
+export async function changePassword(data) {
+    return axios.patch('/account/change-password', data);
+}
+export async function updateCustomerInfo(data) {
+    return axios.post('/customer/update', data);
 }

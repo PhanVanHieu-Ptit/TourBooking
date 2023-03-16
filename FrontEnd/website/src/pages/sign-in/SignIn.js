@@ -4,9 +4,7 @@ import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {useState} from 'react';
 import {signIn} from '../../utils/services';
-import {useNavigate} from 'react-router-dom';
 function useAuth() {
-    const navigate = useNavigate();
     const handleSignIn = async (e, formData) => {
         e.preventDefault();
         if (!formData.username || !formData.password) {
@@ -18,15 +16,10 @@ function useAuth() {
             return;
         }
         localStorage.setItem('token', rs.Authorization);
-        localStorage.setItem('id', rs.data[0].id);
-        localStorage.setItem('name', rs.data[0].name);
-        localStorage.setItem('imageUrl', rs.data[0].imageUrl);
         localStorage.setItem('role', rs.data[0].role);
-        localStorage.setItem('email', rs.data[0].email);
-
         console.log('set token:', localStorage.getItem('token'));
-
-        navigate('/');
+        if (localStorage.role == 'customer') window.location.href = '/';
+        else window.location.href = '/manage-tour';
     };
     return {
         handleSignIn,

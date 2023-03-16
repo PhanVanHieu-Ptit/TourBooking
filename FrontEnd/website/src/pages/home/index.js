@@ -6,7 +6,10 @@ import helloSvg from '../../assets/svg/hello.svg';
 import React, {useState, useEffect, useMemo} from 'react';
 import {getListTour} from '../../utils/services';
 import SearchedTour from './SearchedTour';
+import checkRole from './../../utils/checkRole';
 function HomePage() {
+    checkRole();
+
     const [tours, setTours] = useState([]);
     useEffect(() => {
         getListTour().then((rs) => setTours(rs.data));
