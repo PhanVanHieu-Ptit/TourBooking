@@ -40,6 +40,15 @@ class TourController {
       Tour.getAll(function (result) {
         res.send(message(seperateString(result), true, "Thành công!"));
       });
+    } else if (key == "featured") {
+      Tour.getListFeatured()
+        .then((result) => {
+          // getImageTour(res, result);
+          res.send(message(seperateString(result), true, "Thành công!"));
+        })
+        .catch((err) => {
+          res.send(message(err, false, "Thất bại!"));
+        });
     } else {
       Tour.findBykey(key)
         .then((result) => {

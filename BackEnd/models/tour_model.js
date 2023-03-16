@@ -28,7 +28,8 @@ Tour.getAll = function (result) {
     "SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ',') AS image_list" +
       " FROM tour" +
       " JOIN tourpicture ON tour.idTour = tourpicture.idTour" +
-      " GROUP BY tour.idTour;"
+      " GROUP BY tour.idTour" +
+      " ORDER BY tour.dateCreate DESC;"
   )
     .then(([rows, fields]) => {
       result(rows);
@@ -68,10 +69,30 @@ Tour.findBykey = function (key) {
         " FROM tour" +
         " JOIN tourpicture ON tour.idTour = tourpicture.idTour " +
         condition +
-        " GROUP BY tour.idTour;"
+        " GROUP BY tour.idTour" +
+        " ORDER BY tour.dateCreate DESC;"
     )
     .then(([rows, fields]) => {
       console.log("findTourBykey:");
+      return rows;
+    })
+    .catch((err) => {
+      console.log(err);
+      return err;
+    });
+};
+
+Tour.getListFeatured = function () {
+  return db
+    .query(
+      "SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ', ') AS image_list" +
+        " FROM tour" +
+        " JOIN tourpicture ON tour.idTour = tourpicture.idTour " +
+        "WHERE featured = 1" +
+        " GROUP BY tour.idTour" +
+        " ORDER BY tour.dateCreate DESC;"
+    )
+    .then(([rows, fields]) => {
       return rows;
     })
     .catch((err) => {
