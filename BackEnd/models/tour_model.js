@@ -102,9 +102,15 @@ Tour.getListFeatured = function () {
 };
 
 Tour.remove = function (id, result) {
-  db.query("DELETE FROM tour WHERE idTour= ?", id)
-    .then(([rows, fields]) => {
-      result(rows);
+  db.query("delete from tourpicture where idTour=?", id)
+    .then(([rows1, fields1]) => {
+      db.query("DELETE FROM tour WHERE idTour= ?", id)
+        .then(([rows, fields]) => {
+          result(rows);
+        })
+        .catch((err) => {
+          result(err);
+        });
     })
     .catch((err) => {
       result(err);

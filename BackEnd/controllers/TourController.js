@@ -87,8 +87,6 @@ class TourController {
     var id = req.params.id;
     Tour.remove(id, function (result) {
       res.send(message(result, true, "Xóa thành công!"));
-    }).catch((err) => {
-      res.send(message(err, false, "Xóa thất bại!"));
     });
   }
 

@@ -85,12 +85,28 @@ OrderTour.getById = function (id) {
 OrderTour.findBykey = function (key) {
   return db
     .query(
-      "SELECT * FROM `tourorder` where " +
-        " idTour = (SELECT idTour FROM `tour` where name like ? OR  tourIntro like ? or tourDetail like ? or pickUpPoint like ? or tourDestination like ?) " +
-        "or idCustomer = (SELECT idCustomer FROM `customer` where name like ? or email like ? or phoneNumber like ? or address like ?)" +
+      "SELECT *" +
+        " FROM `tourorder`" +
+        "WHERE idTour IN (" +
+        " SELECT idTour" +
+        " FROM `tour`" +
+        " WHERE name LIKE ?" +
+        "    OR tourIntro LIKE ?" +
+        "    OR tourDetail LIKE ?" +
+        "    OR pickUpPoint LIKE ?" +
+        "    OR tourDestination LIKE ?" +
+        " )" +
+        " OR idCustomer IN (" +
+        "    SELECT idCustomer" +
+        "    FROM `customer`" +
+        "    WHERE name LIKE ?" +
+        "        OR email LIKE ?" +
+        "        OR phoneNumber LIKE ?" +
+        "        OR address LIKE ?" +
+        " )" +
         " ORDER BY tourorder.orderDateTime DESC;",
       [
-        key,
+        "%" + key + "%",
         "%" + key + "%",
         "%" + key + "%",
         "%" + key + "%",
@@ -131,13 +147,15 @@ OrderTour.create = async function (data, result) {
     });
 };
 
-OrderTour.update = function (data, result) {
+OrderTour.update = async function (data, result) {
+  const getTotalMoney = require("../utils/getTotalMoney");
+  const totalMoney = await getTotalMoney(data.idTour, data.quantity);
   db.query(
     "UPDATE tourorder SET  quantity=?, note=?, totalMoney=? where idTourOrder=? and idCustomer = ? and idTour = ?",
     [
       data.quantity,
       data.note,
-      data.totalMoney,
+      totalMoney,
       data.idTourOrder,
       data.idCustomer,
       data.idTour,
