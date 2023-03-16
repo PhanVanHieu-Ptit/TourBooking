@@ -31,17 +31,19 @@ function getImageTour(res, result) {
 }
 
 class TourController {
-  //[GET] /tour/list?key={key}
+  //[GET] /tour/list?key={key}&paging={paging}
   list(req, res, next) {
     var query = require("url").parse(req.url, true).query;
     var key = query.key;
+    const paging = query.paging;
 
     if (key == undefined) {
-      Tour.getAll(function (result) {
+      Tour.getAll(paging, function (result) {
+        console.log(result);
         res.send(message(seperateString(result), true, "Thành công!"));
       });
     } else if (key == "featured") {
-      Tour.getListFeatured()
+      Tour.getListFeatured(paging)
         .then((result) => {
           // getImageTour(res, result);
           res.send(message(seperateString(result), true, "Thành công!"));
@@ -50,7 +52,7 @@ class TourController {
           res.send(message(err, false, "Thất bại!"));
         });
     } else {
-      Tour.findBykey(key)
+      Tour.findBykey(key, paging)
         .then((result) => {
           // getImageTour(res, result);
           res.send(message(seperateString(result), true, "Thành công!"));
@@ -65,16 +67,6 @@ class TourController {
   detail(req, res, next) {
     Tour.getById(req.params.id)
       .then((result) => {
-        // let tour = result[0];
-        // Picture.getByIdTour(tour.idTour)
-        //   .then((result1) => {
-        //     tour.tourpictures = result1;
-        //     res.send(message(tour, true, "Thành công!"));
-        //   })
-        //   .catch((err) => {
-        //     console.log(err);
-        //     res.send(message(err, false, "Thất bại!"));
-        //   });
         res.send(message(seperateString(result), true, "Thành công!"));
       })
       .catch((err) => {
