@@ -152,7 +152,7 @@ class OrderTourController {
       });
   }
 
-  //[POST] /order-tours/:id/order
+  //[POST] /order-tours/order
   order(req, res, next) {
     var data = req.body;
     OrderTour.create(data, function (data, status, mess) {
