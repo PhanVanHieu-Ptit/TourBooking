@@ -18,7 +18,7 @@ function ManageScreen({ navigation }) {
     const { user, setUser, setHistoryOrder, setToursOutStanding, setToursComming, setListTour } =
         useContext(AppContext);
 
-    const [isLogin, setIsLogin] = useState(user != '');
+    const [isLogin, setIsLogin] = useState(user != '' && user != undefined && user != null);
     const [role, setRole] = useState(user?.role);
     const [navigateInforPerson, setNavigateInforPerson] = useState('Profile');
     function setRoleUser() {

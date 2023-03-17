@@ -20,14 +20,16 @@ const FormData = require('form-data');
 
 function ManageInforPersonScreen({ route, navigation }) {
     const { user, setUser } = useContext(AppContext);
+    const type = route?.params?.type;
     const [listAddress, setListAddress] = useState([]);
-    const [name, setName] = useState(user != undefined ? user.name : '');
-    const [email, setEmail] = useState(user != undefined ? user.email : '1');
-    const [address, setAddress] = useState(user != undefined ? user.address : '');
-    const [phone, setPhone] = useState(user != undefined ? user.phoneNumber : '');
+    const [isLogin, setIsLogin] = useState(user != null && user != undefined && user != '');
+    const [name, setName] = useState(isLogin ? user?.name : '');
+    const [email, setEmail] = useState(isLogin ? user?.email : type == 'register' ? '' : '1');
+    const [address, setAddress] = useState(isLogin ? user?.address : '');
+    const [phone, setPhone] = useState(isLogin ? user?.phoneNumber : '');
     const [imgPath, setImgPath] = useState(
-        user != undefined
-            ? user.imageUrl
+        isLogin
+            ? user?.imageUrl
             : `https://img.freepik.com/free-photo/smiley-little-boy-isolated-pink_23-2148984798.jpg`,
     );
 
@@ -81,7 +83,7 @@ function ManageInforPersonScreen({ route, navigation }) {
             ]);
             return false;
         }
-        if (user.role == 'customer') {
+        if (isLogin && user?.role == 'customer') {
             if (address.trim().length == 0) {
                 Alert.alert('Thông báo!', 'Không được để trống địa chỉ!', [
                     { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -233,7 +235,7 @@ function ManageInforPersonScreen({ route, navigation }) {
                     console.log(err);
                 });
         }
-        if (user.role != 'staff') {
+        if (user?.role != 'staff') {
             loadProvinces();
         }
     }, []);
@@ -256,9 +258,7 @@ function ManageInforPersonScreen({ route, navigation }) {
                         <Icon name="chevron-back" size={25} color="#021A5A" />
                     </View>
                 </TouchableOpacity>
-                <Text style={stylesAllTour.title}>
-                    {user != undefined ? 'Sửa thông tin cá nhân' : 'Nhập thông tin cá nhân'}
-                </Text>
+                <Text style={stylesAllTour.title}>{isLogin ? 'Sửa thông tin cá nhân' : 'Nhập thông tin cá nhân'}</Text>
             </View>
             <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
                 <Image
@@ -275,7 +275,7 @@ function ManageInforPersonScreen({ route, navigation }) {
                     }}
                 >
                     <Text style={[stylesManage.txt_name, { fontSize: 16, fontWeight: 'normal' }]}>
-                        {user != undefined ? 'Đổi ảnh' : 'Chọn ảnh'}
+                        {isLogin ? 'Đổi ảnh' : 'Chọn ảnh'}
                     </Text>
                 </TouchableOpacity>
             </View>
@@ -300,7 +300,7 @@ function ManageInforPersonScreen({ route, navigation }) {
                     <AntDesign name="check" size={20} color="#0D6EFD" />
                 </View>
             </View>
-            {user != undefined ? (
+            {isLogin || type == 'register' ? (
                 <View style={{ marginTop: 20 }}>
                     <Text style={stylesManage.title}>Email</Text>
                     <View
@@ -326,7 +326,7 @@ function ManageInforPersonScreen({ route, navigation }) {
             ) : (
                 ''
             )}
-            {user.role == 'customer' ? (
+            {(isLogin && user?.role == 'customer') || type == 'register' ? (
                 <View style={{ marginTop: 20 }}>
                     <Text style={stylesManage.title}>Địa chỉ</Text>
                     <View
@@ -354,7 +354,7 @@ function ManageInforPersonScreen({ route, navigation }) {
                                 setAddress(selectedItem);
                                 console.log(selectedItem, index);
                             }}
-                            defaultButtonText={address}
+                            defaultButtonText={type == 'register' ? 'Chọn tỉnh / thành phố' : address}
                             buttonTextAfterSelection={(selectedItem, index) => {
                                 return selectedItem;
                             }}
@@ -390,7 +390,7 @@ function ManageInforPersonScreen({ route, navigation }) {
             ) : (
                 ''
             )}
-            {user.role == 'customer' ? (
+            {(isLogin && user?.role == 'customer') || type == 'register' ? (
                 <View style={{ marginTop: 20 }}>
                     <Text style={stylesManage.title}>Số điện thoại</Text>
                     <View
@@ -419,14 +419,14 @@ function ManageInforPersonScreen({ route, navigation }) {
             )}
             <TouchableOpacity
                 onPress={() => {
-                    if (user != undefined) {
+                    if (isLogin) {
                         if (user.role == 'customer') update();
                         else updateStaff();
                     } else addInfo();
                 }}
             >
                 <View style={stylesTour.btn}>
-                    <Text style={stylesTour.txt_btn}>{user != undefined ? 'Lưu lại' : 'Tiếp tục'}</Text>
+                    <Text style={stylesTour.txt_btn}>{isLogin ? 'Lưu lại' : 'Tiếp tục'}</Text>
                 </View>
             </TouchableOpacity>
         </SafeAreaView>
