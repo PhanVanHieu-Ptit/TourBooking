@@ -3,7 +3,8 @@ import Address from './Address';
 import css from './style.module.css';
 import {toast} from 'react-toastify';
 import React, {useState, useEffect} from 'react';
-import {changePassword, getOwnInfor, updateCustomerInfo} from '../../utils/services';
+import {changePassword, getOwnInfor, updateCustomerInfo, updateStaffInfo} from '../../utils/services';
+import uploadImg from './../../utils/image';
 
 const PersonalInfo = ({setPersonalInfoForm}) => {
     const [formData, setFormData] = useState(null);
@@ -14,21 +15,38 @@ const PersonalInfo = ({setPersonalInfoForm}) => {
         });
     };
     const handleSaveUserInfo = async () => {
-        if (!formData.name || !formData.phoneNumber || !formData.address)
-            return toast.error('Không được bỏ trống thông tin!');
-        const rs = await updateCustomerInfo(formData);
+        // if (!formData.name || !formData.phoneNumber || !formData.address)
+        // return toast.error('Không được bỏ trống thông tin!');
+        const rs = await (localStorage.role == 'customer'
+            ? updateCustomerInfo(formData)
+            : updateStaffInfo(formData, localStorage.id));
     };
     useEffect(() => {
         getOwnInfor().then((rs) => setFormData(rs.data[0]));
     }, []);
+
+    const handleImageChange = (e) => {
+        uploadImg(e.target.files[0]).then((rs) =>
+            setFormData({
+                ...formData,
+                imageUrl: rs,
+            }),
+        );
+    };
     return (
         <>
             {formData && (
                 <>
-                    <div className='col-wrapper' style={{cursor: 'pointer'}}>
-                        <img src={formData.imageUrl || defaultAvtSvg} alt='' htmlFor='avt' />
-                        <input type='file' className='avt' id='avt' style={{display: 'none'}} />
-                    </div>
+                    <label className='col-wrapper' style={{cursor: 'pointer'}} htmlFor='avt'>
+                        <img src={formData.imageUrl || defaultAvtSvg} alt='' />
+                        <input
+                            type='file'
+                            className='avt'
+                            id='avt'
+                            style={{display: 'none'}}
+                            onChange={handleImageChange}
+                        />
+                    </label>
                     <p
                         className='mt--24'
                         style={{
@@ -50,16 +68,20 @@ const PersonalInfo = ({setPersonalInfoForm}) => {
                         value={formData.name}
                         onChange={handleInputChange}
                     />
-                    <label>Số điện thoại</label>
-                    <input
-                        type='text'
-                        placeholder='Nhập số điện thoại của bạn'
-                        name='phoneNumber'
-                        value={formData.phoneNumber}
-                        onChange={handleInputChange}
-                    />
-                    <label>Địa chỉ</label>
-                    <Address formData={formData} handleInputChange={handleInputChange} />
+                    {localStorage.role == 'customer' && (
+                        <>
+                            <label>Số điện thoại</label>
+                            <input
+                                type='text'
+                                placeholder='Nhập số điện thoại của bạn'
+                                name='phoneNumber'
+                                value={formData.phoneNumber}
+                                onChange={handleInputChange}
+                            />
+                            <label>Địa chỉ</label>
+                            <Address formData={formData} handleInputChange={handleInputChange} />
+                        </>
+                    )}
                     <button className='btn--gold mt--24' onClick={handleSaveUserInfo} type='button'>
                         Lưu
                     </button>

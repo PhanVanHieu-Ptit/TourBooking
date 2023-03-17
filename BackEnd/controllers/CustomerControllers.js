@@ -19,14 +19,5 @@ class AccountControllers {
             return res.send(message(error, false, 'Cập nhật thông tin thất bại!'));
         }
     }
-    async getOwnInfor(req, res) {
-        let {email} = req.body;
-        try {
-            let [rows, fields] = await connection.execute('select * from customer where email = ?', [email]);
-            return res.send(message(rows[0], true, ''));
-        } catch (error) {
-            return res.send(message('', false, error.message));
-        }
-    }
 }
 module.exports = new AccountControllers();

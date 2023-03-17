@@ -43,7 +43,7 @@ class AccountControllers {
             const role = rows[0].role;
             if (role == 'customer')
                 [rows, fields] = await connection.execute(`select * from customer  where email='${username}'`);
-            else if (role == 'staff')
+            else if (role == 'staff' || role == 'admin')
                 [rows, fields] = await connection.execute(`select * from staff  where email='${username}'`);
             if (rows.length == 0 && role != 'admin') {
                 return res.send(message('', false, 'Không có thông tin user!'));
