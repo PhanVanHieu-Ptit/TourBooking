@@ -16,8 +16,8 @@ function App() {
                     <Route path='/' element={<HomePage />} />
                     <Route path='/tour-detail/:idTour' element={<TourDetail />} />
                     <Route path='/sign-in' element={<SignIn />} />
-                    <Route path='/manage-staff' element={<ManageTour />} />
-                    <Route path='/manage-tour' element={<ManageStaff />} />
+                    <Route path='/manage-staff' element={<ManageStaff />} />
+                    <Route path='/manage-tour' element={<ManageTour />} />
                     <Route path='/sign-up' element={<SignIn initFormType='register' />} />
                 </Routes>
             </Router>

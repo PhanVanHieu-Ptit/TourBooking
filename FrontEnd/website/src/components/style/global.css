@@ -304,3 +304,39 @@
    color: var(--black);
    display: inline;
  }
+
+
+
+
+ .admin-form {
+   display: flex;
+   flex-direction: column;
+ }
+
+ .admin-form img {
+   width: 300px;
+   margin: 0 auto;
+   display: block;
+   cursor: pointer;
+ }
+
+ .admin-form label {
+   padding-left: 8px;
+   margin: 12px 0 4px;
+   color: var(--gold);
+ }
+
+ .admin-form input {
+   width: 100%;
+   border-radius: 16px;
+   border: 2px solid var(--gold);
+   height: 40px;
+   padding: 4px 8px;
+   margin: 6px 6px 0 0;
+ }
+
+ .admin-form button {
+   display: block;
+   width: min-content;
+   margin: 24px auto 0;
+ }

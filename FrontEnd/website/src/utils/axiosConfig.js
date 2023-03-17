@@ -79,4 +79,4 @@ instance.interceptors.response.use(
     },
 );
 
-export {instance as axios, AxiosLoading};
+export {instance as axios, AxiosLoading, setDisplayLoading};

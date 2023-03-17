@@ -1,7 +1,7 @@
 import signOut from './sign-out';
 const customerPath = ['/sign-in', '/sign-up', '/forgot-password', '/', '/tour-detail'];
 const staffPath = ['/sign-in', '/sign-up', '/forgot-password', '/manage-tour'];
-const adminPath = ['/sign-in', '/sign-up', '/forgot-password', '/manage-tour', 'manage-staff'];
+const adminPath = ['/sign-in', '/sign-up', '/forgot-password', '/manage-tour', '/manage-staff'];
 
 function checkRole() {
     if (localStorage.role == 'customer' || !localStorage.token) {

@@ -17,9 +17,10 @@ function useAuth() {
         }
         localStorage.setItem('token', rs.Authorization);
         localStorage.setItem('role', rs.data[0].role);
+        localStorage.setItem('id', rs.data[0].id);
         console.log('set token:', localStorage.getItem('token'));
         if (localStorage.role == 'customer') window.location.href = '/';
-        else window.location.href = '/manage-tour';
+        else window.location.href = '/manage-staff';
     };
     return {
         handleSignIn,
@@ -27,6 +28,7 @@ function useAuth() {
 }
 
 function SignIn() {
+    localStorage.clear();
     const [formData, setFormData] = useState({
         username: '',
         password: '',

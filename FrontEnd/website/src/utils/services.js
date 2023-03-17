@@ -25,11 +25,23 @@ export async function getListOrderTour(id = '', status = '') {
     return axios.get(`/order-tours/list?id=${id}&status=${status}`);
 }
 export async function getOwnInfor() {
-    return axios.get(`/customer/get-own-infor`);
+    return axios.get(`site/get-own-infor`);
 }
 export async function changePassword(data) {
     return axios.patch('/account/change-password', data);
 }
 export async function updateCustomerInfo(data) {
     return axios.post('/customer/update', data);
+}
+export async function updateStaffInfo(data, id) {
+    return axios.put(`/staff/${id}/update`, data);
+}
+export async function getListStaff(key = '') {
+    return axios.get(`/staff/list?key=${key}`);
+}
+export async function addStaff(data) {
+    return axios.post('/staff/add', data);
+}
+export async function updateStaff(data, idStaff) {
+    return axios.put(`/staff/${idStaff}/update`, data);
 }

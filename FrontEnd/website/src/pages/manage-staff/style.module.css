@@ -1,0 +1,59 @@
+.admin-form label {
+    padding-left: 8px;
+    margin: 12px 0 4px;
+    color: var(--gold);
+}
+
+/* admin */
+
+.input-gr {
+    position: relative;
+}
+
+
+.btn-add {
+    margin-left: auto
+}
+
+.filter {
+    box-shadow: inset 0px 0px 4px var(--purple-dark);
+    color: var(--purple-dark);
+    background: var(--purple-light);
+    border: none;
+    padding: 6px 8px;
+
+}
+
+.main {
+    min-height: 70vh;
+    border-radius: 16px;
+    box-shadow: 0px 6px 8px var(--dark-opacity);
+    padding: 12px 12px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+
+
+
+
+.admin-form input {
+    width: 100%;
+    border-radius: 16px;
+    border: 2px solid var(--gold);
+    height: 40px;
+    padding: 4px 8px;
+    margin: 6px 6px 0 0;
+}
+
+.lock-account {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    cursor: pointer;
+}
+
+.lock-account input {
+    width: 20px;
+}
