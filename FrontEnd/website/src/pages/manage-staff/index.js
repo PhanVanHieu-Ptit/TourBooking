@@ -13,7 +13,7 @@ function ManageStaff() {
     const page = 10;
 
     const [listStaff, setListStaff] = useState([]);
-    const [showAddStaffPopup, setShowAddStaffPopup] = useState(false);
+    const [showAddNewPopup, setShowAddNewPopup] = useState(false);
     const [displayedData, setDisplayedData] = useState([]);
     let [displayedCount, setDisplayedCount] = useState(page);
     const containerRef = useRef();
@@ -51,7 +51,7 @@ function ManageStaff() {
                 <main className={css.main}>
                     <Functions
                         handleSubmitSearch={handleSubmitSearch}
-                        setshowAddStaffPopup={setShowAddStaffPopup}
+                        setShowAddNewPopup={setShowAddNewPopup}
                         title='Quản lý nhân viên'></Functions>
                     <table>
                         <thead>
@@ -72,11 +72,11 @@ function ManageStaff() {
                     </table>
                 </main>
             </AdminLayout>
-            {showAddStaffPopup && (
+            {showAddNewPopup && (
                 <Popup
                     name='Thêm nhân viên'
                     content={<AddStaff />}
-                    onClose={() => setShowAddStaffPopup(false)}
+                    onClose={() => setShowAddNewPopup(false)}
                     style={{width: '400px'}}
                 />
             )}

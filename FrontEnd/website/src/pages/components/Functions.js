@@ -1,7 +1,7 @@
 import css from './style.module.css';
 import {useState} from 'react';
 import svg from './../../assets/svg/index';
-function Functions({title, handleSubmitSearch, setshowAddStaffPopup}) {
+function Functions({title, handleSubmitSearch, setShowAddNewPopup}) {
     const [searchValue, setSearchValue] = useState('');
     return (
         <>
@@ -17,7 +17,7 @@ function Functions({title, handleSubmitSearch, setshowAddStaffPopup}) {
                     />
                     <img src={svg.search} alt='image' />
                 </form>
-                <button className='btn-purple' onClick={() => setshowAddStaffPopup(true)}>
+                <button className='btn-purple' onClick={() => setShowAddNewPopup(true)}>
                     <img src={svg.add} alt='image' />
                     Thêm mới
                 </button>
