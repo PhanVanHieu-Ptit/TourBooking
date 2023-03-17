@@ -18,51 +18,125 @@ import COLOR from '../../res/color';
 import { CardCommingTour, CardNewTour } from '../../components/home/card';
 import stylesFind from '../../components/home/find/styles';
 import { AppContext } from '../../../App';
-import request from '../../services/untils';
+import * as request from '../../services/untils';
 import API from '../../res/string';
 
 function Home({ navigation }) {
     const { toursOutStanding, setToursOutStanding, toursComing, setToursComming } = useContext(AppContext);
+    const [numberTourFeatured, setNumberTourFeatured] = useState(0);
+    const [numberTour, setNumberTour] = useState(0);
     const [isLoading1, setIsLoading1] = useState(true);
     const [isLoading2, setIsLoading2] = useState(true);
+    const [loadingFooter, setLoadingFooter] = useState(false);
+    const [loadingFooter2, setLoadingFooter2] = useState(false);
+    const [paging1, setPaging1] = useState(1);
+    const [paging2, setPaging2] = useState(1);
     useEffect(() => {
-        request
-            .get(API.toursOutStanding + '?key=featured')
-            .then((response) => {
-                console.log(response.data);
-                setIsLoading1(false);
-                if (response.data.status == true) {
-                    setToursOutStanding(response.data.data);
-                } else {
-                    Alert.alert('Thông báo!', response.data.message + '', [
-                        { text: 'OK', onPress: () => console.log('OK Pressed') },
-                    ]);
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-
-        request
-            .get(API.toursOutStanding)
-            .then((response) => {
-                console.log(response.data);
-                setIsLoading2(false);
-                if (response.data.status == true) {
-                    setToursComming(response.data.data);
-                } else {
-                    Alert.alert('Thông báo!', response.data.message + '', [
-                        { text: 'OK', onPress: () => console.log('OK Pressed') },
-                    ]);
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        getNumberTour();
+        getNumberTourFeatured();
     }, []);
 
+    useEffect(() => {
+        loadToursOutStanding();
+    }, [paging1]);
+
+    useEffect(() => {
+        loadCommingTour();
+    }, [paging2]);
+
+    async function getNumberTourFeatured() {
+        try {
+            const res = await request.get(API.numberTour + '?type=featured');
+            if (res.status === true) {
+                setNumberTourFeatured(res.data[0].number);
+            } else {
+                Alert.alert('Thông báo!', res.message + '', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async function getNumberTour() {
+        try {
+            const res = await request.get(API.numberTour);
+            if (res.status === true) {
+                setNumberTour(res.data[0].number);
+            } else {
+                Alert.alert('Thông báo!', res.message + '', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async function loadToursOutStanding() {
+        try {
+            const res = await request.get(API.toursOutStanding + '?key=featured&paging=' + paging1);
+            setIsLoading1(false);
+            if (res.status == true) {
+                setToursOutStanding((preState) => {
+                    return [...preState, ...res.data];
+                });
+                setLoadingFooter(false);
+            } else {
+                Alert.alert('Thông báo!', res.message + '', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const loadMore1 = () => {
+        if (Math.ceil(Number(numberTourFeatured) / 5 - 1) >= paging1) {
+            setLoadingFooter(true);
+            setPaging1((preState) => preState + 1);
+        }
+    };
+
+    const loadMore2 = () => {
+        if (Math.ceil(Number(numberTour) / 5 - 1) >= paging2) {
+            setLoadingFooter2(true);
+            setPaging2((preState) => preState + 1);
+        }
+    };
+
+    async function loadCommingTour() {
+        try {
+            const res = await request.get(API.toursOutStanding + '?paging=' + paging2);
+            setIsLoading2(false);
+            if (res.status == true) {
+                // setToursComming(res.data);
+                setToursComming((preState) => {
+                    return [...preState, ...res.data];
+                });
+                setLoadingFooter2(false);
+            } else {
+                Alert.alert('Thông báo!', res.message + '', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const renderFooter = () => {
+        if (!loadingFooter) return null;
+        return (
+            <View style={{ paddingVertical: 20 }}>
+                <ActivityIndicator size="large" />
+            </View>
+        );
+    };
+
+    const handleScroll = (event) => {
+        const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+        const paddingToBottom = 20;
+        if (layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom) {
+            loadMore2();
+        }
+    };
     return (
-        <ScrollView>
+        <ScrollView onScroll={handleScroll}>
             <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
                 <StatusBar translucent={false} backgroundColor={COLOR.primary} />
                 <Header />
@@ -99,10 +173,14 @@ function Home({ navigation }) {
                     ) : (
                         <FlatList
                             horizontal
-                            // style={{flex: 1}}
+                            style={{ flex: 1 }}
                             data={toursOutStanding}
                             renderItem={({ item }) => <CardNewTour props={item} navigation={navigation} />}
                             keyExtractor={(item) => item.idTour}
+                            onMomentumScrollEnd={loadMore1}
+                            // onEndReached={loadMore1}
+                            // onEndReachedThreshold={0.1}
+                            ListFooterComponent={renderFooter}
                         />
                     )}
 
@@ -121,6 +199,7 @@ function Home({ navigation }) {
                                     screen="DetailTour"
                                 />
                             ))}
+                            {loadingFooter2 ? <ActivityIndicator size="small" color={COLOR.primary} /> : ''}
                         </View>
                     )}
                 </View>

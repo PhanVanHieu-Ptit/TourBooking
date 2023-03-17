@@ -1,3 +1,4 @@
+const calculateStart = require("../utils/calculateStart");
 const db = require("../utils/connection");
 
 const OrderTour = function (order) {
@@ -12,21 +13,10 @@ const OrderTour = function (order) {
   this.idStatus = order.idStatus;
 };
 
-OrderTour.getAll = function (result) {
-  db.query("SELECT * FROM tourorder  ORDER BY tourorder.orderDateTime DESC;")
-    .then(([rows, fields]) => {
-      result(rows);
-    })
-    .catch((err) => {
-      console.log;
-      result(err);
-    });
-};
-
-OrderTour.findByStatus = function (status, result) {
+OrderTour.getAll = function (paging, result) {
   db.query(
-    "SELECT * FROM `tourorder` WHERE idStatus IN (SELECT idStatus FROM `status` WHERE name LIKE ? ) ORDER BY tourorder.orderDateTime DESC;",
-    status
+    "SELECT * FROM tourorder  ORDER BY tourorder.orderDateTime DESC LIMIT 5 OFFSET ?;",
+    calculateStart(paging)
   )
     .then(([rows, fields]) => {
       result(rows);
@@ -37,10 +27,10 @@ OrderTour.findByStatus = function (status, result) {
     });
 };
 
-OrderTour.getAllFollowCustomer = function (id, result) {
+OrderTour.findByStatus = function (status, paging, result) {
   db.query(
-    "SELECT * FROM `tourorder` where idCustomer = ? ORDER BY tourorder.orderDateTime DESC;",
-    id
+    "SELECT * FROM `tourorder` WHERE idStatus IN (SELECT idStatus FROM `status` WHERE name LIKE ? ) ORDER BY tourorder.orderDateTime DESC LIMIT 5 OFFSET ?",
+    [status, calculateStart(paging)]
   )
     .then(([rows, fields]) => {
       result(rows);
@@ -51,14 +41,28 @@ OrderTour.getAllFollowCustomer = function (id, result) {
     });
 };
 
-OrderTour.findByStatusFollowCustomer = function (id, status, result) {
+OrderTour.getAllFollowCustomer = function (id, paging, result) {
+  db.query(
+    "SELECT * FROM `tourorder` where idCustomer = ? ORDER BY tourorder.orderDateTime DESC LIMIT 5 OFFSET ?",
+    [id, calculateStart(paging)]
+  )
+    .then(([rows, fields]) => {
+      result(rows);
+    })
+    .catch((err) => {
+      console.log;
+      result(err);
+    });
+};
+
+OrderTour.findByStatusFollowCustomer = function (id, status, paging, result) {
   db.query(
     "SELECT `tourorder`.*" +
       "FROM `tourorder`" +
       "JOIN `status` ON `tourorder`.`idStatus` = `status`.`idStatus`" +
       "WHERE `tourorder`.`idCustomer` = ? AND `status`.`name` = ?" +
-      " ORDER BY tourorder.orderDateTime DESC;",
-    [id, status]
+      " ORDER BY tourorder.orderDateTime DESC LIMIT 5 OFFSET ?",
+    [id, status, calculateStart(paging)]
   )
     .then(([rows, fields]) => {
       result(rows);
@@ -82,15 +86,30 @@ OrderTour.getById = function (id) {
     });
 };
 
-OrderTour.findBykey = function (key) {
+OrderTour.findBykey = function (key, paging) {
   return db
     .query(
-      "SELECT * FROM `tourorder` where " +
-        " idTour = (SELECT idTour FROM `tour` where name like ? OR  tourIntro like ? or tourDetail like ? or pickUpPoint like ? or tourDestination like ?) " +
-        "or idCustomer = (SELECT idCustomer FROM `customer` where name like ? or email like ? or phoneNumber like ? or address like ?)" +
-        " ORDER BY tourorder.orderDateTime DESC;",
+      "SELECT *" +
+        " FROM `tourorder`" +
+        "WHERE idTour IN (" +
+        " SELECT idTour" +
+        " FROM `tour`" +
+        " WHERE name LIKE ?" +
+        "    OR tourIntro LIKE ?" +
+        "    OR tourDetail LIKE ?" +
+        "    OR pickUpPoint LIKE ?" +
+        "    OR tourDestination LIKE ?" +
+        " )" +
+        " OR idCustomer IN (" +
+        "    SELECT idCustomer" +
+        "    FROM `customer`" +
+        "    WHERE name LIKE ?" +
+        "        OR email LIKE ?" +
+        "        OR phoneNumber LIKE ?" +
+        "        OR address LIKE ?" +
+        " )" +
+        " ORDER BY tourorder.orderDateTime DESC LIMIT 5 OFFSET ?",
       [
-        key,
         "%" + key + "%",
         "%" + key + "%",
         "%" + key + "%",
@@ -100,6 +119,8 @@ OrderTour.findBykey = function (key) {
         "%" + key + "%",
         "%" + key + "%",
         "%" + key + "%",
+        "%" + key + "%",
+        calculateStart(paging),
       ]
     )
     .then(([rows, fields]) => {
@@ -131,13 +152,15 @@ OrderTour.create = async function (data, result) {
     });
 };
 
-OrderTour.update = function (data, result) {
+OrderTour.update = async function (data, result) {
+  const getTotalMoney = require("../utils/getTotalMoney");
+  const totalMoney = await getTotalMoney(data.idTour, data.quantity);
   db.query(
     "UPDATE tourorder SET  quantity=?, note=?, totalMoney=? where idTourOrder=? and idCustomer = ? and idTour = ?",
     [
       data.quantity,
       data.note,
-      data.totalMoney,
+      totalMoney,
       data.idTourOrder,
       data.idCustomer,
       data.idTour,

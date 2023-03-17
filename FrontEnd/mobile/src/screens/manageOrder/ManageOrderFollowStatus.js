@@ -16,31 +16,46 @@ function ManageOrderFollowStatus({ navigation }) {
     const { user, listOrder, setListOrder } = useContext(AppContext);
     const [selected, setSelected] = useState('Tất cả');
     const [listStatus, setListStatus] = useState(['Tất cả']);
+    const [paging, setPaging] = useState(1);
 
+    // const [masterDataSource, setMasterDataSource] = useState(listOrder);
+    const [filteredDataSource, setFilteredDataSource] = useState(listOrder);
     useEffect(() => {
-        request
-            .get(API.historyOrder, {
-                headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
-            })
-            .then((response) => {
-                console.log(response.data);
+        // request
+        //     .get(API.historyOrder, {
+        //         headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
+        //     })
+        //     .then((response) => {
+        //         console.log(response.data);
 
-                if (response.status == true) {
-                    setListOrder(response.data);
-                    setMasterDataSource(response.data);
-                    setFilteredDataSource(response.data);
-                } else {
-                    Alert.alert('Thông báo!', response.message + '', [
-                        { text: 'OK', onPress: () => console.log('OK Pressed') },
-                    ]);
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        //         if (response.status == true) {
+        //             setListOrder(response.data);
+        //             setMasterDataSource(response.data);
+        //             setFilteredDataSource(response.data);
+        //         } else {
+        //             Alert.alert('Thông báo!', response.message + '', [
+        //                 { text: 'OK', onPress: () => console.log('OK Pressed') },
+        //             ]);
+        //         }
+        //     })
+        //     .catch((err) => {
+        //         console.log(err);
+        //     });
 
         getStatus();
+        getListOrder();
     }, []);
+
+    useEffect(() => {
+        if (!(user == '' || user == undefined || user == null)) {
+            setPaging(1);
+            setListOrder([]);
+            // setMasterDataSource(response.data);
+            setFilteredDataSource([]);
+            filterData();
+            console.log('listStatus: ', listStatus);
+        }
+    }, [selected]);
 
     async function getStatus() {
         await request
@@ -61,25 +76,45 @@ function ManageOrderFollowStatus({ navigation }) {
             });
     }
 
-    useEffect(() => {
-        if (!(user == '' || user == undefined || user == null)) {
-            filterData();
-            console.log('listStatus: ', listStatus);
+    async function getListOrder() {
+        try {
+            const response = request.get(API.historyOrder + '?paging=' + paging, {
+                headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
+            });
+            if (response.status == true) {
+                setListOrder((preState) => {
+                    return [...preState, ...response.data];
+                });
+                // setMasterDataSource(response.data);
+                setFilteredDataSource((preState) => {
+                    return [...preState, ...response.data];
+                });
+            } else {
+                Alert.alert('Thông báo!', response.message + '', [
+                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                ]);
+            }
+        } catch (error) {
+            console.log(error);
         }
-    }, [selected]);
+    }
 
     function filterData() {
         request
-            .get(API.historyOrder + '?status=' + selected, {
+            .get(API.historyOrder + '?status=' + selected + '&paging=' + paging, {
                 headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
             })
             .then((response) => {
                 console.log(response.data);
 
                 if (response.status == true) {
-                    setListOrder(response.data);
-                    setMasterDataSource(response.data);
-                    setFilteredDataSource(response.data);
+                    setListOrder((preState) => {
+                        return [...preState, ...response.data];
+                    });
+                    // setMasterDataSource(response.data);
+                    setFilteredDataSource((preState) => {
+                        return [...preState, ...response.data];
+                    });
                 } else {
                     Alert.alert('Thông báo!', response.message + '', [
                         { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -90,8 +125,6 @@ function ManageOrderFollowStatus({ navigation }) {
                 console.log(err);
             });
     }
-    const [masterDataSource, setMasterDataSource] = useState(listOrder);
-    const [filteredDataSource, setFilteredDataSource] = useState(listOrder);
 
     return (
         <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
@@ -110,8 +143,8 @@ function ManageOrderFollowStatus({ navigation }) {
                 <Text style={[stylesAllTour.title, { marginLeft: 10 }]}>Quản lý đơn đặt theo trạng thái</Text>
             </View>
             <Find
-                masterDataSource={masterDataSource}
-                setMasterDataSource={setMasterDataSource}
+                masterDataSource={listOrder}
+                setMasterDataSource={setListOrder}
                 setFilteredDataSource={setFilteredDataSource}
             />
             <View style={{ marginLeft: 200 }}>

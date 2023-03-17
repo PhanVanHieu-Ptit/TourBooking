@@ -15,18 +15,10 @@ import stylesTour from '../tourScreen/styles';
 import { AppContext } from '../../../App';
 
 function ManageScreen({ navigation }) {
-    const { user, setUser, setHistoryOrder } = useContext(AppContext);
-    // const user = {
-    //     id: 1,
-    //     name: 'Phan Văn Hiểu',
-    //     email: 'phanvanhieu@gmail.com',
-    //     address: 'Thu Duc',
-    //     phone: '012345678',
-    //     uriImage: 'https://img.freepik.com/free-photo/smiley-little-boy-isolated-pink_23-2148984798.jpg',
+    const { user, setUser, setHistoryOrder, setToursOutStanding, setToursComming, setListTour } =
+        useContext(AppContext);
 
-    //     role: 'Admin',
-    // };
-    const [isLogin, setIsLogin] = useState(user != '');
+    const [isLogin, setIsLogin] = useState(user != '' && user != undefined && user != null);
     const [role, setRole] = useState(user?.role);
     const [navigateInforPerson, setNavigateInforPerson] = useState('Profile');
     function setRoleUser() {
@@ -172,6 +164,9 @@ function ManageScreen({ navigation }) {
                                 });
                             setUser('');
                             setHistoryOrder([]);
+                            setToursOutStanding([]);
+                            setToursComming([]);
+                            setListTour([]);
                         }}
                     >
                         <View style={[stylesManage.btn, { justifyContent: 'center' }]}>
