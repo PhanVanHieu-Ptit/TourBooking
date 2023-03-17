@@ -12,8 +12,8 @@ export async function forgotPassword(data) {
 export async function getListAddress() {
     return axios.get('/site/list-address');
 }
-export async function getListTour(searchKey = '') {
-    return axios.get('/tour/list?key=' + searchKey);
+export async function getListTour(searchKey = '', paging = 1) {
+    return axios.get(`/tour/list?key=${searchKey}&paging=${paging}`);
 }
 export async function getTour(id) {
     return axios.get(`/tour/${id}/detail`);

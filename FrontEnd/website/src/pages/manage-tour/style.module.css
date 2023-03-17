@@ -1,6 +1,12 @@
-@import "../shared/manage-side.css";
-
-
+.main {
+  min-height: 70vh;
+  border-radius: 16px;
+  box-shadow: 0px 6px 8px var(--dark-opacity);
+  padding: 12px 12px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
 
 /* tour */
 .tour-popup form {
@@ -28,7 +34,6 @@
   width: 100%;
 }
 
-.images img {}
 
 .big-display {
   border-radius: 12px;
@@ -53,7 +58,6 @@
 }
 
 .tour-details {
-  position: absolute;
   top: 100%;
   left: 0;
   background: linear-gradient(to right, transparent, var(--purple-light));
