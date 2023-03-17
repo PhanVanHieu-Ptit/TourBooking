@@ -171,7 +171,7 @@ function Login({ navigation }) {
                     />
                     <TouchableOpacity
                         onPress={() => {
-                            navigation.navigate('Profile');
+                            navigation.navigate('Profile', { type: 'register' });
                         }}
                     >
                         <Text style={stylesLogin.txt}>Tạo tài khoản mới</Text>
