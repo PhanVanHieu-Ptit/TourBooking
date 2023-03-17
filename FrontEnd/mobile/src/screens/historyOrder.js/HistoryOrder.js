@@ -15,6 +15,7 @@ function HistoryOrderScreen({ navigation }) {
     const { user, historyOrder, setHistoryOrder } = useContext(AppContext);
     const [selected, setSelected] = useState('Tất cả');
     const [listStatus, setListStatus] = useState(['Tất cả']);
+    const [paging, setPaging] = useState(1);
 
     useEffect(() => {
         if (user == '' || user == undefined || user == null) {
@@ -22,58 +23,57 @@ function HistoryOrderScreen({ navigation }) {
                 { text: 'OK', onPress: () => navigation.replace('Login') },
             ]);
         } else {
-            request
-                .get(API.historyOrder + '?id=' + user.id, {
-                    headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
-                })
-                .then((response) => {
-                    console.log(response.data);
-
-                    if (response.status == true) {
-                        setHistoryOrder(response.data);
-                    } else {
-                        Alert.alert('Thông báo!', response.message + '', [
-                            { text: 'OK', onPress: () => console.log('OK Pressed') },
-                        ]);
-                    }
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
+            getListHistoryOrder();
         }
 
         getStatus();
     }, []);
 
-    async function getStatus() {
-        await request
-            .get(API.listStatus + '?type=tourorder')
-            .then((response) => {
-                console.log(response.data);
-
-                if (response.status == true) {
-                    setListStatus(listStatus.concat(response.data));
-                } else {
-                    Alert.alert('Thông báo!', response.message + '', [
-                        { text: 'OK', onPress: () => console.log('OK Pressed') },
-                    ]);
-                }
-            })
-            .catch((err) => {
-                console.log(err);
+    async function getListHistoryOrder() {
+        try {
+            const response = await request.get(API.historyOrder + '?id=' + user.id + '&paging=' + paging, {
+                headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
             });
+            if (response.status == true) {
+                setHistoryOrder((preState) => {
+                    return [...preState, ...response.data];
+                });
+            } else {
+                Alert.alert('Thông báo!', response.message + '', [
+                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                ]);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async function getStatus() {
+        try {
+            const response = await request.get(API.listStatus + '?type=tourorder&paging=' + paging);
+            if (response.status == true) {
+                setListStatus([...listStatus, ...response.data]);
+            } else {
+                Alert.alert('Thông báo!', response.message + '', [
+                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                ]);
+            }
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     useEffect(() => {
         if (!(user == '' || user == undefined || user == null)) {
+            setPaging(1);
+            setHistoryOrder([]);
             filterData();
-            console.log('historyOrder: ', historyOrder);
         }
     }, [selected]);
 
     function filterData() {
         request
-            .get(API.historyOrder + '?id=' + user.id + '&status=' + selected, {
+            .get(API.historyOrder + '?id=' + user.id + '&status=' + selected + '&paging=' + paging, {
                 headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
             })
             .then((response) => {
@@ -115,7 +115,6 @@ function HistoryOrderScreen({ navigation }) {
                     defaultValue={'Tất cả'}
                     onSelect={(selectedItem, index) => {
                         setSelected(selectedItem);
-                        console.log(selectedItem, index);
                     }}
                     defaultButtonText={'Chọn trạng thái '}
                     buttonTextAfterSelection={(selectedItem, index) => {
