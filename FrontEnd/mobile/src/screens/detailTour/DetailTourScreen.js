@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Image, ImageBackground, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -17,6 +17,7 @@ function DetailTourScreen({ route, navigation }) {
     const [modalVisible, setModalVisible] = useState(false);
     const listImage = tour.imageUrl;
     const [selectImage, setSelectImage] = useState(listImage[0]);
+
     return (
         <ScrollView>
             <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -51,6 +52,7 @@ function DetailTourScreen({ route, navigation }) {
                                     color="#FFFF"
                                     style={{ marginLeft: 10, marginTop: 3 }}
                                 />
+
                                 <Text style={[stylesCard.txt2, { fontSize: 18 }]}>{tour.tourDestination}</Text>
                             </View>
                         </View>
@@ -77,14 +79,14 @@ function DetailTourScreen({ route, navigation }) {
                             />
                         </TouchableOpacity>
                     )}
-                    // keyExtractor={(item) => item.id}
+                    // keyExtractor={(item) => item}
                 />
                 <View
                     style={{
                         width: 320,
                     }}
                 >
-                    <Text style={stylesDetailTour.title}>Tóm tắt chuyến đi</Text>
+                    <Text style={[stylesDetailTour.title, { marginTop: 10 }]}>Tóm tắt chuyến đi</Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <MaterialIcons name="date-range" size={30} color={COLOR.primary} style={{ marginTop: 2 }} />
@@ -107,6 +109,9 @@ function DetailTourScreen({ route, navigation }) {
                             <View style={{ marginLeft: 5 }}>
                                 <Text style={stylesDetailTour.title2}>Địa điểm đón</Text>
                                 <Text style={stylesDetailTour.txt}>{tour.pickUpPoint}</Text>
+                                <Text style={[stylesDetailTour.txt, { size: 10, fontWeight: 'normal' }]}>
+                                    {tour.detailPickUpPoint}
+                                </Text>
                             </View>
                         </View>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -118,8 +123,26 @@ function DetailTourScreen({ route, navigation }) {
                         </View>
                     </View>
                     <View>
+                        <Text style={[stylesDetailTour.title, { marginTop: 30 }]}>Giới thiệu</Text>
+                        <Text>{tour.tourIntro}</Text>
+                    </View>
+                    <View>
                         <Text style={[stylesDetailTour.title, { marginTop: 30 }]}>Mô tả</Text>
-                        <Text>{tour.descript}</Text>
+                        <Text style={[stylesDetailTour.title, { fontSize: 15, marginTop: 10 }]}>Chi tiết</Text>
+                        <Text>{tour.tourDetail}</Text>
+                        <Text style={[stylesDetailTour.title, { fontSize: 15, marginTop: 10 }]}>Điểm đến</Text>
+                        <Text>{tour.detailTourDestination}</Text>
+                        <Text>{tour.tourDestination}</Text>
+                        {tour.tourGuide == '1' ? (
+                            <View>
+                                <Text style={[stylesDetailTour.title, { fontSize: 15, marginTop: 10 }]}>
+                                    Hướng dẫn viên du lịch
+                                </Text>
+                                <Text>Có hướng dẫn viên du lịch</Text>
+                            </View>
+                        ) : (
+                            ''
+                        )}
                     </View>
 
                     <View

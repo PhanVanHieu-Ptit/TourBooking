@@ -8,7 +8,7 @@ import stylesCard from '../home/card/style';
 import { useLinkProps } from '@react-navigation/native';
 import COLOR from '../../res/color';
 import { Collapse, CollapseHeader, CollapseBody, AccordionList } from 'accordion-collapse-react-native';
-import { formatDate, formatMoney } from '../../res/untils';
+import { formatDate, formatMoney, formatDateWithHour } from '../../res/untils';
 import * as request from '../../services/untils';
 import API from '../../res/string';
 import { AppContext } from '../../../App';
@@ -82,7 +82,7 @@ function CardOrder({ props }) {
 
     return (
         <View>
-            <Text style={styles.title}>Ngày {formatDate(props.orderDateTime)}</Text>
+            <Text style={styles.title}>Ngày {formatDateWithHour(props.orderDateTime)}</Text>
             <TouchableOpacity>
                 <View style={[stylesCard.card2, { height: 140 }]}>
                     <Image source={{ uri: `${props.tour.imageUrl[0]}` }} style={stylesCard.img2} />

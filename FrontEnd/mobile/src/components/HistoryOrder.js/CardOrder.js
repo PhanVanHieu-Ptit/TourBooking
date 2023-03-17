@@ -8,7 +8,7 @@ import stylesCard from '../home/card/style';
 import { ScrollView } from 'react-native-gesture-handler';
 import COLOR from '../../res/color';
 import { Collapse, CollapseHeader, CollapseBody, AccordionList } from 'accordion-collapse-react-native';
-import { formatDate, formatMoney } from '../../res/untils';
+import { formatDate, formatMoney, formatDateWithHour } from '../../res/untils';
 import { AppContext } from '../../../App';
 import * as request from '../../services/untils';
 import API from '../../res/string';
@@ -76,7 +76,7 @@ function CardOrder(props) {
 
     return (
         <View>
-            <Text style={styles.title}>Ngày {formatDate(tourOrder.orderDateTime)}</Text>
+            <Text style={styles.title}>Ngày {formatDateWithHour(tourOrder.orderDateTime)}</Text>
             <View style={[stylesCard.card2, { height: 140 }]}>
                 <Image source={{ uri: `${tour.imageUrl[0]}` }} style={stylesCard.img2} />
 
