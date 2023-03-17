@@ -14,6 +14,60 @@ function getImageTour(res, result) {
         picturePromises.push(Picture.getByIdTour(tour.idTour));
     });
 
+function getSlotsLeftTour(res, result) {
+  const tourPromises = [];
+  // Loop through each tour order and call Tour.getById() for its ID
+  result.forEach((tour) => {
+    tourPromises.push(Tour.getSlotsLeft(tour.idTour));
+  });
+
+  Promise.all(tourPromises)
+    .then((tourResponses) => {
+      console.log("tourResponses: ", tourResponses);
+      let tours = result.map((tour, index) => {
+        tour["slotsLeft"] = tourResponses[index][0][0].slotLeft;
+        return tour;
+      });
+
+      res.send(message(tours, true, "Thành công!"));
+    })
+
+    .catch((err) => {
+      res.send(message(err, false, "Thất bại!"));
+    });
+}
+
+class TourController {
+  //[GET] /tour/list?key={key}&paging={paging}
+  list(req, res, next) {
+    var query = require("url").parse(req.url, true).query;
+    var key = query.key;
+    const paging = query.paging;
+
+    if (key == undefined) {
+      Tour.getAll(paging, function (result) {
+        getSlotsLeftTour(res, seperateString(result));
+        // res.send(message(seperateString(result), true, "Thành công!"));
+      });
+    } else if (key == "featured") {
+      Tour.getListFeatured(paging)
+        .then((result) => {
+          // getImageTour(res, result);
+          // res.send(message(seperateString(result), true, "Thành công!"));
+          getSlotsLeftTour(res, seperateString(result));
+        })
+        .catch((err) => {
+          res.send(message(err, false, "Thất bại!"));
+        });
+    } else {
+      Tour.findBykey(key, paging)
+        .then((result) => {
+          // getImageTour(res, result);
+          // res.send(message(seperateString(result), true, "Thành công!"));
+          getSlotsLeftTour(res, seperateString(result));
+        })
+        .catch((err) => {
+          res.send(message(err, false, "Thất bại!"));
     Promise.all(picturePromises)
         .then((pictureResponses) => {
             // Loop through each tour order and add its tour information to the response
@@ -63,6 +117,17 @@ class TourController {
         }
     }
 
+  //[GET] /tour/:id/detail
+  detail(req, res, next) {
+    Tour.getById(req.params.id)
+      .then((result) => {
+        // res.send(message(seperateString(result), true, "Thành công!"));
+        getSlotsLeftTour(res, seperateString(result));
+      })
+      .catch((err) => {
+        res.send(message(err, false, "Thất bại!"));
+      });
+  }
     //[GET] /tour/:id/detail
     detail(req, res, next) {
         Tour.getById(req.params.id)

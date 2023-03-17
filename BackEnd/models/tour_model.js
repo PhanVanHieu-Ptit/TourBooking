@@ -62,6 +62,18 @@ Tour.getById = function (id) {
     });
 };
 
+Tour.getSlotsLeft = function (id) {
+  return db
+    .query("call managetour.sp_get_tour_slots_left(?);", id)
+    .then(([rows, fields]) => {
+      return rows;
+    })
+    .catch((err) => {
+      console.log(err);
+      return err;
+    });
+};
+
 Tour.findBykey = function (key, paging) {
   let condition = "";
   if (key)

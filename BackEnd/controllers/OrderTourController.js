@@ -107,9 +107,14 @@ class OrderTourController {
         break;
       default:
         if (status == "Tất cả" || status == undefined) {
-          OrderTour.getAllFollowCustomer(id, paging, function (result) {
-            getInforTour(res, result);
-          });
+          OrderTour.getAllFollowCustomer(
+            id,
+            paging,
+            function (result, status, mess) {
+              if (status) getInforTour(res, result);
+              else res.send(message(result, status, mess));
+            }
+          );
         } else {
           OrderTour.findByStatusFollowCustomer(
             id,
@@ -121,6 +126,21 @@ class OrderTourController {
           );
         }
     }
+  }
+
+  //[GET] /order-tours/number-order?idCustomer={id}&idTour={value}
+  getNumberOrder(req, res, next) {
+    var query = require("url").parse(req.url, true).query;
+    var idCustomer = query.idCustomer;
+    var idTour = query.idTour;
+
+    OrderTour.getNumberOrderOfCustomer(
+      idCustomer,
+      idTour,
+      function (result, status, mess) {
+        res.send(message(result, status, mess));
+      }
+    );
   }
 
   //[GET] /order-tours/list
@@ -162,6 +182,7 @@ class OrderTourController {
   //[POST] /order-tours/order
   order(req, res, next) {
     var data = req.body;
+
     OrderTour.create(data, function (data, status, mess) {
       res.send(message(data, status, mess));
     });
