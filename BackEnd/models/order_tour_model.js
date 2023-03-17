@@ -13,7 +13,7 @@ const OrderTour = function (order) {
   this.idStatus = order.idStatus;
 };
 
-OrderTour.getAll = function (result, paging) {
+OrderTour.getAll = function (paging, result) {
   db.query(
     "SELECT * FROM tourorder  ORDER BY tourorder.orderDateTime DESC LIMIT 5 OFFSET ?;",
     calculateStart(paging)

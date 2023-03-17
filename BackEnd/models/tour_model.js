@@ -31,7 +31,7 @@ Tour.getAll = function (paging, result) {
       " JOIN tourpicture ON tour.idTour = tourpicture.idTour" +
       " GROUP BY tour.idTour" +
       " ORDER BY tour.dateCreate DESC " +
-      "LIMIT 1 OFFSET ?;",
+      "LIMIT 5 OFFSET ?;",
     calculateStart(paging)
   )
     .then(([rows, fields]) => {
@@ -74,7 +74,7 @@ Tour.findBykey = function (key, paging) {
         condition +
         " GROUP BY tour.idTour" +
         " ORDER BY tour.dateCreate DESC " +
-        "LIMIT 1 OFFSET ?;",
+        "LIMIT 5 OFFSET ?;",
       calculateStart(paging)
     )
     .then(([rows, fields]) => {
@@ -124,9 +124,21 @@ Tour.remove = function (id, result) {
     });
 };
 
+Tour.getNumberTourFeatured = function () {
+  return db
+    .query("SELECT COUNT(*) as number FROM tour WHERE featured =1 ")
+    .then(([rows, fields]) => {
+      return rows;
+    })
+    .catch((err) => {
+      console.log(err);
+      return err;
+    });
+};
+
 Tour.getNumberTour = function () {
   return db
-    .query("SELECT COUNT(*) as number FROM tour WHERE featured =1")
+    .query("SELECT COUNT(*) as number FROM tour")
     .then(([rows, fields]) => {
       return rows;
     })

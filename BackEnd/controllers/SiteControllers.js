@@ -44,13 +44,25 @@ class SiteControllers {
 
   // [GET] /site/number-tour
   numberTour(req, res) {
-    Tour.getNumberTour()
-      .then((result) => {
-        res.send(message(result, true, "Thành công!"));
-      })
-      .catch((err) => {
-        res.send(message(err, false, "Thất bại!"));
-      });
+    var query = require("url").parse(req.url, true).query;
+    var type = query.type;
+    if (type == "featured") {
+      Tour.getNumberTourFeatured()
+        .then((result) => {
+          res.send(message(result, true, "Thành công!"));
+        })
+        .catch((err) => {
+          res.send(message(err, false, "Thất bại!"));
+        });
+    } else {
+      Tour.getNumberTour()
+        .then((result) => {
+          res.send(message(result, true, "Thành công!"));
+        })
+        .catch((err) => {
+          res.send(message(err, false, "Thất bại!"));
+        });
+    }
   }
 }
 

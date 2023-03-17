@@ -24,25 +24,44 @@ import API from '../../res/string';
 function Home({ navigation }) {
     const { toursOutStanding, setToursOutStanding, toursComing, setToursComming } = useContext(AppContext);
     const [numberTourFeatured, setNumberTourFeatured] = useState(0);
+    const [numberTour, setNumberTour] = useState(0);
     const [isLoading1, setIsLoading1] = useState(true);
     const [isLoading2, setIsLoading2] = useState(true);
     const [loadingFooter, setLoadingFooter] = useState(false);
+    const [loadingFooter2, setLoadingFooter2] = useState(false);
     const [paging1, setPaging1] = useState(1);
     const [paging2, setPaging2] = useState(1);
     useEffect(() => {
         getNumberTour();
-        loadCommingTour();
+        getNumberTourFeatured();
     }, []);
 
     useEffect(() => {
         loadToursOutStanding();
     }, [paging1]);
 
+    useEffect(() => {
+        loadCommingTour();
+    }, [paging2]);
+
+    async function getNumberTourFeatured() {
+        try {
+            const res = await request.get(API.numberTour + '?type=featured');
+            if (res.status === true) {
+                setNumberTourFeatured(res.data[0].number);
+            } else {
+                Alert.alert('Thông báo!', res.message + '', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     async function getNumberTour() {
         try {
             const res = await request.get(API.numberTour);
             if (res.status === true) {
-                setNumberTourFeatured(res.data[0].number);
+                setNumberTour(res.data[0].number);
             } else {
                 Alert.alert('Thông báo!', res.message + '', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
             }
@@ -56,14 +75,9 @@ function Home({ navigation }) {
             const res = await request.get(API.toursOutStanding + '?key=featured&paging=' + paging1);
             setIsLoading1(false);
             if (res.status == true) {
-                // let listTemp = [].concat(...toursOutStanding);
-                // listTemp.push(...res.data);
                 setToursOutStanding((preState) => {
                     return [...preState, ...res.data];
                 });
-                console.log('[...toursOutStanding, ...res.data]: ', toursOutStanding);
-                // setToursOutStanding(listTemp);
-
                 setLoadingFooter(false);
             } else {
                 Alert.alert('Thông báo!', res.message + '', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
@@ -76,7 +90,14 @@ function Home({ navigation }) {
     const loadMore1 = () => {
         if (Math.ceil(Number(numberTourFeatured) / 5 - 1) >= paging1) {
             setLoadingFooter(true);
-            setPaging1(paging1 + 1);
+            setPaging1((preState) => preState + 1);
+        }
+    };
+
+    const loadMore2 = () => {
+        if (Math.ceil(Number(numberTour) / 5 - 1) >= paging2) {
+            setLoadingFooter2(true);
+            setPaging2((preState) => preState + 1);
         }
     };
 
@@ -85,7 +106,11 @@ function Home({ navigation }) {
             const res = await request.get(API.toursOutStanding + '?paging=' + paging2);
             setIsLoading2(false);
             if (res.status == true) {
-                setToursComming(res.data);
+                // setToursComming(res.data);
+                setToursComming((preState) => {
+                    return [...preState, ...res.data];
+                });
+                setLoadingFooter2(false);
             } else {
                 Alert.alert('Thông báo!', res.message + '', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
             }
@@ -103,8 +128,15 @@ function Home({ navigation }) {
         );
     };
 
+    const handleScroll = (event) => {
+        const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+        const paddingToBottom = 20;
+        if (layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom) {
+            loadMore2();
+        }
+    };
     return (
-        <ScrollView>
+        <ScrollView onScroll={handleScroll}>
             <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
                 <StatusBar translucent={false} backgroundColor={COLOR.primary} />
                 <Header />
@@ -145,8 +177,9 @@ function Home({ navigation }) {
                             data={toursOutStanding}
                             renderItem={({ item }) => <CardNewTour props={item} navigation={navigation} />}
                             keyExtractor={(item) => item.idTour}
-                            onEndReached={loadMore1}
-                            onEndReachedThreshold={0.1}
+                            onMomentumScrollEnd={loadMore1}
+                            // onEndReached={loadMore1}
+                            // onEndReachedThreshold={0.1}
                             ListFooterComponent={renderFooter}
                         />
                     )}
@@ -166,6 +199,7 @@ function Home({ navigation }) {
                                     screen="DetailTour"
                                 />
                             ))}
+                            {loadingFooter2 ? <ActivityIndicator size="small" color={COLOR.primary} /> : ''}
                         </View>
                     )}
                 </View>
