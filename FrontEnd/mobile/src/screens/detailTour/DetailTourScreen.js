@@ -109,7 +109,7 @@ function DetailTourScreen({ route, navigation }) {
                             <View style={{ marginLeft: 5 }}>
                                 <Text style={stylesDetailTour.title2}>Địa điểm đón</Text>
                                 <Text style={stylesDetailTour.txt}>{tour.pickUpPoint}</Text>
-                                <Text style={[stylesDetailTour.txt, { size: 10, fontWeight: 'normal' }]}>
+                                <Text style={[stylesDetailTour.txt, { fontSize: 10, fontWeight: 'normal' }]}>
                                     {tour.detailPickUpPoint}
                                 </Text>
                             </View>
@@ -118,7 +118,7 @@ function DetailTourScreen({ route, navigation }) {
                             <Fontisto name="ticket" size={25} color={COLOR.primary} />
                             <View style={{ marginLeft: 5 }}>
                                 <Text style={stylesDetailTour.title2}>Số vé còn lại</Text>
-                                <Text style={stylesDetailTour.txt}>{tour.quantity}</Text>
+                                <Text style={stylesDetailTour.txt}>{tour.slotsLeft}</Text>
                             </View>
                         </View>
                     </View>

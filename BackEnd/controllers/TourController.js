@@ -30,6 +30,29 @@ function getImageTour(res, result) {
     });
 }
 
+function getSlotsLeftTour(res, result) {
+  const tourPromises = [];
+  // Loop through each tour order and call Tour.getById() for its ID
+  result.forEach((tour) => {
+    tourPromises.push(Tour.getSlotsLeft(tour.idTour));
+  });
+
+  Promise.all(tourPromises)
+    .then((tourResponses) => {
+      console.log("tourResponses: ", tourResponses);
+      let tours = result.map((tour, index) => {
+        tour["slotsLeft"] = tourResponses[index][0][0].slotLeft;
+        return tour;
+      });
+
+      res.send(message(tours, true, "Thành công!"));
+    })
+
+    .catch((err) => {
+      res.send(message(err, false, "Thất bại!"));
+    });
+}
+
 class TourController {
   //[GET] /tour/list?key={key}&paging={paging}
   list(req, res, next) {
@@ -39,14 +62,15 @@ class TourController {
 
     if (key == undefined) {
       Tour.getAll(paging, function (result) {
-        console.log(result);
-        res.send(message(seperateString(result), true, "Thành công!"));
+        getSlotsLeftTour(res, seperateString(result));
+        // res.send(message(seperateString(result), true, "Thành công!"));
       });
     } else if (key == "featured") {
       Tour.getListFeatured(paging)
         .then((result) => {
           // getImageTour(res, result);
-          res.send(message(seperateString(result), true, "Thành công!"));
+          // res.send(message(seperateString(result), true, "Thành công!"));
+          getSlotsLeftTour(res, seperateString(result));
         })
         .catch((err) => {
           res.send(message(err, false, "Thất bại!"));
@@ -55,7 +79,8 @@ class TourController {
       Tour.findBykey(key, paging)
         .then((result) => {
           // getImageTour(res, result);
-          res.send(message(seperateString(result), true, "Thành công!"));
+          // res.send(message(seperateString(result), true, "Thành công!"));
+          getSlotsLeftTour(res, seperateString(result));
         })
         .catch((err) => {
           res.send(message(err, false, "Thất bại!"));
@@ -67,7 +92,8 @@ class TourController {
   detail(req, res, next) {
     Tour.getById(req.params.id)
       .then((result) => {
-        res.send(message(seperateString(result), true, "Thành công!"));
+        // res.send(message(seperateString(result), true, "Thành công!"));
+        getSlotsLeftTour(res, seperateString(result));
       })
       .catch((err) => {
         res.send(message(err, false, "Thất bại!"));

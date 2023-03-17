@@ -26,41 +26,64 @@ function ModalOrder(props) {
     const imageUrl = props.DATA.imageUrl[0];
     const [number, setNumber] = useState('');
     const [note, setNote] = useState('');
-    const order = () => {
-        if (number.length == 0) {
-            Alert.alert('Thông báo!', 'Không được để trống số lượng!', [
-                { text: 'OK', onPress: () => console.log('OK Pressed') },
-            ]);
-        } else {
-            request
-                .postPrivate(
-                    API.order,
-                    {
-                        idCustomer: user.id,
-                        idTour: props.DATA.idTour,
-                        quantity: number,
-                        note: note,
-                        totalMoney: Number(number) * Number(props.DATA.price),
-                    },
-                    { 'Content-Type': 'application/json', authorization: user.accessToken },
-                )
-                .then((response) => {
-                    console.log(response.data);
-                    setNumber('');
-                    setNote('');
-                    if (response.data.status == true) {
-                        updateListTourOrder();
-                        Alert.alert('Thông báo!', 'Đặt thành công!', [
-                            { text: 'OK', onPress: () => props.setModalVisible(!props.modalVisible) },
-                        ]);
-                    } else {
-                        Alert.alert('Đặt thất bại!', response.data.message, [{ text: 'OK', onPress: () => {} }]);
-                    }
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
+
+    async function checkExistOrderBefore() {
+        try {
+            const response = await request.get(
+                API.numberOrderOfCustomer + '?idCustomer=' + user.id + '&idTour=' + props.DATA.idTour,
+                {
+                    // params: { idCustomer: user.id, idTour: props.DATA.idTour },
+                    headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
+                },
+            );
+            console.log('response: ', response);
+            if (response.status == true) {
+                if (Number(response.data[0].currentNumber) > 0) {
+                    Alert.alert(
+                        'Thông báo!',
+                        'Bạn đã có một đơn đặt cho tour này, bạn có chắc chắn muốn đặt thêm không!',
+                        [
+                            { text: 'Có', onPress: () => order() },
+                            { text: 'Không', onPress: () => {} },
+                        ],
+                    );
+                }
+            } else {
+                Alert.alert('Đặt thất bại!', response.message, [{ text: 'OK', onPress: () => {} }]);
+            }
+        } catch (error) {
+            console.log(error);
         }
+    }
+    const order = () => {
+        request
+            .postPrivate(
+                API.order,
+                {
+                    idCustomer: user.id,
+                    idTour: props.DATA.idTour,
+                    quantity: number,
+                    note: note,
+                    totalMoney: Number(number) * Number(props.DATA.price),
+                },
+                { 'Content-Type': 'application/json', authorization: user.accessToken },
+            )
+            .then((response) => {
+                console.log(response.data);
+                setNumber('');
+                setNote('');
+                if (response.data.status == true) {
+                    updateListTourOrder();
+                    Alert.alert('Thông báo!', 'Đặt thành công!', [
+                        { text: 'OK', onPress: () => props.setModalVisible(!props.modalVisible) },
+                    ]);
+                } else {
+                    Alert.alert('Đặt thất bại!', response.data.message, [{ text: 'OK', onPress: () => {} }]);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
     function updateListTourOrder() {
         request
@@ -166,7 +189,7 @@ function ModalOrder(props) {
                             <Pressable
                                 style={[stylesModal.button, stylesModal.buttonClose, { marginLeft: 10 }]}
                                 onPress={() => {
-                                    order();
+                                    checkExistOrderBefore();
                                 }}
                             >
                                 <Text style={stylesModal.textStyle}>Xác nhận</Text>

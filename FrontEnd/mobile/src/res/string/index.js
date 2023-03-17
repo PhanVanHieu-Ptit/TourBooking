@@ -17,6 +17,7 @@ const API = {
     listStaff: '/staff/list',
     addStaff: '/staff/add',
     numberTour: '/site/number-tour',
+    numberOrderOfCustomer: '/order-tours/number-order',
 };
 
 export default API;

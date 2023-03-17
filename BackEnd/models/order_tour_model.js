@@ -1,4 +1,6 @@
 const calculateStart = require("../utils/calculateStart");
+const Customer = require("../models/customer_model");
+const Tour = require("../models/tour_model");
 const db = require("../utils/connection");
 
 const OrderTour = function (order) {
@@ -47,11 +49,23 @@ OrderTour.getAllFollowCustomer = function (id, paging, result) {
     [id, calculateStart(paging)]
   )
     .then(([rows, fields]) => {
-      result(rows);
+      result(rows, true);
     })
     .catch((err) => {
-      console.log;
-      result(err);
+      result(err, false, "Lấy dữ liệu thất bại!");
+    });
+};
+
+OrderTour.getNumberOrderOfCustomer = function (idCustomer, idTour, result) {
+  db.query(
+    "SELECT count(*) as currentNumber FROM `tourorder` where idCustomer = ? and idTour = ?",
+    [idCustomer, idTour]
+  )
+    .then(([rows, fields]) => {
+      result(rows, true);
+    })
+    .catch((err) => {
+      result(err, false, "Lấy dữ liệu thất bại!");
     });
 };
 
@@ -135,16 +149,75 @@ OrderTour.findBykey = function (key, paging) {
 
 OrderTour.create = async function (data, result) {
   const getTotalMoney = require("../utils/getTotalMoney");
+  let { idCustomer, idTour, quantity, note, role } = data;
+
+  //check value
+  if (!idCustomer || !idTour) {
+    result([], false, "Thiếu thông tin khách hàng hoặc thông tin tour");
+    return;
+  }
+
+  //check role
+  if (role != "customer") {
+    result([], false, "Bạn không phải khách hàng!");
+    return;
+  }
+
+  //check exist of customer
+  const [customer] = await Customer.getById(idCustomer);
+
+  if (customer == undefined) {
+    result([], false, "Khách hàng không tồn tại!");
+    return;
+  }
+
+  //check exist of tour
+  const [tour] = await Tour.getById(idTour);
+
+  if (tour == undefined) {
+    result([], false, "Tour không tồn tại!");
+    return;
+  }
+
+  if (Number(quantity) < 1) {
+    result([], false, "Số lượng phải lơn hơn 0!");
+    return;
+  }
+
+  //check number slots left
+  const number = await Tour.getSlotsLeft(idTour);
+  if (Number(number[0][0].slotLeft) == 0) {
+    result([], false, "Hết vé!");
+    return;
+  }
+  if (Number(number[0][0].slotLeft) < Number(quantity)) {
+    result([], false, "Số vé còn lại không đủ!");
+    return;
+  }
+
+  //check customer exist least one order orther
+  // const [numberOrder, fields] = await db.query(
+  //   "SELECT count(*) as currentNumber FROM `tourorder` where idCustomer = ? and idTour = ?",
+  //   [idCustomer, idTour]
+  // );
+
+  // if (numberOrder[0].currentNumber > 0) {
+  //   result([], false, "Bạn đã đặt tour này rồi!");
+  //   return;
+  // }
+
   const totalMoney = await getTotalMoney(data.idTour, data.quantity);
   if (!totalMoney) {
-    result({}, false);
+    result([], false);
+    return;
   }
+
   db.query(
     "INSERT INTO tourorder SET idCustomer=?, idTour=?, quantity=?, note=?, totalMoney=?",
-    [data.idCustomer, data.idTour, data.quantity, data.note, totalMoney]
+    [idCustomer, idTour, quantity, note, totalMoney]
   )
     .then(([rows, fields]) => {
-      result({ idOrder: rows.insertId }, true, "Đăng ký tour thành công!");
+      result([{ idOrder: rows.insertId }], true, "Đăng ký tour thành công!");
     })
     .catch((err) => {
       console.log(err);
