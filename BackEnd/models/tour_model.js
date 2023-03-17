@@ -45,7 +45,7 @@ Tour.getAll = function (paging, result) {
 Tour.getById = function (id) {
   return db
     .query(
-      "SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ', ') AS image_list" +
+      "SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ',') AS image_list" +
         " FROM tour" +
         " JOIN tourpicture ON tour.idTour = tourpicture.idTour" +
         " WHERE tour.idTour = ?" +
@@ -68,7 +68,7 @@ Tour.findBykey = function (key, paging) {
     condition = `where name like '%${key}%' OR  tourIntro like '%${key}%' or pickUpPoint like '%${key}%' or tourDestination like '%${key}%'`;
   return db
     .query(
-      "SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ', ') AS image_list" +
+      "SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ',') AS image_list" +
         " FROM tour" +
         " JOIN tourpicture ON tour.idTour = tourpicture.idTour " +
         condition +
@@ -90,7 +90,7 @@ Tour.findBykey = function (key, paging) {
 Tour.getListFeatured = function (paging) {
   return db
     .query(
-      "SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ', ') AS image_list" +
+      "SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ',') AS image_list" +
         " FROM tour" +
         " JOIN tourpicture ON tour.idTour = tourpicture.idTour " +
         "WHERE featured = 1" +
