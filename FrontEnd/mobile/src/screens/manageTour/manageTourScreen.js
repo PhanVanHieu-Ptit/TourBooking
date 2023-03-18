@@ -95,6 +95,7 @@ function ManageTourScreen({ navigation }) {
                     <CardCommingTour tour={item} key={item.idTour} navigation={navigation} screen="EditTour" />
                 ))}
             </ScrollView>
+            <View/>
         </SafeAreaView>
     );
 }
