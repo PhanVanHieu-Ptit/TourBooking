@@ -39,20 +39,21 @@ const stylesCard = StyleSheet.create({
     },
     card2: {
         borderRadius: 20,
+        display: 'flex',
         width: 343,
         height: 112,
         backgroundColor: '#010126',
         marginTop: 10,
         marginLeft: 8,
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         alignItems: 'center',
         flexDirection: 'row',
     },
     img2: {
         width: 100,
         height: 100,
-        marginLeft: 10,
-        borderRadius: 6,
+        marginLeft: 7,
+        borderRadius: 11,
     },
 });
 
