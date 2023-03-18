@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { FlatList, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { FlatList, SafeAreaView, ScrollView, Text, View, ActivityIndicator } from 'react-native';
 import Find from '../../components/home/find';
 import Icon from 'react-native-vector-icons/Ionicons';
 import stylesButton from '../../components/general/actionButton/styles';
@@ -15,7 +15,14 @@ function ManageTourScreen({ navigation }) {
 
     // const [masterDataSource, setMasterDataSource] = useState(listTour);
     const [filteredDataSource, setFilteredDataSource] = useState(listTour);
+    const [isLoading, setLoading] = useState(true);
     const [paging, setPaging] = useState(1);
+
+    const loader = () => {
+        if(isLoading){
+            return <ActivityIndicator size={"small"} color={"#021A5A"}/>
+        }
+    }
 
     useEffect(() => {
         getListTour();
@@ -29,14 +36,17 @@ function ManageTourScreen({ navigation }) {
         try {
             const response = await request.get(API.listTour + '?paging=' + paging, {});
             if (response.status == true) {
+                setLoading(false);
                 setListTour((preState) => {
                     return [...preState, ...response.data];
                 });
+                setLoading(false);
                 // setMasterDataSource(response.data);
                 setFilteredDataSource((preState) => {
                     return [...preState, ...response.data];
                 });
             } else {
+                setLoading(false);
                 Alert.alert('Thông báo!', response.message + '', [
                     { text: 'OK', onPress: () => console.log('OK Pressed') },
                 ]);
@@ -79,6 +89,7 @@ function ManageTourScreen({ navigation }) {
                 // setMasterDataSource={setMasterDataSource}
                 setFilteredDataSource={setFilteredDataSource}
             />
+            {loader()}
             <ScrollView>
                 {filteredDataSource.map((item) => (
                     <CardCommingTour tour={item} key={item.idTour} navigation={navigation} screen="EditTour" />
