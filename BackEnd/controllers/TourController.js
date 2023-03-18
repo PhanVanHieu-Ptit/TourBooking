@@ -38,53 +38,6 @@ function getSlotsLeftTour(res, result) {
 }
 
 class TourController {
-  //[GET] /tour/list?key={key}&paging={paging}
-  list(req, res, next) {
-    var query = require("url").parse(req.url, true).query;
-    var key = query.key;
-    const paging = query.paging;
-
-    if (key == undefined) {
-      Tour.getAll(paging, function (result) {
-        getSlotsLeftTour(res, seperateString(result));
-        // res.send(message(seperateString(result), true, "Thành công!"));
-      });
-    } else if (key == "featured") {
-      Tour.getListFeatured(paging)
-        .then((result) => {
-          // getImageTour(res, result);
-          // res.send(message(seperateString(result), true, "Thành công!"));
-          getSlotsLeftTour(res, seperateString(result));
-        })
-        .catch((err) => {
-          res.send(message(err, false, "Thất bại!"));
-        });
-    } else {
-      Tour.findBykey(key, paging)
-        .then((result) => {
-          // getImageTour(res, result);
-          // res.send(message(seperateString(result), true, "Thành công!"));
-          getSlotsLeftTour(res, seperateString(result));
-        })
-        .catch((err) => {
-          res.send(message(err, false, "Thất bại!"));
-    Promise.all(picturePromises)
-        .then((pictureResponses) => {
-            // Loop through each tour order and add its tour information to the response
-            let pictureResponse = result.map((tour, index) => {
-                tour['tourpictures'] = pictureResponses[index];
-                return tour;
-            });
-
-            // Send the response with the tour orders and their tour information
-            res.send(message(pictureResponse, true, 'Thành công!'));
-        })
-        .catch((err) => {
-            res.send(message(err, false, 'Thất bại!'));
-        });
-}
-
-class TourController {
     //[GET] /tour/list?key={key}&paging={paging}
     list(req, res, next) {
         var query = require('url').parse(req.url, true).query;
@@ -93,14 +46,16 @@ class TourController {
 
         if (key == undefined) {
             Tour.getAll(paging, function (result) {
-                console.log(result);
-                res.send(message(seperateString(result), true, 'Thành công!'));
+                // console.log(result);
+                // res.send(message(seperateString(result), true, 'Thành công!'));
+                getSlotsLeftTour(res, seperateString(result));
             });
         } else if (key == 'featured') {
             Tour.getListFeatured(paging)
                 .then((result) => {
                     // getImageTour(res, result);
-                    res.send(message(seperateString(result), true, 'Thành công!'));
+                    // res.send(message(seperateString(result), true, 'Thành công!'));
+                    getSlotsLeftTour(res, seperateString(result));
                 })
                 .catch((err) => {
                     res.send(message(err, false, 'Thất bại!'));
@@ -109,7 +64,8 @@ class TourController {
             Tour.findBykey(key, paging)
                 .then((result) => {
                     // getImageTour(res, result);
-                    res.send(message(seperateString(result), true, 'Thành công!'));
+                    // res.send(message(seperateString(result), true, 'Thành công!'));
+                    getSlotsLeftTour(res, seperateString(result));
                 })
                 .catch((err) => {
                     res.send(message(err, false, 'Thất bại!'));
@@ -128,16 +84,7 @@ class TourController {
         res.send(message(err, false, "Thất bại!"));
       });
   }
-    //[GET] /tour/:id/detail
-    detail(req, res, next) {
-        Tour.getById(req.params.id)
-            .then((result) => {
-                res.send(message(seperateString(result), true, 'Thành công!'));
-            })
-            .catch((err) => {
-                res.send(message(err, false, 'Thất bại!'));
-            });
-    }
+    
 
     //[DELETE] /tour/:id/delete
     delete(req, res, next) {
