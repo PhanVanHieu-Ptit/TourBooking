@@ -9,6 +9,7 @@ import {
     StatusBar,
     Alert,
     ActivityIndicator,
+    RefreshControl,
 } from 'react-native';
 import Find from '../../components/home/find';
 import Header from '../../components/home/header';
@@ -37,12 +38,19 @@ function Home({ navigation }) {
     }, []);
 
     useEffect(() => {
+        if (paging1 == 1) setIsLoading1(true);
         loadToursOutStanding();
     }, [paging1]);
 
     useEffect(() => {
+        if (paging2 == 1) setIsLoading2(true);
         loadCommingTour();
     }, [paging2]);
+
+    // useEffect(() => {
+    //     loadToursOutStanding();
+    //     loadCommingTour();
+    // }, [isRefreshing]);
 
     async function getNumberTourFeatured() {
         try {
@@ -101,6 +109,29 @@ function Home({ navigation }) {
         }
     };
 
+    // const refeshData = () => {
+    //     console.log('vao nha');
+    //     setIsLoading1(true);
+    //     setIsLoading2(true);
+    //     setPaging1(1);
+    //     setPaging2(1);
+    //     setIsLoading1(false);
+    //     setIsLoading2(false);
+    // };
+
+    const [isRefreshing, setIsRefreshing] = useState(false);
+
+    const handleRefresh = () => {
+        console.log('vao nha vao nha');
+
+        setIsRefreshing(true);
+        if (paging1 != 1) setToursOutStanding([]);
+        if (paging2 != 1) setToursComming([]);
+        setPaging1(1);
+        setPaging2(1);
+        setIsRefreshing(false);
+    };
+
     async function loadCommingTour() {
         try {
             const res = await request.get(API.toursOutStanding + '?paging=' + paging2);
@@ -136,7 +167,10 @@ function Home({ navigation }) {
         }
     };
     return (
-        <ScrollView onScroll={handleScroll}>
+        <ScrollView
+            onScroll={handleScroll}
+            refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />}
+        >
             <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
                 <StatusBar translucent={false} backgroundColor={COLOR.primary} />
                 <Header />
@@ -177,9 +211,9 @@ function Home({ navigation }) {
                             data={toursOutStanding}
                             renderItem={({ item }) => <CardNewTour props={item} navigation={navigation} />}
                             keyExtractor={(item) => item.idTour}
-                            onMomentumScrollEnd={loadMore1}
-                            // onEndReached={loadMore1}
-                            // onEndReachedThreshold={0.1}
+                            // onMomentumScrollEnd={loadMore1}
+                            onEndReached={loadMore1}
+                            onEndReachedThreshold={0.1}
                             ListFooterComponent={renderFooter}
                         />
                     )}

@@ -81,12 +81,5 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- create sp
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_tour_slots_left`(IN tour_id INT)
-BEGIN
-     SELECT *
-     FROM v_tour_slots_left
-     WHERE idTour = tour_id;
-END
 
 -- Dump completed on 2023-03-17 23:24:48

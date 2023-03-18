@@ -164,12 +164,12 @@ OrderTour.create = async function (data, result) {
   }
 
   //check exist of customer
-  const [customer] = await Customer.getById(idCustomer);
+  // const [customer] = await Customer.getById(id);
 
-  if (customer == undefined) {
-    result([], false, "Khách hàng không tồn tại!");
-    return;
-  }
+  // if (customer == undefined) {
+  //   result([], false, "Khách hàng không tồn tại!");
+  //   return;
+  // }
 
   //check exist of tour
   const [tour] = await Tour.getById(idTour);

@@ -91,7 +91,7 @@ class OrderTourController {
 
     var id = query.id;
     var status = query.status;
-    var paging = query.paging;
+    var paging = query.paging | 1;
 
     switch (id) {
       case undefined:
@@ -157,7 +157,7 @@ class OrderTourController {
   find(req, res, next) {
     var query = require("url").parse(req.url, true).query;
     var key = query.key;
-    var paging = query.paging;
+    var paging = query.paging | 1;
 
     OrderTour.findBykey(key, paging)
       .then((result) => {
