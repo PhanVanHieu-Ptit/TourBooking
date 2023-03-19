@@ -15,11 +15,13 @@ import TourScreen from '../../screens/tourScreen/TourScreen';
 import DetailHistoryOrder from '../../screens/historyOrder.js/DetailHistoryOrder';
 import ManageOrderFollowStatus from '../../screens/manageOrder/ManageOrderFollowStatus';
 import ChangePassword from '../../screens/manage/ChangePassword';
+import AuthByFinger from '../../screens/auth/Login/authByFinger';
 
 const Stack = createStackNavigator();
 function HomeNavigation() {
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="AuthByFinger" component={AuthByFinger} />
             <Stack.Screen name="HomeScreen" component={MyTabs} />
             <Stack.Screen name="Register" component={Register} />
             <Stack.Screen name="Forgotpassword" component={ForgotPassword} />
@@ -36,6 +38,7 @@ function HomeNavigation() {
             {/* <Stack.Screen name="HistoryOrderScreen" component={HistoryOrderScreen} /> */}
             <Stack.Screen name="Changepassword" component={ChangePassword} />
             <Stack.Screen name="ManageOrderFollowStatus" component={ManageOrderFollowStatus} />
+
             {/* <Stack.Screen name="ManageOrderFollowTour" component={ManageOrderFollowTour} />
             <Stack.Screen name="DetailOrderFollowTour" component={DetailOrderFollowTour} /> */}
             {/* <Stack.Screen name="CustomerFollowTour" component={CustomerFollowTour} /> */}

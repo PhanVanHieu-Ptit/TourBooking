@@ -1,5 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { SafeAreaView, Image, View, Text, TouchableOpacity, TextInput, Alert, StyleSheet } from 'react-native';
+import {
+    SafeAreaView,
+    Image,
+    View,
+    Text,
+    TouchableOpacity,
+    TextInput,
+    Alert,
+    StyleSheet,
+    PermissionsAndroid,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -7,7 +17,6 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import stylesButton from '../../components/general/actionButton/styles';
 import stylesAllTour from '../allTour/style';
 import stylesManage from './styles';
-import { ScrollView } from 'react-native-gesture-handler';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import stylesTour from '../tourScreen/styles';
 import { AppContext } from '../../../App';
@@ -15,6 +24,7 @@ import API from '../../res/string';
 import * as request from '../../services/untils';
 import SelectDropdown from 'react-native-select-dropdown';
 import { uploadImage, deleteImage } from '../../services/untils/uploadImage';
+import COLOR from '../../res/color';
 
 const FormData = require('form-data');
 
@@ -38,8 +48,8 @@ function ManageInforPersonScreen({ route, navigation }) {
     const [responseImage, setResponseImage] = useState('');
     const chooseImage = () => {
         let options = {
-            title: 'Select Image',
-            customButtons: [{ name: 'customOptionKey', title: 'Choose Photo from Custom Option' }],
+            title: 'Chọn ảnh',
+            customButtons: [{ name: 'customOptionKey', title: 'Chọn ảnh từ' }],
             storageOptions: {
                 skipBackup: true,
                 path: 'images',
@@ -57,12 +67,53 @@ function ManageInforPersonScreen({ route, navigation }) {
                 Alert.alert(response.customButton);
             } else {
                 // console.log('source', response);
-                const formData = new FormData();
-                formData.append('image', {
-                    uri: response.uri,
-                    type: response.type,
-                    name: response.fileName || 'image.jpg',
-                });
+
+                setImgPath(response.assets[0].uri);
+                setResponseImage(response);
+            }
+        });
+    };
+
+    async function requestCameraPermission() {
+        try {
+            const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA, {
+                title: 'Cấp quyền sử dụng',
+                message: 'Ứng dụng cần quyền truy cập vào máy ảnh của bạn.',
+                buttonNeutral: 'Hỏi lại sau',
+                buttonNegative: 'Hủy bỏ',
+                buttonPositive: 'Đồng ý',
+            });
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                console.log('Camera permission granted');
+            } else {
+                console.log('Camera permission denied');
+            }
+        } catch (err) {
+            console.warn(err);
+        }
+    }
+
+    const takePicture = () => {
+        requestCameraPermission();
+        const options = {
+            title: 'Chọn ảnh',
+            storageOptions: {
+                skipBackup: true,
+                path: 'images',
+            },
+        };
+        launchCamera(options, (response) => {
+            console.log('Response = ', response);
+
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            } else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton);
+                Alert.alert(response.customButton);
+            } else {
+                // console.log('source', response);
 
                 setImgPath(response.assets[0].uri);
                 setResponseImage(response);
@@ -269,15 +320,25 @@ function ManageInforPersonScreen({ route, navigation }) {
                 />
 
                 <Text style={stylesManage.txt_name}>{name}</Text>
-                <TouchableOpacity
-                    onPress={() => {
-                        chooseImage();
-                    }}
-                >
-                    <Text style={[stylesManage.txt_name, { fontSize: 16, fontWeight: 'normal' }]}>
-                        {isLogin ? 'Đổi ảnh' : 'Chọn ảnh'}
-                    </Text>
-                </TouchableOpacity>
+                <View style={{ flexDirection: 'row' }}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            takePicture();
+                        }}
+                        style={{ marginRight: 10 }}
+                    >
+                        <AntDesign name="camera" size={20} color={COLOR.primary} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => {
+                            chooseImage();
+                        }}
+                    >
+                        <Text style={[stylesManage.txt_name, { fontSize: 16, fontWeight: 'normal' }]}>
+                            {isLogin ? 'Đổi ảnh' : 'Chọn ảnh'}
+                        </Text>
+                    </TouchableOpacity>
+                </View>
             </View>
             <View style={{ marginTop: 20 }}>
                 <Text style={stylesManage.title}>Họ tên</Text>
