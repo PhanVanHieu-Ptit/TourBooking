@@ -39,7 +39,8 @@ function Home({ navigation }) {
 
     useEffect(() => {
         if (paging1 == 1) setIsLoading1(true);
-        loadToursOutStanding();
+        console.log();
+        loadToursOutStanding('toursOutStanding: ', toursOutStanding);
     }, [paging1]);
 
     useEffect(() => {
