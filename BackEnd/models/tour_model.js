@@ -50,10 +50,9 @@ Tour.getById = function (id) {
         " JOIN tourpicture ON tour.idTour = tourpicture.idTour" +
         " WHERE tour.idTour = ?" +
         " GROUP BY tour.idTour;",
-      id
+      [id]
     )
     .then(([rows, fields]) => {
-      console.log("findTourByID:");
       return rows;
     })
     .catch((err) => {

@@ -85,7 +85,7 @@ function getInforTour(res, result) {
 }
 
 class OrderTourController {
-  //[GET] /order-tours/list?id={id}&status={value}
+  //[GET] /order-tours/list?id={id}&status={value}&paging={page}
   filter(req, res, next) {
     var query = require("url").parse(req.url, true).query;
 
@@ -121,6 +121,7 @@ class OrderTourController {
             status,
             paging,
             function (result) {
+              console.log("result: ", result);
               getInforTour(res, result);
             }
           );

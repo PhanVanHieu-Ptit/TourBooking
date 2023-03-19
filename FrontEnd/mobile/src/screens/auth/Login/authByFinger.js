@@ -15,19 +15,11 @@ import { AppContext } from '../../../../App';
 import { clearOldData } from '../../../res/untils';
 
 function AuthByFinger({ navigation }) {
-    const {
-        user,
-        setUser,
-        setHistoryOrder,
-        setToursOutStanding,
-        setToursComming,
-        setListTour,
-        setListOrder,
-        setListStaff,
-    } = useContext(AppContext);
+    const { user, setUser } = useContext(AppContext);
 
     let errorCount = 0;
     const maxErrorCount = 3;
+    const [name, setName] = useState();
 
     // function clearOldData() {
     //     setHistoryOrder([]);
@@ -60,10 +52,16 @@ function AuthByFinger({ navigation }) {
                 }
             });
     };
+
+    function formatString(currentString) {
+        console.log('currentString: ', currentString);
+        return currentString.slice(0, 3) + '***@***.com';
+    }
     useEffect(() => {
         async function checkLogin() {
-            const temp = await AsyncStorage.getItem('user');
-            setUser(temp);
+            let temp = await AsyncStorage.getItem('user');
+            setUser(JSON.parse(temp));
+            setName(formatString(JSON.parse(temp).email));
 
             if (temp != '' && temp != undefined && temp != null) handleTouchID();
             else {
@@ -83,7 +81,7 @@ function AuthByFinger({ navigation }) {
                         <Text style={[styles.title1, { fontSize: 22, color: '#000000' }]}>
                             Chào mừng bạn đã quay trở lại!
                         </Text>
-                        <Text style={[styles.title2, { color: '#000000' }]}>pvh***@***.com</Text>
+                        <Text style={[styles.title2, { color: '#000000' }]}>{name}</Text>
                     </View>
 
                     <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
