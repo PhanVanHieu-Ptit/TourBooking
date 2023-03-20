@@ -41,7 +41,6 @@ function HomePage() {
                     </button>
                 </form>
                 {searchedTourComponent}
-                {/* <SearchedTour searchKey={''} tours={tours} /> */}
                 <FeaturedTour memoizedOptions={memoizedOptions}></FeaturedTour>
             </main>
         </DefaultClientLayout>

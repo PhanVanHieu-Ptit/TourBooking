@@ -21,7 +21,7 @@ export async function getTour(id) {
 export async function orderTour(data) {
     return axios.post('/order-tours/order', data);
 }
-export async function getListOrderTour(id = '', status = '') {
+export async function getListOrderTour(id = '', status = 'Tất cả') {
     return axios.get(`/order-tours/list?id=${id}&status=${status}`);
 }
 export async function getOwnInfor() {
@@ -44,4 +44,13 @@ export async function addStaff(data) {
 }
 export async function updateStaff(data, idStaff) {
     return axios.put(`/staff/${idStaff}/update`, data);
+}
+export async function updateTour(data, idTour) {
+    return axios.put(`/tour/${idTour}/update`, data);
+}
+export async function requestCancelTour(idTourOrder) {
+    return axios.patch(`/order-tours/${idTourOrder}/customer-need-cancel`);
+}
+export async function addTour(data) {
+    return axios.post('/tour/add', data);
 }
