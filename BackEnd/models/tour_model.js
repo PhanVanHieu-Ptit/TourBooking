@@ -85,19 +85,41 @@ Tour.getListFeatured = function (paging) {
     });
 };
 
-Tour.remove = function (id, result) {
-  db.query("delete from tourpicture where idTour=?", id)
-    .then(([rows1, fields1]) => {
-      db.query("DELETE FROM tour WHERE idTour= ?", id)
-        .then(([rows, fields]) => {
-          result(rows);
-        })
-        .catch((err) => {
-          result(err);
-        });
+// Tour.remove = function (id, result) {
+//   db.query("delete from tourpicture where idTour=?", id)
+//     .then(([rows1, fields1]) => {
+//       db.query("DELETE FROM tour WHERE idTour= ?", id)
+//         .then(([rows, fields]) => {
+//           result(rows);
+//         })
+//         .catch((err) => {
+//           result(err);
+//         });
+//     })
+//     .catch((err) => {
+//       result(err);
+//     });
+// };
+
+Tour.changeStatus = async function (id, status, result) {
+  if (status == "2") {
+    const [rows1, fields1] = await db.query(
+      "call managetour.sp_get_id_tour_order(?);",
+      [id]
+    );
+    if (rows1[0].length != 0) {
+      result(rows1, false, "Đã có người đặt tour, không thể xóa!");
+      return;
+    }
+  }
+
+  db.query("call managetour.sp_update_status_tour(?, ?);", [id, status])
+    .then(([rows, fields]) => {
+      console.log("row: ", rows);
+      result(rows, true, "Cập nhật thành công!");
     })
     .catch((err) => {
-      result(err);
+      result(err, false, "Cập nhật thất bại!");
     });
 };
 
