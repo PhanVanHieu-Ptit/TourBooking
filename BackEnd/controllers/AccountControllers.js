@@ -71,7 +71,7 @@ class AccountControllers {
         );
       else if (role == "staff" || role == "admin")
         [rows, fields] = await connection.execute(
-          `call managetour.sp_get_account('${username}');`
+          `call managetour.sp_get_staff_by_email('${username}');`
         );
       if (rows[0].length == 0 && role != "admin") {
         return res.send(message("", false, "Không có thông tin user!"));
@@ -82,7 +82,7 @@ class AccountControllers {
       const { name, imageUrl, phoneNumber, email, address } = rows[0][0];
       let id = rows[0][0].idStaff;
       if (role == "customer") {
-        id = rows[0].idCustomer;
+        id = rows[0][0].idCustomer;
       }
       //set token for client
       const token = getToken(username, false, role);

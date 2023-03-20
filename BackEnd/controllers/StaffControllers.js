@@ -13,7 +13,7 @@ class StaffController {
       `call managetour.sp_get_list_staff_by_key('%${key}%');`
     );
 
-    return res.send(message(rows, true, "Key:" + key));
+    return res.send(message(rows[0], true, "Key:" + key));
   }
   async addStaff(req, res) {
     try {
