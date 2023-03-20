@@ -13,7 +13,7 @@ class AccountControllers {
       password = encode(password);
 
       //insert tài khoản
-      await connection.execute("call managetour.sp_create_account(?, ?);", [
+      await connection.execute("call managetour.sp_create_account(?, ?,'');", [
         email,
         password,
       ]);
@@ -70,7 +70,7 @@ class AccountControllers {
         );
       else if (role == "staff" || role == "admin")
         [rows, fields] = await connection.execute(
-          `call managetour.sp_get_account(${username});`
+          `call managetour.sp_get_account('${username}');`
         );
       if (rows[0].length == 0 && role != "admin") {
         return res.send(message("", false, "Không có thông tin user!"));

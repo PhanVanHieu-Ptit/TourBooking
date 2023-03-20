@@ -171,12 +171,17 @@ OrderTour.create = async function (data, result) {
     return;
   }
 
-  db.query(
-    "INSERT INTO tourorder SET idCustomer=?, idTour=?, quantity=?, note=?, totalMoney=?",
-    [idCustomer, idTour, quantity, note, totalMoney]
-  )
+  db.query("call managetour.sp_create_order(?, ?, ?, ?, ?);", [
+    idCustomer,
+    idTour,
+    quantity,
+    note,
+    totalMoney,
+  ])
     .then(([rows, fields]) => {
-      result([{ idOrder: rows.insertId }], true, "Đăng ký tour thành công!");
+      if (rows.affectedRows == 1)
+        result([{}], true, "Đăng ký tour thành công!");
+      else result([{}], false, "Đăng ký tour thất bại!");
     })
     .catch((err) => {
       console.log(err);
@@ -187,20 +192,17 @@ OrderTour.create = async function (data, result) {
 OrderTour.update = async function (data, result) {
   const getTotalMoney = require("../utils/getTotalMoney");
   const totalMoney = await getTotalMoney(data.idTour, data.quantity);
-  db.query(
-    "UPDATE tourorder SET  quantity=?, note=?, totalMoney=? where idTourOrder=? and idCustomer = ? and idTour = ?",
-    [
-      data.quantity,
-      data.note,
-      totalMoney,
-      data.idTourOrder,
-      data.idCustomer,
-      data.idTour,
-    ]
-  )
+  db.query("call managetour.sp_update_order(?, ?, ?, ?, ?, ?);", [
+    data.idTourOrder,
+    data.idCustomer,
+    data.idTour,
+    data.quantity,
+    data.note,
+    totalMoney,
+  ])
     .then(([rows, fields]) => {
-      console.log(rows);
-      result(data);
+      if (rows.affectedRows == 1) result(data, true, "Cập nhật thành công!");
+      else result([{}], true, "Cập nhật thất bại!");
     })
     .catch((err) => {
       console.log(err);
@@ -209,15 +211,10 @@ OrderTour.update = async function (data, result) {
 };
 
 OrderTour.confirm = function (id, idStatus) {
-  let cancelDate = "";
-  if (idStatus == 10) cancelDate = ", cancelDate=NOW()";
+  // let cancelDate = "";
+  // if (idStatus == 10) cancelDate = ", cancelDate=NOW()";
   return db
-    .query(
-      "UPDATE tourorder SET  idStatus=?" +
-        cancelDate +
-        " where idTourOrder = ?;",
-      [idStatus, id]
-    )
+    .query("call managetour.sp_update_status_order(?, ?);", [idStatus, id])
     .then(([rows, fields]) => {
       console.log(rows);
       return rows;
