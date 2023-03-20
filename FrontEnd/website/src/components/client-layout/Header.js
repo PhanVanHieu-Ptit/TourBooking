@@ -11,7 +11,7 @@ function Header() {
     const [showChangeUserInforPopup, setShowChangeUserInforPopup] = useState(false);
     const [userData, setUserData] = useState(null);
     useEffect(() => {
-        getOwnInfor().then((rs) => setUserData(rs.data[0]));
+        if (localStorage.token) getOwnInfor().then((rs) => setUserData(rs.data[0]));
     }, []);
     return (
         <>

@@ -32,6 +32,7 @@ import twitter from './twitter.svg';
 import unlock from './unlock.svg';
 import userBlack from './user-black.svg';
 import user from './user.svg';
+import moneyBlack from './money-black.svg';
 
 const svg = {
     add,
@@ -43,6 +44,7 @@ const svg = {
     destination,
     dropDown,
     edit,
+    moneyBlack,
     facebook,
     groupPersonBlack,
     groupPerson,
