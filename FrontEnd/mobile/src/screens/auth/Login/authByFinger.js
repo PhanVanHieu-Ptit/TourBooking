@@ -60,11 +60,14 @@ function AuthByFinger({ navigation }) {
     useEffect(() => {
         async function checkLogin() {
             let temp = await AsyncStorage.getItem('user');
-            setUser(JSON.parse(temp));
-            setName(formatString(JSON.parse(temp).email));
 
-            if (temp != '' && temp != undefined && temp != null) handleTouchID();
-            else {
+            console.log('temp: ', temp);
+
+            if (temp != '' && temp != undefined && temp != null) {
+                setUser(JSON.parse(temp));
+                setName(formatString(JSON.parse(temp).email));
+                handleTouchID();
+            } else {
                 navigation.replace('HomeScreen');
             }
         }

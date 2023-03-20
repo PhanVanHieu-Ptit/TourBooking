@@ -113,7 +113,7 @@ function ManageScreen({ navigation }) {
                                 </View>
                             </TouchableOpacity>
 
-                            <TouchableOpacity onPress={() => navigation.navigate('ManageOrder')}>
+                            <TouchableOpacity onPress={() => navigation.navigate('ManageOrderFollowStatus')}>
                                 <View style={stylesManage.btn}>
                                     <View style={{ flexDirection: 'row' }}>
                                         <Entypo name="ticket" size={20} color={COLOR.primary} />
@@ -186,6 +186,7 @@ function ManageScreen({ navigation }) {
                             // setToursComming([]);
                             // setListTour([]);
                             clearOldData();
+                            navigation.replace('HomeScreen');
                         }}
                     >
                         <View style={[stylesManage.btn, { justifyContent: 'center' }]}>

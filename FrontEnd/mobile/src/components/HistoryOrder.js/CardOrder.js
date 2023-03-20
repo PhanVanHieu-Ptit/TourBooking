@@ -28,7 +28,7 @@ function CardOrder(props) {
             setColorState('#E70303');
         else if (tourOrder.status.name === 'Hoàn thành' || tourOrder.status.name === 'Đang sử dụng')
             setColorState('#32DB61');
-    }, []);
+    }, [tourOrder.status.name]);
 
     function cancel(comand) {
         request

@@ -9,6 +9,7 @@ import {
     Alert,
     StyleSheet,
     PermissionsAndroid,
+    ScrollView,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -161,6 +162,7 @@ function ManageInforPersonScreen({ route, navigation }) {
                     API.updateInfoPersonal,
                     { name, address, phoneNumber: phone, imageUrl: url },
                     { 'Content-Type': 'application/json', authorization: user.accessToken },
+                    'PATCH',
                 )
                 .then((response) => {
                     console.log(response.data);
@@ -292,78 +294,59 @@ function ManageInforPersonScreen({ route, navigation }) {
     }, []);
 
     return (
-        <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center' }}>
-            <View
-                style={{
-                    flexDirection: 'row',
-                    justifyContent: 'flex-start',
-                    marginLeft: -90,
-                }}
-            >
-                <TouchableOpacity
-                    onPress={() => {
-                        navigation.goBack();
-                    }}
-                >
-                    <View style={stylesButton.btn_back}>
-                        <Icon name="chevron-back" size={25} color="#021A5A" />
-                    </View>
-                </TouchableOpacity>
-                <Text style={stylesAllTour.title}>{isLogin ? 'Sửa thông tin cá nhân' : 'Nhập thông tin cá nhân'}</Text>
-            </View>
-            <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
-                <Image
-                    source={{
-                        uri: `${imgPath}`,
-                    }}
-                    style={stylesManage.img}
-                />
-
-                <Text style={stylesManage.txt_name}>{name}</Text>
-                <View style={{ flexDirection: 'row' }}>
-                    <TouchableOpacity
-                        onPress={() => {
-                            takePicture();
-                        }}
-                        style={{ marginRight: 10 }}
-                    >
-                        <AntDesign name="camera" size={20} color={COLOR.primary} />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => {
-                            chooseImage();
-                        }}
-                    >
-                        <Text style={[stylesManage.txt_name, { fontSize: 16, fontWeight: 'normal' }]}>
-                            {isLogin ? 'Đổi ảnh' : 'Chọn ảnh'}
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-            <View style={{ marginTop: 20 }}>
-                <Text style={stylesManage.title}>Họ tên</Text>
+        <ScrollView>
+            <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center' }}>
                 <View
-                    style={[
-                        stylesManage.input,
-                        {
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            padding: 5,
-                        },
-                    ]}
+                    style={{
+                        flexDirection: 'row',
+                        justifyContent: 'flex-start',
+                        marginLeft: -90,
+                    }}
                 >
-                    <TextInput
-                        placeholder="Nhập họ tên của bạn"
-                        onChangeText={(newText) => setName(newText)}
-                        defaultValue={name}
-                    />
-                    <AntDesign name="check" size={20} color="#0D6EFD" />
+                    <TouchableOpacity
+                        onPress={() => {
+                            navigation.goBack();
+                        }}
+                    >
+                        <View style={stylesButton.btn_back}>
+                            <Icon name="chevron-back" size={25} color="#021A5A" />
+                        </View>
+                    </TouchableOpacity>
+                    <Text style={stylesAllTour.title}>
+                        {isLogin ? 'Sửa thông tin cá nhân' : 'Nhập thông tin cá nhân'}
+                    </Text>
                 </View>
-            </View>
-            {isLogin || type == 'register' ? (
+                <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
+                    <Image
+                        source={{
+                            uri: `${imgPath}`,
+                        }}
+                        style={stylesManage.img}
+                    />
+
+                    <Text style={stylesManage.txt_name}>{name}</Text>
+                    <View style={{ flexDirection: 'row' }}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                takePicture();
+                            }}
+                            style={{ marginRight: 10 }}
+                        >
+                            <AntDesign name="camera" size={20} color={COLOR.primary} />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => {
+                                chooseImage();
+                            }}
+                        >
+                            <Text style={[stylesManage.txt_name, { fontSize: 16, fontWeight: 'normal' }]}>
+                                {isLogin ? 'Đổi ảnh' : 'Chọn ảnh'}
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
                 <View style={{ marginTop: 20 }}>
-                    <Text style={stylesManage.title}>Email</Text>
+                    <Text style={stylesManage.title}>Họ tên</Text>
                     <View
                         style={[
                             stylesManage.input,
@@ -376,121 +359,144 @@ function ManageInforPersonScreen({ route, navigation }) {
                         ]}
                     >
                         <TextInput
-                            editable={false}
-                            placeholder="Nhập email của bạn"
-                            onChangeText={(newText) => setEmail(newText)}
-                            defaultValue={email}
+                            placeholder="Nhập họ tên của bạn"
+                            onChangeText={(newText) => setName(newText)}
+                            defaultValue={name}
                         />
                         <AntDesign name="check" size={20} color="#0D6EFD" />
                     </View>
                 </View>
-            ) : (
-                ''
-            )}
-            {(isLogin && user?.role == 'customer') || type == 'register' ? (
-                <View style={{ marginTop: 20 }}>
-                    <Text style={stylesManage.title}>Địa chỉ</Text>
-                    <View
-                        style={[
-                            stylesManage.input,
-                            {
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                padding: 5,
-                            },
-                        ]}
-                    >
-                        {/* <TextInput
+                {isLogin || type == 'register' ? (
+                    <View style={{ marginTop: 20 }}>
+                        <Text style={stylesManage.title}>Email</Text>
+                        <View
+                            style={[
+                                stylesManage.input,
+                                {
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    padding: 5,
+                                },
+                            ]}
+                        >
+                            <TextInput
+                                editable={false}
+                                placeholder="Nhập email của bạn"
+                                onChangeText={(newText) => setEmail(newText)}
+                                defaultValue={email}
+                            />
+                            <AntDesign name="check" size={20} color="#0D6EFD" />
+                        </View>
+                    </View>
+                ) : (
+                    ''
+                )}
+                {(isLogin && user?.role == 'customer') || type == 'register' ? (
+                    <View style={{ marginTop: 20 }}>
+                        <Text style={stylesManage.title}>Địa chỉ</Text>
+                        <View
+                            style={[
+                                stylesManage.input,
+                                {
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    padding: 5,
+                                },
+                            ]}
+                        >
+                            {/* <TextInput
                             placeholder="Nhập địa chỉ của bạn"
                             onChangeText={(newText) => setAddress(newText)}
                             defaultValue={address}
                         />
                         <AntDesign name="check" size={20} color="#0D6EFD" /> */}
-                        <SelectDropdown
-                            data={listAddress}
-                            // defaultValueByIndex={1}
-                            defaultValue={address}
-                            onSelect={(selectedItem, index) => {
-                                setAddress(selectedItem);
-                                console.log(selectedItem, index);
-                            }}
-                            defaultButtonText={type == 'register' ? 'Chọn tỉnh / thành phố' : address}
-                            buttonTextAfterSelection={(selectedItem, index) => {
-                                return selectedItem;
-                            }}
-                            rowTextForSelection={(item, index) => {
-                                return item;
-                            }}
-                            buttonStyle={styles.dropdown1BtnStyle}
-                            buttonTextStyle={styles.dropdown1BtnTxtStyle}
-                            renderDropdownIcon={(isOpened) => {
-                                return (
-                                    <FontAwesome
-                                        name={isOpened ? 'chevron-up' : 'chevron-down'}
-                                        color={'#444'}
-                                        size={14}
-                                    />
-                                );
-                            }}
-                            dropdownIconPosition={'right'}
-                            dropdownStyle={styles.dropdown1DropdownStyle}
-                            rowStyle={styles.dropdown1RowStyle}
-                            rowTextStyle={styles.dropdown1RowTxtStyle}
-                            selectedRowStyle={styles.dropdown1SelectedRowStyle}
-                            search
-                            searchInputStyle={styles.dropdown1searchInputStyleStyle}
-                            searchPlaceHolder={'Tìm kiếm ở đây'}
-                            searchPlaceHolderColor={'darkgrey'}
-                            renderSearchInputLeftIcon={() => {
-                                return <FontAwesome name={'search'} color={'#444'} size={14} />;
-                            }}
-                        />
+                            <SelectDropdown
+                                data={listAddress}
+                                // defaultValueByIndex={1}
+                                defaultValue={address}
+                                onSelect={(selectedItem, index) => {
+                                    setAddress(selectedItem);
+                                    console.log(selectedItem, index);
+                                }}
+                                defaultButtonText={type == 'register' ? 'Chọn tỉnh / thành phố' : address}
+                                buttonTextAfterSelection={(selectedItem, index) => {
+                                    return selectedItem;
+                                }}
+                                rowTextForSelection={(item, index) => {
+                                    return item;
+                                }}
+                                buttonStyle={styles.dropdown1BtnStyle}
+                                buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                                renderDropdownIcon={(isOpened) => {
+                                    return (
+                                        <FontAwesome
+                                            name={isOpened ? 'chevron-up' : 'chevron-down'}
+                                            color={'#444'}
+                                            size={14}
+                                        />
+                                    );
+                                }}
+                                dropdownIconPosition={'right'}
+                                dropdownStyle={styles.dropdown1DropdownStyle}
+                                rowStyle={styles.dropdown1RowStyle}
+                                rowTextStyle={styles.dropdown1RowTxtStyle}
+                                selectedRowStyle={styles.dropdown1SelectedRowStyle}
+                                search
+                                searchInputStyle={styles.dropdown1searchInputStyleStyle}
+                                searchPlaceHolder={'Tìm kiếm ở đây'}
+                                searchPlaceHolderColor={'darkgrey'}
+                                renderSearchInputLeftIcon={() => {
+                                    return <FontAwesome name={'search'} color={'#444'} size={14} />;
+                                }}
+                            />
+                        </View>
                     </View>
-                </View>
-            ) : (
-                ''
-            )}
-            {(isLogin && user?.role == 'customer') || type == 'register' ? (
-                <View style={{ marginTop: 20 }}>
-                    <Text style={stylesManage.title}>Số điện thoại</Text>
-                    <View
-                        style={[
-                            stylesManage.input,
-                            {
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                padding: 5,
-                            },
-                        ]}
-                    >
-                        <TextInput
-                            placeholder="Nhập số điện thoại của bạn"
-                            onChangeText={(newText) => setPhone(newText)}
-                            value={phone}
-                            keyboardType={'numeric'}
-                            maxLength={10}
-                        />
-                        <AntDesign name="check" size={20} color="#0D6EFD" />
+                ) : (
+                    ''
+                )}
+                {(isLogin && user?.role == 'customer') || type == 'register' ? (
+                    <View style={{ marginTop: 20 }}>
+                        <Text style={stylesManage.title}>Số điện thoại</Text>
+                        <View
+                            style={[
+                                stylesManage.input,
+                                {
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    padding: 5,
+                                },
+                            ]}
+                        >
+                            <TextInput
+                                placeholder="Nhập số điện thoại của bạn"
+                                onChangeText={(newText) => setPhone(newText)}
+                                value={phone}
+                                keyboardType={'numeric'}
+                                maxLength={10}
+                            />
+                            <AntDesign name="check" size={20} color="#0D6EFD" />
+                        </View>
                     </View>
-                </View>
-            ) : (
-                ''
-            )}
-            <TouchableOpacity
-                onPress={() => {
-                    if (isLogin) {
-                        if (user.role == 'customer') update();
-                        else updateStaff();
-                    } else addInfo();
-                }}
-            >
-                <View style={stylesTour.btn}>
-                    <Text style={stylesTour.txt_btn}>{isLogin ? 'Lưu lại' : 'Tiếp tục'}</Text>
-                </View>
-            </TouchableOpacity>
-        </SafeAreaView>
+                ) : (
+                    ''
+                )}
+                <TouchableOpacity
+                    onPress={() => {
+                        if (isLogin) {
+                            if (user.role == 'customer') update();
+                            else updateStaff();
+                        } else addInfo();
+                    }}
+                >
+                    <View style={stylesTour.btn}>
+                        <Text style={stylesTour.txt_btn}>{isLogin ? 'Lưu lại' : 'Tiếp tục'}</Text>
+                    </View>
+                </TouchableOpacity>
+            </SafeAreaView>
+        </ScrollView>
     );
 }
 
