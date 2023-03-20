@@ -104,8 +104,8 @@ class TourController {
   //[DELETE] /tour/:id/delete
   delete(req, res, next) {
     var id = req.params.id;
-    Tour.remove(id, function (result) {
-      res.send(message(result, true, "Xóa thành công!"));
+    Tour.changeStatus(id, "2", function (result, status, mess) {
+      res.send(message(result, status, mess));
     });
   }
 
@@ -113,10 +113,10 @@ class TourController {
   async add(req, res, next) {
     try {
       let [rows, fields] = await connection.execute(
-        "select idStaff from staff where email=?",
+        "call managetour.sp_get_staff_by_email(?);",
         [req.body.email]
       );
-      let idStaffCreate = rows[0].idStaff;
+      let idStaffCreate = rows[0][0].idStaff;
       let {
         name,
         startDate,
@@ -141,11 +141,12 @@ class TourController {
       [rows, fields] = await connection.execute(
         `INSERT INTO tour(name,startDate,totalDay,minQuantity,maxQuantity,normalPenaltyFee,strictPenaltyFee,minDate,tourGuide,tourIntro,tourDetail,pickUpPoint,tourDestination,detailPickUpPoint,detailTourDestination,price,idStaffCreate,featured) VALUES('${name}','${startDate}',${totalDay},${minQuantity},${maxQuantity},${normalPenaltyFee},${strictPenaltyFee},${minDate},${tourGuide},'${tourIntro}','${tourDetail}','${pickUpPoint}','${tourDestination}','${detailPickUpPoint}','${detailTourDestination}',${price},${idStaffCreate},${featured})`
       );
+      console.log("rows: ", rows);
       tourPictures.forEach((e) => {
-        connection.execute(
-          "insert into tourpicture(idTour,imageUrl) values(?,?)",
-          [rows.insertId, e]
-        );
+        connection.execute("call managetour.sp_add_image_tour(?, ?);", [
+          rows.insertId,
+          e,
+        ]);
       });
       return res.send(
         message({ idTour: rows.insertId }, true, "Thêm tour thành công!")
@@ -178,17 +179,17 @@ class TourController {
         featured,
         tourPictures,
       } = req.body;
-      await connection.execute("delete from tourpicture where idTour=?", [
+      await connection.execute("call managetour.sp_delete_image_tour(?);", [
         idTour,
       ]);
       tourPictures.forEach((imageUrl) => {
-        connection.execute(
-          "insert into tourpicture(idTour,imageUrl) values(?,?)",
-          [idTour, imageUrl]
-        );
+        connection.execute("call managetour.sp_add_image_tour(?, ?);", [
+          idTour,
+          imageUrl,
+        ]);
       });
       let [rows, fields] = await connection.execute(
-        "update tour set name=?,startDate=?,totalDay=?,minQuantity=?,maxQuantity=?,normalPenaltyFee=?,strictPenaltyFee=?,minDate=?,tourGuide=?,tourIntro=?,tourDetail=?,pickUpPoint=?,tourDestination=?,detailPickUpPoint=?,detailTourDestination=?,price=?,featured=? where idTour=?",
+        "call managetour.sp_update_tour(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
         [
           name,
           startDate,
@@ -211,8 +212,9 @@ class TourController {
         ]
       );
 
-      // if (rows.changedRows < 1) return res.send(message(rows, true, 'Không có thay đổi!'));
-      return res.send(message(rows, true, "Cập nhật tour thành công"));
+      if (rows[1].changedRows < 1)
+        return res.send(message(rows, true, "Không có thay đổi!"));
+      return res.send(message(rows[0], true, "Cập nhật tour thành công"));
     } catch (error) {
       console.log(error.message);
       return res.send(message(error, false, "Cập nhật tour tour thất bại!"));

@@ -11,32 +11,33 @@ class AccountControllers {
     try {
       //pre-process data
       password = encode(password);
-
+      // await connection.beginTransaction();
       //insert tài khoản
-      await connection.execute("call managetour.sp_create_account(?, ?);", [
+      await connection.execute("call managetour.sp_create_account(?, ?,'');", [
         email,
         password,
       ]);
 
       // insertCustomer
-      let [rows, fields] = await connection.execute(
+      await connection.execute(
         "call managetour.sp_create_customer(?, ?, ?, ?, ?);",
         [name, email, phoneNumber, imageUrl, address]
       );
 
-      let [rows1, fields1] = await connection.execute(
+      let [rows, fields] = await connection.execute(
         "call managetour.sp_get_customer_by_email(?);",
         [email]
       );
-
+      // await connection.commit();
       return res.send(
         message(
-          { idCustomer: rows1.idCustomer, username: email },
+          { idCustomer: rows.idCustomer, username: email },
           true,
           "Đăng ký thành công"
         )
       );
     } catch (error) {
+      // await connection.rollback();
       return res.send(message(error, false));
     }
   }
@@ -70,7 +71,7 @@ class AccountControllers {
         );
       else if (role == "staff" || role == "admin")
         [rows, fields] = await connection.execute(
-          `call managetour.sp_get_account(${username});`
+          `call managetour.sp_get_account('${username}');`
         );
       if (rows[0].length == 0 && role != "admin") {
         return res.send(message("", false, "Không có thông tin user!"));

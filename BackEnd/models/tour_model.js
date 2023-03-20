@@ -25,17 +25,9 @@ const Tour = function (tour) {
 };
 
 Tour.getAll = function (paging, result) {
-  db.query(
-    "SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ',') AS image_list" +
-      " FROM tour" +
-      " JOIN tourpicture ON tour.idTour = tourpicture.idTour" +
-      " GROUP BY tour.idTour" +
-      " ORDER BY tour.dateCreate DESC " +
-      "LIMIT 5 OFFSET ?;",
-    calculateStart(paging)
-  )
+  db.query("call managetour.sp_get_all_tour(1); ", calculateStart(paging))
     .then(([rows, fields]) => {
-      result(rows);
+      result(rows[0]);
     })
     .catch((err) => {
       result(err);
@@ -44,16 +36,9 @@ Tour.getAll = function (paging, result) {
 
 Tour.getById = function (id) {
   return db
-    .query(
-      "SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ',') AS image_list" +
-        " FROM tour" +
-        " JOIN tourpicture ON tour.idTour = tourpicture.idTour" +
-        " WHERE tour.idTour = ?" +
-        " GROUP BY tour.idTour;",
-      [id]
-    )
+    .query("call managetour.sp_get_tour_by_id(1);", [id])
     .then(([rows, fields]) => {
-      return rows;
+      return rows[0];
     })
     .catch((err) => {
       console.log(err);
@@ -74,23 +59,13 @@ Tour.getSlotsLeft = function (id) {
 };
 
 Tour.findBykey = function (key, paging) {
-  let condition = "";
-  if (key)
-    condition = `where name like '%${key}%' OR  tourIntro like '%${key}%' or pickUpPoint like '%${key}%' or tourDestination like '%${key}%'`;
   return db
-    .query(
-      "SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ',') AS image_list" +
-        " FROM tour" +
-        " JOIN tourpicture ON tour.idTour = tourpicture.idTour " +
-        condition +
-        " GROUP BY tour.idTour" +
-        " ORDER BY tour.dateCreate DESC " +
-        "LIMIT 5 OFFSET ?;",
-      calculateStart(paging)
-    )
+    .query("call managetour.sp_get_tour_by_key(?, ?);", [
+      key,
+      calculateStart(paging),
+    ])
     .then(([rows, fields]) => {
-      console.log("findTourBykey:");
-      return rows;
+      return rows[0];
     })
     .catch((err) => {
       console.log(err);
@@ -100,18 +75,9 @@ Tour.findBykey = function (key, paging) {
 
 Tour.getListFeatured = function (paging) {
   return db
-    .query(
-      "SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ',') AS image_list" +
-        " FROM tour" +
-        " JOIN tourpicture ON tour.idTour = tourpicture.idTour " +
-        "WHERE featured = 1" +
-        " GROUP BY tour.idTour" +
-        " ORDER BY tour.dateCreate DESC " +
-        "LIMIT 5 OFFSET ?;",
-      calculateStart(paging)
-    )
+    .query("call managetour.sp_get_tour_feauted(?);", [calculateStart(paging)])
     .then(([rows, fields]) => {
-      return rows;
+      return rows[0];
     })
     .catch((err) => {
       console.log(err);
@@ -119,25 +85,47 @@ Tour.getListFeatured = function (paging) {
     });
 };
 
-Tour.remove = function (id, result) {
-  db.query("delete from tourpicture where idTour=?", id)
-    .then(([rows1, fields1]) => {
-      db.query("DELETE FROM tour WHERE idTour= ?", id)
-        .then(([rows, fields]) => {
-          result(rows);
-        })
-        .catch((err) => {
-          result(err);
-        });
+// Tour.remove = function (id, result) {
+//   db.query("delete from tourpicture where idTour=?", id)
+//     .then(([rows1, fields1]) => {
+//       db.query("DELETE FROM tour WHERE idTour= ?", id)
+//         .then(([rows, fields]) => {
+//           result(rows);
+//         })
+//         .catch((err) => {
+//           result(err);
+//         });
+//     })
+//     .catch((err) => {
+//       result(err);
+//     });
+// };
+
+Tour.changeStatus = async function (id, status, result) {
+  if (status == "2") {
+    const [rows1, fields1] = await db.query(
+      "call managetour.sp_get_id_tour_order(?);",
+      [id]
+    );
+    if (rows1[0].length != 0) {
+      result(rows1, false, "Đã có người đặt tour, không thể xóa!");
+      return;
+    }
+  }
+
+  db.query("call managetour.sp_update_status_tour(?, ?);", [id, status])
+    .then(([rows, fields]) => {
+      console.log("row: ", rows);
+      result(rows, true, "Cập nhật thành công!");
     })
     .catch((err) => {
-      result(err);
+      result(err, false, "Cập nhật thất bại!");
     });
 };
 
 Tour.getNumberTourFeatured = function () {
   return db
-    .query("SELECT COUNT(*) as number FROM tour WHERE featured =1 ")
+    .query("SELECT * FROM managetour.v_tour_number_featured;")
     .then(([rows, fields]) => {
       return rows;
     })
@@ -149,7 +137,7 @@ Tour.getNumberTourFeatured = function () {
 
 Tour.getNumberTour = function () {
   return db
-    .query("SELECT COUNT(*) as number FROM tour")
+    .query("SELECT * FROM managetour.v_tour_number;")
     .then(([rows, fields]) => {
       return rows;
     })

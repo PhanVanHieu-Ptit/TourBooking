@@ -8,13 +8,10 @@ const Status = function (status) {
 
 Status.getById = function (id, type) {
   return db
-    .query(
-      "SELECT idStatus, name FROM `status` where idStatus= ? and type = ?",
-      [id, type]
-    )
+    .query("call managetour.sp_get_status_by_id(?, ?);", [id, type])
     .then(([rows, fields]) => {
       // console.log("rows: ", rows);
-      return rows;
+      return rows[0];
     })
     .catch((err) => {
       console.log(err);
@@ -23,11 +20,11 @@ Status.getById = function (id, type) {
 };
 
 Status.getFollowType = function (type, result) {
-  db.query("SELECT name FROM `status` where type = ?", type)
+  db.query("call managetour.sp_get_status_by_type(?);", type)
     .then(([rows, fields]) => {
       console.log("rows: ", rows);
       var list = [];
-      rows.forEach((element) => {
+      rows[0].forEach((element) => {
         list.push(element.name);
       });
       result(list);
