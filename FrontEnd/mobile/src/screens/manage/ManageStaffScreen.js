@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { FlatList, SafeAreaView, ScrollView, Text, View, Alert } from 'react-native';
+import { FlatList, SafeAreaView, ScrollView, Text, View, Alert, ActivityIndicator, } from 'react-native';
 import Find from '../../components/home/find';
 import Icon from 'react-native-vector-icons/Ionicons';
 import stylesButton from '../../components/general/actionButton/styles';
@@ -9,30 +9,57 @@ import CardStaff from '../../components/mange/CardStaff';
 import { AppContext } from '../../../App';
 import * as request from '../../services/untils';
 import API from '../../res/string';
+import COLOR from '../../res/color';
 
 function ManageStaffScreen({ navigation }) {
     const { user, listStaff, setListStaff } = useContext(AppContext);
+    const [isLoading, setIsLoading] = useState(true);
+    const [loadingFooter, setLoadingFooter] = useState(false);
 
     useEffect(() => {
-        request
-            .get(API.listStaff, {
-                headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
-            })
-            .then((response) => {
-                console.log(response.data);
-
-                if (response.status == true) {
-                    setListStaff(response.data);
-                } else {
-                    Alert.alert('Thông báo!', response.message + '', [
-                        { text: 'OK', onPress: () => console.log('OK Pressed') },
-                    ]);
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        loadStaffOutStanding();
+        console.log('Load');
     }, []);
+
+    async function loadStaffOutStanding() {
+        try {
+            const res = await request.get(API.listStaff, { 
+                headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
+            });
+            console.log('API');
+            if (res.status === true) {
+                setIsLoading(false);
+                setListStaff(res.data);
+                setLoadingFooter(false);
+            } else {
+                Alert.alert('Thông báo!', res.message + '', [
+                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                ]);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    // useEffect(() => {
+    //     request
+    //         .get(API.listStaff, {
+    //             headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
+    //         })
+    //         .then((response) => {
+    //             console.log(response.data);
+
+    //             if (response.status == true) {
+    //                 setListStaff(response.data);
+    //             } else {
+    //                 Alert.alert('Thông báo!', response.message + '', [
+    //                     { text: 'OK', onPress: () => console.log('OK Pressed') },
+    //                 ]);
+    //             }
+    //         })
+    //         .catch((err) => {
+    //             console.log(err);
+    //         });
+    // }, []);
     return (
         <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
             <View
@@ -59,9 +86,16 @@ function ManageStaffScreen({ navigation }) {
             </View>
             <Find />
             <ScrollView>
-                {listStaff.map((item) => (
-                    <CardStaff staff={item} key={item.idStaff} navigation={navigation} />
-                ))}
+                {isLoading ? (
+                    <ActivityIndicator size="small" color={COLOR.primary} />
+                ) : (
+                    <View>
+                        {listStaff.map((item) => (
+                            <CardStaff staff={item} key={item.idStaff} navigation={navigation} />
+                        ))}
+                    </View>
+                )}
+                {loadingFooter ? <ActivityIndicator size="small" color={COLOR.primary} /> : ''}
             </ScrollView>
         </SafeAreaView>
     );

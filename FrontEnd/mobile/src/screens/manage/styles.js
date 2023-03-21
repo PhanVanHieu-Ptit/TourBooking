@@ -5,6 +5,8 @@ const stylesManage = StyleSheet.create({
         height: 100,
         width: 100,
         borderRadius: 100,
+        borderColor: COLOR.primary,
+        borderWidth: 2,
     },
     txt_name: {
         fontFamily: 'Ubuntu',
