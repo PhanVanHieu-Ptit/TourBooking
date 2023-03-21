@@ -166,7 +166,7 @@ function TourScreen({ route, navigation }) {
         let options = {
             title: 'Select Image',
             customButtons: [{ name: 'customOptionKey', title: 'Choose Photo from Custom Option' }],
-            mediaType: 'Photo',
+            // mediaType: 'Photo',
             storageOptions: {
                 skipBackup: true,
                 path: 'images',
@@ -192,7 +192,7 @@ function TourScreen({ route, navigation }) {
                     [
                         // with a new array
                         ...listImage, // that contains all the old items
-                        { id: nextId++, uri: response.assets }, // and one new item at the end
+                        { id: nextId++, uri: response.assets[0].uri }, // and one new item at the end
                     ],
                 );
 
