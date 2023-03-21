@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import MaskInput, { createNumberMask } from 'react-native-mask-input';
 import {
     Image,
     SafeAreaView,
@@ -15,7 +16,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import stylesButton from '../../components/general/actionButton/styles';
 import stylesAllTour from '../allTour/style';
 import stylesTour from './styles';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import {launchImageLibrary} from 'react-native-image-picker';
 import COLOR from '../../res/color';
 import DatePicker from 'react-native-neat-date-picker';
 import moment from 'moment';
@@ -165,6 +166,7 @@ function TourScreen({ route, navigation }) {
         let options = {
             title: 'Select Image',
             customButtons: [{ name: 'customOptionKey', title: 'Choose Photo from Custom Option' }],
+            mediaType: "Photo",
             storageOptions: {
                 skipBackup: true,
                 path: 'images',
@@ -190,7 +192,7 @@ function TourScreen({ route, navigation }) {
                     [
                         // with a new array
                         ...listImage, // that contains all the old items
-                        { id: nextId++, uri: response.assets[0].uri }, // and one new item at the end
+                        { id: nextId++, uri: response.assets }, // and one new item at the end
                     ],
                 );
 
@@ -691,12 +693,19 @@ function TourScreen({ route, navigation }) {
                 </View>
                 <View style={{ width: 320, marginTop: 20 }}>
                     <Text style={stylesTour.title}>Giá</Text>
-                    <TextInput
-                        keyboardType="numeric"
-                        placeholder="Nhập giá tour vào đây"
-                        style={stylesTour.input}
+                    <MaskInput
+                        style={[stylesTour.input]}
+                        placeholder = "Nhập giá tour"
                         value={price}
-                        onChangeText={(newText) => setPrice(newText)}
+                        mask={createNumberMask({
+                            prefix: ['đ', '', ''],
+                            delimiter: '.',
+                            separator: ',',
+                            precision: 3,
+                        })}
+                        onChangeText={(masked, unmasked) => {
+                            setPrice(unmasked);
+                        }}
                     />
                 </View>
                 {type == 'edit' ? (
