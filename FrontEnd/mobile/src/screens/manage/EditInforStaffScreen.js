@@ -16,9 +16,7 @@ function EditInforStaffScreen({ route, navigation }) {
     const staff = route.params?.staff;
     const type = route.params?.type == 'add';
     const [imageUrl, setImageUrl] = useState(
-        staff != undefined
-            ? staff.imageUrl
-            : 'https://img.freepik.com/free-photo/smiley-little-boy-isolated-pink_23-2148984798.jpg',
+        staff != undefined ? staff.imageUrl : `https://freesvg.org/img/abstract-user-flat-4.png`,
     );
     const [name, setName] = useState(staff != undefined ? staff.name : '');
     const [email, setEmail] = useState(staff != undefined ? staff.email : '');

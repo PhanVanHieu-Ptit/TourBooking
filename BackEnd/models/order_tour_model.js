@@ -32,7 +32,7 @@ OrderTour.findByStatus = function (status, paging, result) {
     calculateStart(paging),
   ])
     .then(([rows, fields]) => {
-      result(rows);
+      result(rows[0]);
     })
     .catch((err) => {
       console.log;
@@ -135,6 +135,11 @@ OrderTour.create = async function (data, result) {
 
   if (tour == undefined) {
     result([], false, "Tour không tồn tại!");
+    return;
+  }
+
+  if (new Date(tour.startDate).getTime() < new Date().getTime()) {
+    result([], false, "Tour đã khởi hành, không thể đặt!");
     return;
   }
 
