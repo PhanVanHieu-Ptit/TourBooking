@@ -10,7 +10,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import * as request from '../../../services/untils/index';
 import API from '../../../res/string';
 import { AppContext } from '../../../../App';
-import { clearOldData } from '../../../res/untils';
+// import { clearOldData } from '../../../res/untils';
 
 function Login({ navigation }) {
     const { setHistoryOrder, setToursOutStanding, setToursComming, setListTour, setListOrder, setListStaff } =
@@ -19,14 +19,14 @@ function Login({ navigation }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    // function clearOldData() {
-    //     setHistoryOrder([]);
-    //     setToursOutStanding([]);
-    //     setToursComming([]);
-    //     setListTour([]);
-    //     setListOrder([]);
-    //     setListStaff([]);
-    // }
+    function clearOldData() {
+        setHistoryOrder([]);
+        setToursOutStanding([]);
+        setToursComming([]);
+        setListTour([]);
+        setListOrder([]);
+        setListStaff([]);
+    }
 
     const checkValue = () => {
         if (username.trim().length == 0) {

@@ -16,7 +16,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import stylesButton from '../../components/general/actionButton/styles';
 import stylesAllTour from '../allTour/style';
 import stylesTour from './styles';
-import {launchImageLibrary} from 'react-native-image-picker';
+import { launchImageLibrary } from 'react-native-image-picker';
 import COLOR from '../../res/color';
 import DatePicker from 'react-native-neat-date-picker';
 import moment from 'moment';
@@ -166,7 +166,7 @@ function TourScreen({ route, navigation }) {
         let options = {
             title: 'Select Image',
             customButtons: [{ name: 'customOptionKey', title: 'Choose Photo from Custom Option' }],
-            mediaType: "Photo",
+            mediaType: 'Photo',
             storageOptions: {
                 skipBackup: true,
                 path: 'images',
@@ -320,13 +320,13 @@ function TourScreen({ route, navigation }) {
             )
             .then((response) => {
                 console.log(response.data);
-                updateListTour();
 
                 if (response.data.status == true) {
                     Alert.alert('Thông báo!', 'Cập nhật thành công!', [{ text: 'OK', onPress: () => {} }]);
                 } else {
                     Alert.alert('Cập nhật thất bại!', response.data.message, [{ text: 'OK', onPress: () => {} }]);
                 }
+                updateListTour();
             })
             .catch((err) => {
                 console.log(err);
@@ -695,7 +695,7 @@ function TourScreen({ route, navigation }) {
                     <Text style={stylesTour.title}>Giá</Text>
                     <MaskInput
                         style={[stylesTour.input]}
-                        placeholder = "Nhập giá tour"
+                        placeholder="Nhập giá tour"
                         value={price}
                         mask={createNumberMask({
                             prefix: ['đ', '', ''],

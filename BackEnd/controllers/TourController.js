@@ -211,8 +211,8 @@ class TourController {
           idTour,
         ]
       );
-
-      if (rows[1].changedRows < 1)
+      console.log("rows: ", rows);
+      if (rows.affectedRows < 1)
         return res.send(message(rows, true, "Không có thay đổi!"));
       return res.send(message(rows[0], true, "Cập nhật tour thành công"));
     } catch (error) {

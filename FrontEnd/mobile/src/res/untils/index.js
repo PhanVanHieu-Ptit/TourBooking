@@ -1,8 +1,7 @@
 import moment from 'moment';
 import { AppContext } from '../../../App';
-import React, { useState, useContext } from 'react';
-const { setHistoryOrder, setToursOutStanding, setToursComming, setListTour, setListOrder, setListStaff } =
-    useContext(AppContext);
+import { useContext } from 'react';
+
 function formatDate(date) {
     return moment(date).format('DD/MM/yyyy');
 }
@@ -15,12 +14,14 @@ function formatMoney(money) {
     return formatter.format(money);
 }
 
-function clearOldData() {
-    setHistoryOrder([]);
-    setToursOutStanding([]);
-    setToursComming([]);
-    setListTour([]);
-    setListOrder([]);
-    setListStaff([]);
-}
-export { formatDate, formatMoney, formatDateWithHour, clearOldData };
+// function clearOldData() {
+//     const { setHistoryOrder, setToursOutStanding, setToursComming, setListTour, setListOrder, setListStaff } =
+//         useContext(AppContext);
+//     setHistoryOrder([]);
+//     setToursOutStanding([]);
+//     setToursComming([]);
+//     setListTour([]);
+//     setListOrder([]);
+//     setListStaff([]);
+// }
+export { formatDate, formatMoney, formatDateWithHour };
