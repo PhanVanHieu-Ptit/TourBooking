@@ -16,29 +16,12 @@ import { AppContext } from '../../../App';
 import { clearOldData } from '../../res/untils';
 
 function ManageScreen({ navigation }) {
-    const {
-        user,
-        setUser,
-        setHistoryOrder,
-        setToursOutStanding,
-        setToursComming,
-        setListTour,
-        setListOrder,
-        setListStaff,
-    } = useContext(AppContext);
+    const { user, setUser } = useContext(AppContext);
 
     const [isLogin, setIsLogin] = useState(user != '' && user != undefined && user != null);
     const [role, setRole] = useState(user?.role);
     const [navigateInforPerson, setNavigateInforPerson] = useState('Profile');
 
-    // function clearOldData() {
-    //     setHistoryOrder([]);
-    //     setToursOutStanding([]);
-    //     setToursComming([]);
-    //     setListTour([]);
-    //     setListOrder([]);
-    //     setListStaff([]);
-    // }
     function setRoleUser() {
         if (user?.role == 'customer') {
             setRole('Khách hàng');
@@ -47,7 +30,8 @@ function ManageScreen({ navigation }) {
             setRole('Nhân viên');
             // setNavigateInforPerson('EditStaff');
         } else if (user?.role == 'admin') {
-            setNavigateInforPerson('EditStaff');
+            setRole('admin');
+            // setNavigateInforPerson('EditStaff');
         }
     }
     useEffect(() => {
@@ -71,34 +55,32 @@ function ManageScreen({ navigation }) {
                         <Text style={stylesManage.txt_name}>{user?.name}</Text>
                         <Text style={[stylesManage.txt_name, { fontSize: 16, fontWeight: 'normal' }]}>{role}</Text>
                     </View>
-                    {user?.role != 'admin' ? (
-                        <View>
-                            <TouchableOpacity onPress={() => navigation.navigate(navigateInforPerson, { user: user })}>
-                                <View style={stylesManage.btn}>
-                                    <View style={{ flexDirection: 'row' }}>
-                                        <Icon name="information-circle-outline" size={20} color={COLOR.primary} />
-                                        <Text style={[stylesTour.txt_btn, { color: COLOR.primary, marginLeft: 5 }]}>
-                                            Thông tin cá nhân
-                                        </Text>
-                                    </View>
-                                    <AntDesign name="right" size={20} color={COLOR.primary} />
+
+                    <View>
+                        <TouchableOpacity onPress={() => navigation.navigate(navigateInforPerson, { user: user })}>
+                            <View style={stylesManage.btn}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Icon name="information-circle-outline" size={20} color={COLOR.primary} />
+                                    <Text style={[stylesTour.txt_btn, { color: COLOR.primary, marginLeft: 5 }]}>
+                                        Thông tin cá nhân
+                                    </Text>
                                 </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={() => navigation.navigate('Changepassword')}>
-                                <View style={stylesManage.btn}>
-                                    <View style={{ flexDirection: 'row' }}>
-                                        <Icon name="information-circle-outline" size={20} color={COLOR.primary} />
-                                        <Text style={[stylesTour.txt_btn, { color: COLOR.primary, marginLeft: 5 }]}>
-                                            Đổi mật khẩu
-                                        </Text>
-                                    </View>
-                                    <AntDesign name="right" size={20} color={COLOR.primary} />
+                                <AntDesign name="right" size={20} color={COLOR.primary} />
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => navigation.navigate('Changepassword')}>
+                            <View style={stylesManage.btn}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Icon name="information-circle-outline" size={20} color={COLOR.primary} />
+                                    <Text style={[stylesTour.txt_btn, { color: COLOR.primary, marginLeft: 5 }]}>
+                                        Đổi mật khẩu
+                                    </Text>
                                 </View>
-                            </TouchableOpacity>
-                        </View>
-                    ) : (
-                        ''
-                    )}
+                                <AntDesign name="right" size={20} color={COLOR.primary} />
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+
                     {user?.role === 'admin' ? (
                         <View>
                             <TouchableOpacity onPress={() => navigation.navigate('ManageTour')}>

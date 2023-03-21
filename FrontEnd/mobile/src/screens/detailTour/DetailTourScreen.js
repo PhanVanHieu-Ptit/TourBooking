@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Image, ImageBackground, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -11,8 +11,10 @@ import stylesDetailTour from './styles';
 import ModalOrder from '../../components/general/form/ModalOrder';
 import { FlatList } from 'react-native-gesture-handler';
 import { formatDate, formatMoney } from '../../res/untils';
+import { AppContext } from '../../../App';
 
 function DetailTourScreen({ route, navigation }) {
+    const { user } = useContext(AppContext);
     const tour = route.params.tour;
     const [modalVisible, setModalVisible] = useState(false);
     const listImage = tour.imageUrl;
@@ -156,11 +158,20 @@ function DetailTourScreen({ route, navigation }) {
                             <Text style={[stylesDetailTour.txt, { fontSize: 24 }]}>{formatMoney(tour.price)}</Text>
                             <Text style={{ marginTop: 10 }}>/ chuyến</Text>
                         </View>
-                        <TouchableOpacity onPress={() => setModalVisible(true)}>
-                            <View style={stylesDetailTour.btn}>
-                                <Text style={stylesDetailTour.txt_btn}>Đặt ngay</Text>
-                            </View>
-                        </TouchableOpacity>
+                        {user.role == 'customer' ? (
+                            <TouchableOpacity
+                                onPress={() => {
+                                    if (user == null || user == '' || user == undefined) navigation.replace('Login');
+                                    else setModalVisible(true);
+                                }}
+                            >
+                                <View style={stylesDetailTour.btn}>
+                                    <Text style={stylesDetailTour.txt_btn}>Đặt ngay</Text>
+                                </View>
+                            </TouchableOpacity>
+                        ) : (
+                            ''
+                        )}
                     </View>
                 </View>
             </SafeAreaView>

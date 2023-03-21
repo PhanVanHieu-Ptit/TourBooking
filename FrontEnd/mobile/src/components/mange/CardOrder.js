@@ -18,7 +18,7 @@ function CardOrder({ props }) {
     const { user, listOrder, setListOrder } = useContext(AppContext);
     const [isExpanded, setIsExpanded] = useState(true);
     const [colorState, setColorState] = useState('#FFD336');
-    const [fee, setFee] = useState(props.tour.normalPenaltyFee);
+    const [fee, setFee] = useState(props.tour?.normalPenaltyFee);
 
     useEffect(() => {
         if (props.status.name === 'Đặt thành công') setColorState('#32DB61');
