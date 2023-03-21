@@ -31,6 +31,7 @@
         "react-native-check-box": "^2.1.7",
         "react-native-gesture-handler": "^2.9.0",
         "react-native-image-picker": "^5.0.1",
+        "react-native-mask-input": "^1.2.3",
         "react-native-neat-date-picker": "^1.4.9",
         "react-native-pager-view": "^6.1.4",
         "react-native-reanimated": "^2.14.4",
