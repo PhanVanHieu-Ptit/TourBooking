@@ -115,7 +115,10 @@ function ModalOrder(props) {
                 transparent={true}
                 visible={props.modalVisible}
                 onRequestClose={() => {
+
+
                     props.setModalVisible(!props.modalVisible);
+
                 }}
             >
                 <View style={stylesModal.centeredView}>

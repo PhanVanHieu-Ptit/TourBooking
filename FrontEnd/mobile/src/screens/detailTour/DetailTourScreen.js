@@ -17,6 +17,7 @@ function DetailTourScreen({ route, navigation }) {
     const { user } = useContext(AppContext);
     const tour = route.params.tour;
     const [modalVisible, setModalVisible] = useState(false);
+    const [role, setRole] = useState(user?.role);
     const listImage = tour.imageUrl;
     const [selectImage, setSelectImage] = useState(listImage[0]);
 
@@ -158,6 +159,7 @@ function DetailTourScreen({ route, navigation }) {
                             <Text style={[stylesDetailTour.txt, { fontSize: 24 }]}>{formatMoney(tour.price)}</Text>
                             <Text style={{ marginTop: 10 }}>/ chuyến</Text>
                         </View>
+
                         {user.role == 'customer' ? (
                             <TouchableOpacity
                                 onPress={() => {
