@@ -16,12 +16,9 @@ const OrderTour = function (order) {
 };
 
 OrderTour.getAll = function (paging, result) {
-  db.query(
-    "SELECT * FROM tourorder  ORDER BY tourorder.orderDateTime DESC LIMIT 5 OFFSET ?;",
-    calculateStart(paging)
-  )
+  db.query("call managetour.sp_get_all_order(?);", calculateStart(paging))
     .then(([rows, fields]) => {
-      result(rows);
+      result(rows[0]);
     })
     .catch((err) => {
       console.log;
@@ -30,12 +27,12 @@ OrderTour.getAll = function (paging, result) {
 };
 
 OrderTour.findByStatus = function (status, paging, result) {
-  db.query(
-    "SELECT * FROM `tourorder` WHERE idStatus IN (SELECT idStatus FROM `status` WHERE name LIKE ? ) ORDER BY tourorder.orderDateTime DESC LIMIT 5 OFFSET ?",
-    [status, calculateStart(paging)]
-  )
+  db.query("call managetour.sp_get_order_by_name_status(?, 'tourorder', ?);", [
+    status,
+    calculateStart(paging),
+  ])
     .then(([rows, fields]) => {
-      result(rows);
+      result(rows[0]);
     })
     .catch((err) => {
       console.log;
@@ -44,12 +41,12 @@ OrderTour.findByStatus = function (status, paging, result) {
 };
 
 OrderTour.getAllFollowCustomer = function (id, paging, result) {
-  db.query(
-    "SELECT * FROM `tourorder` where idCustomer = ? ORDER BY tourorder.orderDateTime DESC LIMIT 5 OFFSET ?",
-    [id, calculateStart(paging)]
-  )
+  db.query("call managetour.sp_get_order_follow_customer(?, ?);", [
+    id,
+    calculateStart(paging),
+  ])
     .then(([rows, fields]) => {
-      result(rows, true);
+      result(rows[0], true);
     })
     .catch((err) => {
       result(err, false, "Lấy dữ liệu thất bại!");
@@ -57,12 +54,12 @@ OrderTour.getAllFollowCustomer = function (id, paging, result) {
 };
 
 OrderTour.getNumberOrderOfCustomer = function (idCustomer, idTour, result) {
-  db.query(
-    "SELECT count(*) as currentNumber FROM `tourorder` where idCustomer = ? and idTour = ?",
-    [idCustomer, idTour]
-  )
+  db.query("call managetour.sp_number_order_of_customer(?, ?);", [
+    idCustomer,
+    idTour,
+  ])
     .then(([rows, fields]) => {
-      result(rows, true);
+      result(rows[0], true);
     })
     .catch((err) => {
       result(err, false, "Lấy dữ liệu thất bại!");
@@ -71,28 +68,22 @@ OrderTour.getNumberOrderOfCustomer = function (idCustomer, idTour, result) {
 
 OrderTour.findByStatusFollowCustomer = function (id, status, paging, result) {
   db.query(
-    "SELECT `tourorder`.*" +
-      "FROM `tourorder`" +
-      "JOIN `status` ON `tourorder`.`idStatus` = `status`.`idStatus`" +
-      "WHERE `tourorder`.`idCustomer` = ? AND `status`.`name` = ?" +
-      " ORDER BY tourorder.orderDateTime DESC LIMIT 5 OFFSET ?",
+    "call managetour.sp_get_order_by_status_follow_customer(?, ?, 'tourorder', ?);",
     [id, status, calculateStart(paging)]
   )
     .then(([rows, fields]) => {
-      result(rows);
+      result(rows[0]);
     })
     .catch((err) => {
-      console.log;
       result(err);
     });
 };
 
 OrderTour.getById = function (id) {
   return db
-    .query("SELECT * FROM `tourorder` where idTourOrder= ?", id)
+    .query("call managetour.sp_get_order_by_id(?);", [id])
     .then(([rows, fields]) => {
-      console.log("rows: ", rows);
-      return rows;
+      return rows[0];
     })
     .catch((err) => {
       console.log(err);
@@ -102,44 +93,12 @@ OrderTour.getById = function (id) {
 
 OrderTour.findBykey = function (key, paging) {
   return db
-    .query(
-      "SELECT *" +
-        " FROM `tourorder`" +
-        "WHERE idTour IN (" +
-        " SELECT idTour" +
-        " FROM `tour`" +
-        " WHERE name LIKE ?" +
-        "    OR tourIntro LIKE ?" +
-        "    OR tourDetail LIKE ?" +
-        "    OR pickUpPoint LIKE ?" +
-        "    OR tourDestination LIKE ?" +
-        " )" +
-        " OR idCustomer IN (" +
-        "    SELECT idCustomer" +
-        "    FROM `customer`" +
-        "    WHERE name LIKE ?" +
-        "        OR email LIKE ?" +
-        "        OR phoneNumber LIKE ?" +
-        "        OR address LIKE ?" +
-        " )" +
-        " ORDER BY tourorder.orderDateTime DESC LIMIT 5 OFFSET ?",
-      [
-        "%" + key + "%",
-        "%" + key + "%",
-        "%" + key + "%",
-        "%" + key + "%",
-        "%" + key + "%",
-        "%" + key + "%",
-        "%" + key + "%",
-        "%" + key + "%",
-        "%" + key + "%",
-        "%" + key + "%",
-        calculateStart(paging),
-      ]
-    )
+    .query("call managetour.sp_get_order_by_key(?, ?);", [
+      "%" + key + "%",
+      calculateStart(paging),
+    ])
     .then(([rows, fields]) => {
-      console.log(rows);
-      return rows;
+      return rows[0];
     })
     .catch((err) => {
       console.log(err);
@@ -164,18 +123,23 @@ OrderTour.create = async function (data, result) {
   }
 
   //check exist of customer
-  const [customer] = await Customer.getById(idCustomer);
+  // const [customer] = await Customer.getById(id);
 
-  if (customer == undefined) {
-    result([], false, "Khách hàng không tồn tại!");
-    return;
-  }
+  // if (customer == undefined) {
+  //   result([], false, "Khách hàng không tồn tại!");
+  //   return;
+  // }
 
   //check exist of tour
   const [tour] = await Tour.getById(idTour);
 
   if (tour == undefined) {
     result([], false, "Tour không tồn tại!");
+    return;
+  }
+
+  if (new Date(tour.startDate).getTime() < new Date().getTime()) {
+    result([], false, "Tour đã khởi hành, không thể đặt!");
     return;
   }
 
@@ -212,12 +176,17 @@ OrderTour.create = async function (data, result) {
     return;
   }
 
-  db.query(
-    "INSERT INTO tourorder SET idCustomer=?, idTour=?, quantity=?, note=?, totalMoney=?",
-    [idCustomer, idTour, quantity, note, totalMoney]
-  )
+  db.query("call managetour.sp_create_order(?, ?, ?, ?, ?);", [
+    idCustomer,
+    idTour,
+    quantity,
+    note,
+    totalMoney,
+  ])
     .then(([rows, fields]) => {
-      result([{ idOrder: rows.insertId }], true, "Đăng ký tour thành công!");
+      if (rows.affectedRows == 1)
+        result([{}], true, "Đăng ký tour thành công!");
+      else result([{}], false, "Đăng ký tour thất bại!");
     })
     .catch((err) => {
       console.log(err);
@@ -228,20 +197,17 @@ OrderTour.create = async function (data, result) {
 OrderTour.update = async function (data, result) {
   const getTotalMoney = require("../utils/getTotalMoney");
   const totalMoney = await getTotalMoney(data.idTour, data.quantity);
-  db.query(
-    "UPDATE tourorder SET  quantity=?, note=?, totalMoney=? where idTourOrder=? and idCustomer = ? and idTour = ?",
-    [
-      data.quantity,
-      data.note,
-      totalMoney,
-      data.idTourOrder,
-      data.idCustomer,
-      data.idTour,
-    ]
-  )
+  db.query("call managetour.sp_update_order(?, ?, ?, ?, ?, ?);", [
+    data.idTourOrder,
+    data.idCustomer,
+    data.idTour,
+    data.quantity,
+    data.note,
+    totalMoney,
+  ])
     .then(([rows, fields]) => {
-      console.log(rows);
-      result(data);
+      if (rows.affectedRows == 1) result(data, true, "Cập nhật thành công!");
+      else result([{}], true, "Cập nhật thất bại!");
     })
     .catch((err) => {
       console.log(err);
@@ -250,15 +216,10 @@ OrderTour.update = async function (data, result) {
 };
 
 OrderTour.confirm = function (id, idStatus) {
-  let cancelDate = "";
-  if (idStatus == 10) cancelDate = ", cancelDate=NOW()";
+  // let cancelDate = "";
+  // if (idStatus == 10) cancelDate = ", cancelDate=NOW()";
   return db
-    .query(
-      "UPDATE tourorder SET  idStatus=?" +
-        cancelDate +
-        " where idTourOrder = ?;",
-      [idStatus, id]
-    )
+    .query("call managetour.sp_update_status_order(?, ?);", [idStatus, id])
     .then(([rows, fields]) => {
       console.log(rows);
       return rows;

@@ -18,9 +18,7 @@ function EditInforStaffScreen({ route, navigation }) {
     const type = route.params?.type == 'add';
     const [title, setTitle] = useState(type ? 'Thêm nhân viên' : 'Cập nhật thông tin nhân viên');
     const [imageUrl, setImageUrl] = useState(
-        staff != undefined
-            ? staff.imageUrl
-            : 'https://img.freepik.com/free-photo/smiley-little-boy-isolated-pink_23-2148984798.jpg',
+        staff != undefined ? staff.imageUrl : `https://freesvg.org/img/abstract-user-flat-4.png`,
     );
     const [name, setName] = useState(staff != undefined ? staff.name : '');
     const [email, setEmail] = useState(staff != undefined ? staff.email : '');

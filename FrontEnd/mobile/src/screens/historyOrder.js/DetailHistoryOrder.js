@@ -25,11 +25,11 @@ function DetailHistoryOrder({ route, navigation }) {
                 API.tourOrder + route.params.tourOrder.idTourOrder + '/update',
                 {
                     idTourOrder: route.params.tourOrder.idTourOrder,
-                    idCustomer: user.id,
+                    // idCustomer: user.id,
                     idTour: route.params.tour.idTour,
                     quantity: number,
                     note: note,
-                    totalMoney: Number(number) * Number(DATA.price),
+                    // totalMoney: Number(number) * Number(DATA.price),
                 },
                 { 'Content-Type': 'application/json', authorization: user.accessToken },
                 'PUT',

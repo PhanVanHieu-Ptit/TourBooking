@@ -22,7 +22,13 @@ function HistoryOrderScreen({ navigation }) {
             Alert.alert('Bạn chưa đăng nhập!', 'Bạn hãy đăng nhập ngay để xem lịch sử đặt của bạn.', [
                 { text: 'OK', onPress: () => navigation.replace('Login') },
             ]);
-        } else {
+        }
+        // else if (user?.role != 'customer') {
+        //     Alert.alert('Bạn không phải khách hàng!', 'Bạn hãy đăng nhập tài khoản khách để xem lịch sử đặt của bạn.', [
+        //         { text: 'OK', onPress: () => navigation.navigate('Login') },
+        //     ]);
+        // }
+        else {
             getListHistoryOrder();
         }
 
@@ -34,6 +40,7 @@ function HistoryOrderScreen({ navigation }) {
             const response = await request.get(API.historyOrder + '?id=' + user.id + '&paging=' + paging, {
                 headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
             });
+            console.log('reponse: ', response);
             if (response.status == true) {
                 setHistoryOrder((preState) => {
                     return [...preState, ...response.data];

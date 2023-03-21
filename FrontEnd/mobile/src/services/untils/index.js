@@ -1,12 +1,13 @@
 import axios from 'axios';
 
 const request = axios.create({
-    baseURL: 'http://192.168.69.13:3000',
+    baseURL: 'http://192.168.1.23:3000',
     responseType: 'json',
     withCredentials: true,
 });
 
 export const get = async (path, options = {}) => {
+    console.log('path: ', path);
     const response = await request.get(path, options);
     return response.data;
 };

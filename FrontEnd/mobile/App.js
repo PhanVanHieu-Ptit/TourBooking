@@ -1,6 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import HomeNavigation from './src/navigation/home';
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
+import AuthByFinger from './src/screens/auth/Login/authByFinger';
 
 const AppContext = createContext();
 

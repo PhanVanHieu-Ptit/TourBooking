@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { FlatList, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { Image, SafeAreaView, ScrollView, Text, View, ActivityIndicator, RefreshControl } from 'react-native';
 import Find from '../../components/home/find';
+import stylesManage from '../manage/styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 import stylesButton from '../../components/general/actionButton/styles';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -14,21 +15,33 @@ function ManageTourScreen({ navigation }) {
     const { user, listTour, setListTour } = useContext(AppContext);
 
     // const [masterDataSource, setMasterDataSource] = useState(listTour);
-    const [filteredDataSource, setFilteredDataSource] = useState(listTour);
+    const [filteredDataSource, setFilteredDataSource] = useState([]);
+    const [isLoading, setLoading] = useState(true);
+    const [refresh, setFresh] = useState(false);
     const [paging, setPaging] = useState(1);
+    let isEmpty = false;
+
+    const loader = () => {
+        if (isLoading) {
+            return <ActivityIndicator size={'small'} color={'#021A5A'} />;
+        }
+    };
+
+    // useEffect(() => {
+    //     getListTour();
+    // }, []);
 
     useEffect(() => {
+        setListTour([]);
         getListTour();
+        // setFilteredDataSource(listTour);
     }, []);
-
-    useEffect(() => {
-        setFilteredDataSource(listTour);
-    }, [listTour]);
 
     async function getListTour() {
         try {
             const response = await request.get(API.listTour + '?paging=' + paging, {});
             if (response.status == true) {
+                setLoading(false);
                 setListTour((preState) => {
                     return [...preState, ...response.data];
                 });
@@ -37,6 +50,8 @@ function ManageTourScreen({ navigation }) {
                     return [...preState, ...response.data];
                 });
             } else {
+                setLoading(false);
+                isEmpty = true;
                 Alert.alert('Thông báo!', response.message + '', [
                     { text: 'OK', onPress: () => console.log('OK Pressed') },
                 ]);
@@ -79,10 +94,36 @@ function ManageTourScreen({ navigation }) {
                 // setMasterDataSource={setMasterDataSource}
                 setFilteredDataSource={setFilteredDataSource}
             />
-            <ScrollView>
-                {filteredDataSource.map((item) => (
-                    <CardCommingTour tour={item} key={item.idTour} navigation={navigation} screen="EditTour" />
-                ))}
+            {loader()}
+            <ScrollView
+                refreshControl={
+                    <RefreshControl
+                        enabled={true}
+                        refreshing={refresh}
+                        onRefresh={() => {
+                            setFresh(true);
+                            setFilteredDataSource([]);
+                            setListTour([]);
+                            getListTour();
+                            setFresh(false);
+                        }}
+                    />
+                }
+                // refreshControl={<RefreshControl refreshing={refresh} />}
+            >
+                {isEmpty ? (
+                    <View>
+                    <Image
+                    source = {require('./No-data-cuate.png')}
+                        style={{height: 300, width: 200, marginTop: 100, marginBottom: 0}}
+                    />
+                    <Text style={{text: 5, textAlign: 'center', marginTop: 0}}>Chưa có dữ liệu</Text>
+                    </View>
+                ) : (
+                    filteredDataSource.map((item) => (
+                        <CardCommingTour tour={item} key={item.idTour} navigation={navigation} screen="EditTour" />
+                    ))
+                )}
             </ScrollView>
         </SafeAreaView>
     );

@@ -27,12 +27,12 @@ class SiteControllers {
       let rows, fields;
       if (req.body.role == "customer")
         [rows, fields] = await connection.execute(
-          "select * from customer where email = ?",
+          "call managetour.sp_get_customer_by_email(?);",
           [email]
         );
       else
         [rows, fields] = await connection.execute(
-          "select * from staff where email = ?",
+          "call managetour.sp_get_staff_by_email(?);",
           [email]
         );
 

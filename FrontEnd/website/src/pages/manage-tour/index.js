@@ -6,38 +6,38 @@ import Functions from './../components/Functions';
 import TourDetail from './TourDetail';
 import {useState, useRef, useEffect} from 'react';
 import {getListTour} from '../../utils/services';
-import {setDisplayLoading} from '../../utils/axiosConfig';
 import TourRowData from './TourRowData';
+import Popup from './../../components/Popup';
+import TourForm from './TourForm';
 function ManageTour() {
     checkRole();
-    let paging = 1;
+    console.log('manageTour');
     const [listTour, setListTour] = useState([]);
     const [showAddNewPopup, setShowAddNewPopup] = useState(false);
-    const containerRef = useRef();
+    const [searchValue, setSearchValue] = useState('');
+    let [paging, setPaging] = useState(1);
+    console.log(listTour);
     useEffect(() => {
         getListTour().then((rs) => {
-            setListTour(listTour.concat(rs.data));
+            setListTour(rs.data);
         });
     }, []);
-
     const handleSubmitSearch = (e, searchValue) => {
         e.preventDefault();
-        listTour = [];
-        paging = 1;
+        setPaging(1);
+        setSearchValue(searchValue);
+        getListTour(searchValue).then((rs) => {
+            setListTour(rs.data);
+        });
+    };
+
+    const handleSeeMore = () => {
+        setPaging(++paging);
         getListTour(searchValue, paging).then((rs) => {
             setListTour(listTour.concat(rs.data));
         });
     };
 
-    const handleScroll = () => {
-        const container = containerRef.current;
-        const {scrollTop, offsetHeight, scrollHeight} = container;
-        if (Math.round(scrollTop) + offsetHeight >= scrollHeight - 2) {
-            getListTour('', paging).then((rs) => {
-                setListTour(listTour.concat(rs.data));
-            });
-        }
-    };
     return (
         <AdminLayout>
             <main className={css.main}>
@@ -52,21 +52,36 @@ function ManageTour() {
                                 <th style={{width: '40px'}} />
                                 <th>MÃ TOUR</th>
                                 <th>TÊN TOUR</th>
-                                <th>NGÀY KHỞI HÀNH</th>
+                                <th>NGÀY TẠO</th>
                                 <th>ĐIỂM ĐẾN</th>
                                 <th>TRẠNG THÁI</th>
                                 <th>ĐƠN GIÁ</th>
                                 <th />
                             </tr>
                         </thead>
-                        <tbody ref={containerRef} onScroll={handleScroll}>
+                        <tbody>
                             {listTour.map((e, i) => {
-                                if (i <= 1) return <TourRowData tourData={e} />;
+                                return <TourRowData tour={e} />;
                             })}
+                            <tr>
+                                <p
+                                    onClick={handleSeeMore}
+                                    className='mt--12'
+                                    style={{textAlign: 'center', cursor: 'pointer'}}>
+                                    Xem thêm
+                                </p>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </main>
+            {showAddNewPopup && (
+                <Popup
+                    name='Thêm mới tour'
+                    content={<TourForm listTour={listTour} update={false} setListTour={setListTour} />}
+                    onClose={() => setShowAddNewPopup(false)}
+                />
+            )}
         </AdminLayout>
     );
 }

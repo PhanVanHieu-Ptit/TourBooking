@@ -13,7 +13,6 @@ import { FlatList } from 'react-native-gesture-handler';
 import { formatDate, formatMoney } from '../../res/untils';
 import { AppContext } from '../../../App';
 
-
 function DetailTourScreen({ route, navigation }) {
     const { user } = useContext(AppContext);
     const tour = route.params.tour;
@@ -160,12 +159,21 @@ function DetailTourScreen({ route, navigation }) {
                             <Text style={[stylesDetailTour.txt, { fontSize: 24 }]}>{formatMoney(tour.price)}</Text>
                             <Text style={{ marginTop: 10 }}>/ chuyến</Text>
                         </View>
-                        {user?.role === 'customer' ? (
-                            <TouchableOpacity onPress={() => setModalVisible(true)}>
+
+                        {user.role == 'customer' ? (
+                            <TouchableOpacity
+                                onPress={() => {
+                                    if (user == null || user == '' || user == undefined) navigation.replace('Login');
+                                    else setModalVisible(true);
+                                }}
+                            >
                                 <View style={stylesDetailTour.btn}>
                                     <Text style={stylesDetailTour.txt_btn}>Đặt ngay</Text>
                                 </View>
-                            </TouchableOpacity>):('')}
+                            </TouchableOpacity>
+                        ) : (
+                            ''
+                        )}
                     </View>
                 </View>
             </SafeAreaView>
