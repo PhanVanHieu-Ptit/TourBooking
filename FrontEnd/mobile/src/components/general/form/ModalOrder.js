@@ -47,6 +47,8 @@ function ModalOrder(props) {
                             { text: 'Không', onPress: () => {} },
                         ],
                     );
+                } else {
+                    order();
                 }
             } else {
                 Alert.alert('Đặt thất bại!', response.message, [{ text: 'OK', onPress: () => {} }]);
@@ -60,19 +62,20 @@ function ModalOrder(props) {
             .postPrivate(
                 API.order,
                 {
-                    idCustomer: user.id,
+                    // idCustomer: user.id,
                     idTour: props.DATA.idTour,
                     quantity: number,
                     note: note,
-                    totalMoney: Number(number) * Number(props.DATA.price),
+                    // totalMoney: Number(number) * Number(props.DATA.price),
                 },
                 { 'Content-Type': 'application/json', authorization: user.accessToken },
             )
             .then((response) => {
                 console.log(response.data);
-                setNumber('');
-                setNote('');
+
                 if (response.data.status == true) {
+                    setNumber('');
+                    setNote('');
                     updateListTourOrder();
                     Alert.alert('Thông báo!', 'Đặt thành công!', [
                         { text: 'OK', onPress: () => props.setModalVisible(!props.modalVisible) },
@@ -113,7 +116,7 @@ function ModalOrder(props) {
                 visible={props.modalVisible}
                 onRequestClose={() => {
                     Alert.alert('Modal has been closed.');
-                    setModalVisible(!modalVisible);
+                    // setModalVisible(!modalVisible);
                 }}
             >
                 <View style={stylesModal.centeredView}>

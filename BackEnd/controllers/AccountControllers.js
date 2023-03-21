@@ -40,6 +40,7 @@ class AccountControllers {
             if (rows.length == 0 || !compare(password, rows[0].password)) {
                 return res.send(message('', false, 'Sai tên đăng nhập hoặc mật khẩu!'));
             }
+            
             const role = rows[0].role;
             if (role == 'customer')
                 [rows, fields] = await connection.execute(`select * from customer  where email='${username}'`);
@@ -51,6 +52,7 @@ class AccountControllers {
             if (role == 'staff' && rows[0].idStatus == 7) {
                 return res.send(message('', false, 'Tài khoản bị khóa!'));
             }
+            console.log('rows: ',rows);
             const {name, imageUrl, phoneNumber, email, address} = rows[0];
             let id = rows[0].idStaff;
             if (role == 'customer') {
@@ -64,6 +66,7 @@ class AccountControllers {
                 message({id, name, imageUrl, role, phoneNumber, email, address}, true, 'Đăng nhập thành công'),
             );
         } catch (error) {
+            
             return res.send(message(error, false));
         }
     }
