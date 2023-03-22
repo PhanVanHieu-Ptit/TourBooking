@@ -123,8 +123,6 @@ function Home({ navigation }) {
     const [isRefreshing, setIsRefreshing] = useState(false);
 
     const handleRefresh = () => {
-        console.log('vao nha vao nha');
-
         setIsRefreshing(true);
         if (paging1 != 1) setToursOutStanding([]);
         if (paging2 != 1) setToursComming([]);

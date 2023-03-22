@@ -25,7 +25,7 @@ const Tour = function (tour) {
 };
 
 Tour.getAll = function (paging, result) {
-  db.query("call managetour.sp_get_all_tour(1); ", calculateStart(paging))
+  db.query("call managetour.sp_get_all_tour(?); ", calculateStart(paging))
     .then(([rows, fields]) => {
       result(rows[0]);
     })
@@ -36,7 +36,7 @@ Tour.getAll = function (paging, result) {
 
 Tour.getById = function (id) {
   return db
-    .query("call managetour.sp_get_tour_by_id(1);", [id])
+    .query("call managetour.sp_get_tour_by_id(?);", [id])
     .then(([rows, fields]) => {
       return rows[0];
     })
