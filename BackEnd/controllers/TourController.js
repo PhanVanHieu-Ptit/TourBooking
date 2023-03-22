@@ -58,7 +58,7 @@ class TourController {
   list(req, res, next) {
     var query = require("url").parse(req.url, true).query;
     var key = query.key | "";
-    const paging = query.paging || 1;
+    const paging = query.paging ? query.paging : 1;
 
     if (key == undefined) {
       Tour.getAll(paging, function (result) {

@@ -1,5 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { FlatList, SafeAreaView, ScrollView, Text, View, Alert, StyleSheet } from 'react-native';
+import {
+    FlatList,
+    SafeAreaView,
+    ScrollView,
+    Text,
+    View,
+    Alert,
+    StyleSheet,
+    ActivityIndicator,
+    RefreshControl,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import stylesButton from '../../components/general/actionButton/styles';
@@ -10,36 +20,45 @@ import * as request from '../../services/untils';
 import API from '../../res/string';
 import { AppContext } from '../../../App';
 import SelectDropdown from 'react-native-select-dropdown';
+import COLOR from '../../res/color';
 
 function HistoryOrderScreen({ navigation }) {
     const { user, historyOrder, setHistoryOrder } = useContext(AppContext);
     const [selected, setSelected] = useState('Tất cả');
     const [listStatus, setListStatus] = useState(['Tất cả']);
     const [paging, setPaging] = useState(1);
+    const [isLoading, setIsLoading] = useState(true);
+    const [loadingFooter, setLoadingFooter] = useState(false);
+    const [numberOrderTour, setNumberOrderTour] = useState(0);
+
+    useEffect(() => {
+        getStatus();
+        getNumberOrderTour();
+    }, []);
 
     useEffect(() => {
         if (user == '' || user == undefined || user == null) {
             Alert.alert('Bạn chưa đăng nhập!', 'Bạn hãy đăng nhập ngay để xem lịch sử đặt của bạn.', [
                 { text: 'OK', onPress: () => navigation.replace('Login') },
             ]);
+        } else if (user?.role == 'customer') {
+            getNumberOrderTour();
+            getListHistoryOrder(true, 1);
         }
-        // else if (user?.role != 'customer') {
-        //     Alert.alert('Bạn không phải khách hàng!', 'Bạn hãy đăng nhập tài khoản khách để xem lịch sử đặt của bạn.', [
-        //         { text: 'OK', onPress: () => navigation.navigate('Login') },
-        //     ]);
-        // }
-        else {
-            getListHistoryOrder();
-        }
+    }, [selected]);
 
-        getStatus();
-    }, []);
-
-    async function getListHistoryOrder() {
+    async function getListHistoryOrder(changeStatus = false, page = paging) {
         try {
-            const response = await request.get(API.historyOrder + '?id=' + user.id + '&paging=' + paging, {
-                headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
-            });
+            if (changeStatus == true) {
+                setPaging(1);
+                setHistoryOrder([]);
+            }
+            const response = await request.get(
+                API.historyOrder + '?id=' + user.id + '&status=' + selected + '&paging=' + page,
+                {
+                    headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
+                },
+            );
             console.log('reponse: ', response);
             if (response.status == true) {
                 setHistoryOrder((preState) => {
@@ -49,6 +68,33 @@ function HistoryOrderScreen({ navigation }) {
                 Alert.alert('Thông báo!', response.message + '', [
                     { text: 'OK', onPress: () => console.log('OK Pressed') },
                 ]);
+            }
+            setIsLoading(false);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const loadMore = () => {
+        if (Math.ceil(Number(numberOrderTour) / 5 - 1) >= paging) {
+            setLoadingFooter(true);
+            getListHistoryOrder(false, paging + 1);
+            setPaging((preState) => preState + 1);
+        }
+    };
+
+    async function getNumberOrderTour() {
+        try {
+            const res = await request.get(
+                API.numberOrderOfCustomer + '?idCustomer=' + user.id + '&status=' + selected,
+                {
+                    headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
+                },
+            );
+            if (res.status === true) {
+                setNumberOrderTour(res.data[0].currentNumber);
+            } else {
+                Alert.alert('Thông báo!', res.message + '', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
             }
         } catch (error) {
             console.log(error);
@@ -70,34 +116,23 @@ function HistoryOrderScreen({ navigation }) {
         }
     }
 
-    useEffect(() => {
-        if (!(user == '' || user == undefined || user == null)) {
-            setPaging(1);
-            setHistoryOrder([]);
-            filterData();
+    const handleScroll = (event) => {
+        const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+        const paddingToBottom = 20;
+        if (layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom) {
+            loadMore();
         }
-    }, [selected]);
+    };
 
-    function filterData() {
-        request
-            .get(API.historyOrder + '?id=' + user.id + '&status=' + selected + '&paging=' + paging, {
-                headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
-            })
-            .then((response) => {
-                console.log(response.data);
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
-                if (response.status == true) {
-                    setHistoryOrder(response.data);
-                } else {
-                    Alert.alert('Thông báo!', response.message + '', [
-                        { text: 'OK', onPress: () => console.log('OK Pressed') },
-                    ]);
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }
+    const handleRefresh = () => {
+        setIsRefreshing(true);
+        setIsLoading(true);
+        getListHistoryOrder(true, 1);
+
+        setIsRefreshing(false);
+    };
 
     return (
         <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
@@ -149,12 +184,21 @@ function HistoryOrderScreen({ navigation }) {
                     }}
                 />
             </View>
-
-            <ScrollView>
-                {historyOrder.map((item) => (
-                    <CardOrder item={item} key={item.idTourOrder} navigation={navigation} />
-                ))}
-            </ScrollView>
+            {isLoading ? (
+                <View style={{ flex: 1 }}>
+                    <ActivityIndicator size="small" color={COLOR.primary} />
+                </View>
+            ) : (
+                <ScrollView
+                    onScroll={handleScroll}
+                    refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />}
+                >
+                    {historyOrder.map((item) => (
+                        <CardOrder item={item} key={item.idTourOrder} navigation={navigation} />
+                    ))}
+                    {loadingFooter ? <ActivityIndicator size="small" color={COLOR.primary} /> : ''}
+                </ScrollView>
+            )}
         </SafeAreaView>
     );
 }
