@@ -16,11 +16,7 @@ function Header() {
             })
             .catch((error) => console.log('Error retrieving object: ', error));
     }, []);
-    // const user = {
-    //     id: 1,
-    //     name: 'Phan Văn Hiểu',
-    //     uriImage: 'https://img.freepik.com/free-photo/smiley-little-boy-isolated-pink_23-2148984798.jpg',
-    // };
+
     return (
         <View style={stylesHeader.header}>
             <Icon name="notifications" size={25} color="#021A5A" />

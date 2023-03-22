@@ -11,10 +11,10 @@ const Customer = function (customer) {
 
 Customer.getById = function (id) {
   return db
-    .query("SELECT * FROM `customer` where idCustomer= ?", id)
+    .query("call managetour.sp_get_customer_by_id(?);", [id])
     .then(([rows, fields]) => {
       // console.log("rows: ", rows);
-      return rows;
+      return rows[0];
     })
     .catch((err) => {
       console.log(err);

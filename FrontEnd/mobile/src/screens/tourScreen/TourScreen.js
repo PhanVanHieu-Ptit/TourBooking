@@ -167,6 +167,7 @@ function TourScreen({ route, navigation }) {
         let options = {
             title: 'Select Image',
             customButtons: [{ name: 'customOptionKey', title: 'Choose Photo from Custom Option' }],
+
             storageOptions: {
                 skipBackup: true,
                 path: 'images',
@@ -321,13 +322,13 @@ function TourScreen({ route, navigation }) {
             )
             .then((response) => {
                 console.log(response.data);
-                updateListTour();
 
                 if (response.data.status == true) {
                     Alert.alert('Thông báo!', 'Cập nhật thành công!', [{ text: 'OK', onPress: () => {} }]);
                 } else {
                     Alert.alert('Cập nhật thất bại!', response.data.message, [{ text: 'OK', onPress: () => {} }]);
                 }
+                updateListTour();
             })
             .catch((err) => {
                 console.log(err);

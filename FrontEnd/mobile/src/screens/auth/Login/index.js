@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { SafeAreaView, Text, View, Alert, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TextInput } from 'react-native-gesture-handler';
@@ -9,16 +9,25 @@ import stylesLogin from '../styles';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import * as request from '../../../services/untils/index';
 import API from '../../../res/string';
+import { AppContext } from '../../../../App';
+// import { clearOldData } from '../../../res/untils';
 
 function Login({ navigation }) {
-    // const User = {
-    //     username: 'PhanVanHieu',
-    //     password: 123,
-    // };
+    const { setHistoryOrder, setToursOutStanding, setToursComming, setListTour, setListOrder, setListStaff } =
+        useContext(AppContext);
     const [seePassword, setSeePassword] = useState(true);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    // const [token, setToken] = useState('');
+
+    function clearOldData() {
+        setHistoryOrder([]);
+        setToursOutStanding([]);
+        setToursComming([]);
+        setListTour([]);
+        setListOrder([]);
+        setListStaff([]);
+    }
+
     const checkValue = () => {
         if (username.trim().length == 0) {
             Alert.alert('Thông báo!', 'Không được để trống tên đăng nhập!', [
@@ -45,6 +54,9 @@ function Login({ navigation }) {
                     if (response.data.status == true) {
                         setUsername('');
                         setPassword('');
+
+                        //delete data old from context
+                        clearOldData();
                         // setToken(response.header);
                         // AsyncStorage.setItem('AccessToken', response.headers.authorization);
                         const user = {

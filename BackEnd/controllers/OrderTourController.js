@@ -85,13 +85,13 @@ function getInforTour(res, result) {
 }
 
 class OrderTourController {
-  //[GET] /order-tours/list?id={id}&status={value}
+  //[GET] /order-tours/list?id={id}&status={value}&paging={page}
   filter(req, res, next) {
     var query = require("url").parse(req.url, true).query;
 
     var id = query.id;
     var status = query.status;
-    var paging = query.paging;
+    var paging = query.paging | 1;
 
     switch (id) {
       case undefined:
@@ -121,6 +121,7 @@ class OrderTourController {
             status,
             paging,
             function (result) {
+              console.log("result: ", result);
               getInforTour(res, result);
             }
           );
@@ -157,7 +158,7 @@ class OrderTourController {
   find(req, res, next) {
     var query = require("url").parse(req.url, true).query;
     var key = query.key;
-    var paging = query.paging;
+    var paging = query.paging | 1;
 
     OrderTour.findBykey(key, paging)
       .then((result) => {
@@ -197,9 +198,9 @@ class OrderTourController {
     if (!data.quantity || Number(data.quantity) < 1) {
       res.send(message("", false, "Số lượng phải lớn hơn hoặc bằng 1!"));
     } else {
-      OrderTour.update(data, function (result) {
+      OrderTour.update(data, function (result, status, mess) {
         console.log(result);
-        res.send(message(result, true, "Cập nhật thành công!"));
+        res.send(message(result, status, mess));
       });
     }
 
@@ -214,7 +215,9 @@ class OrderTourController {
       .then(() => {
         OrderTour.getById(req.params.id)
           .then((result) => {
-            res.send(message(result, true, "Cập nhật thành công!"));
+            if (result.affectedRows == 1)
+              res.send(message(result, true, "Cập nhật thành công!"));
+            else res.send(message([{}], true, "Cập nhật thất bại!"));
           })
           .catch((err) => {
             res.send(message(err, false, "Cập nhật thất bại!"));
@@ -249,7 +252,9 @@ class OrderTourController {
       .then(() => {
         OrderTour.getById(req.params.id)
           .then((result) => {
-            res.send(message(result, true, "Cập nhật thành công!"));
+            if (result.affectedRows == 1)
+              res.send(message(result, true, "Cập nhật thành công!"));
+            else res.send(message([{}], true, "Cập nhật thất bại!"));
           })
           .catch((err) => {
             res.send(message(err, false, "Cập nhật thất bại!"));
@@ -266,7 +271,9 @@ class OrderTourController {
       .then(() => {
         OrderTour.getById(req.params.id)
           .then((result) => {
-            res.send(message(result, true, "Cập nhật thành công!"));
+            if (result.affectedRows == 1)
+              res.send(message(result, true, "Cập nhật thành công!"));
+            else res.send(message([{}], true, "Cập nhật thất bại!"));
           })
           .catch((err) => {
             res.send(message(err, false, "Cập nhật thất bại!"));
@@ -289,7 +296,9 @@ class OrderTourController {
       .then(() => {
         OrderTour.getById(req.params.id)
           .then((result) => {
-            res.send(message(result, true, "Cập nhật thành công!"));
+            if (result.affectedRows == 1)
+              res.send(message(result, true, "Cập nhật thành công!"));
+            else res.send(message([{}], true, "Cập nhật thất bại!"));
           })
           .catch((err) => {
             res.send(message(err, false, "Cập nhật thất bại!"));

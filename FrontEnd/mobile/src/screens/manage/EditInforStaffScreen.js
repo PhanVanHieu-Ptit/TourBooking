@@ -12,13 +12,13 @@ import * as request from '../../services/untils';
 import API from '../../res/string';
 
 function EditInforStaffScreen({ route, navigation }) {
+    
     const { user, setListStaff } = useContext(AppContext);
     const staff = route.params?.staff;
     const type = route.params?.type == 'add';
+    const [title, setTitle] = useState(type ? 'Thêm nhân viên' : 'Cập nhật thông tin nhân viên');
     const [imageUrl, setImageUrl] = useState(
-        staff != undefined
-            ? staff.imageUrl
-            : 'https://img.freepik.com/free-photo/smiley-little-boy-isolated-pink_23-2148984798.jpg',
+        staff != undefined ? staff.imageUrl : `https://freesvg.org/img/abstract-user-flat-4.png`,
     );
     const [name, setName] = useState(staff != undefined ? staff.name : '');
     const [email, setEmail] = useState(staff != undefined ? staff.email : '');
@@ -175,7 +175,7 @@ function EditInforStaffScreen({ route, navigation }) {
                         <Icon name="chevron-back" size={25} color="#021A5A" />
                     </View>
                 </TouchableOpacity>
-                <Text style={[stylesAllTour.title, { marginLeft: 10 }]}>Cập nhật thông tin nhân viên</Text>
+                <Text style={[stylesAllTour.title, { marginLeft: 10 }]}>{title}</Text>
                 <TouchableOpacity
                     onPress={() => {
                         if (type) addStaff();
