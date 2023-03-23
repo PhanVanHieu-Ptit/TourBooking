@@ -1,6 +1,6 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 import COLOR from '../../res/color';
-const stylesAllTour = StyleSheet.create({
+const stylesAllTour=StyleSheet.create({
   card: {
     borderRadius: 10,
     backgroundColor: '#E9E9E9E9',
@@ -8,6 +8,7 @@ const stylesAllTour = StyleSheet.create({
     paddingBottom: 10,
     marginTop: 20,
     marginLeft: 10,
+    elevation: 10,
   },
   title: {
     color: COLOR.primary,

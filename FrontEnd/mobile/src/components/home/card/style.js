@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import COLOR from '../../../res/color';
-const stylesCard = StyleSheet.create({
+const stylesCard=StyleSheet.create({
     img: {
         borderRadius: 15,
         width: 140,

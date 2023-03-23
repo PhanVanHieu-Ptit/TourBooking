@@ -44,8 +44,9 @@ class SiteControllers {
 
   // [GET] /site/number-tour
   numberTour(req, res) {
-    var query = require("url").parse(req.url, true).query;
-    var type = query.type;
+    const query = require("url").parse(req.url, true).query;
+    const type = query.type;
+    const status = query.status ? query.status : 0;
     if (type == "featured") {
       Tour.getNumberTourFeatured()
         .then((result) => {
@@ -55,7 +56,7 @@ class SiteControllers {
           res.send(message(err, false, "Thất bại!"));
         });
     } else {
-      Tour.getNumberTour()
+      Tour.getNumberTour(status)
         .then((result) => {
           res.send(message(result, true, "Thành công!"));
         })
