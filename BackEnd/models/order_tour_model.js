@@ -16,6 +16,8 @@ const OrderTour = function (order) {
 };
 
 OrderTour.getAll = function (paging, result) {
+  console.log("calculateStart(paging): ", calculateStart(paging));
+  console.log("paging: ", paging);
   db.query("call managetour.sp_get_all_order(?);", calculateStart(paging))
     .then(([rows, fields]) => {
       result(rows[0]);
@@ -53,10 +55,10 @@ OrderTour.getAllFollowCustomer = function (id, paging, result) {
     });
 };
 
-OrderTour.getNumberOrderOfCustomer = function (idCustomer, idTour, result) {
+OrderTour.getNumberOrderOfCustomer = function (idCustomer, idStatus, result) {
   db.query("call managetour.sp_number_order_of_customer(?, ?);", [
     idCustomer,
-    idTour,
+    idStatus,
   ])
     .then(([rows, fields]) => {
       result(rows[0], true);
@@ -223,6 +225,19 @@ OrderTour.confirm = function (id, idStatus) {
     .then(([rows, fields]) => {
       console.log(rows);
       return rows;
+    })
+    .catch((err) => {
+      console.log(err);
+      return err;
+    });
+};
+
+OrderTour.getNumberTourOrder = function (idStatus) {
+  console.log("idStatus: ", idStatus);
+  return db
+    .query("call managetour.sp_num_tour_order(?);", [idStatus])
+    .then(([rows, fields]) => {
+      return rows[0];
     })
     .catch((err) => {
       console.log(err);

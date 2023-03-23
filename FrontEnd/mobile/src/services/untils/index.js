@@ -1,7 +1,9 @@
 import axios from 'axios';
 
-const request=axios.create({
-    baseURL: 'http://192.168.240.13:3000',
+
+const request = axios.create({
+    baseURL: 'http://192.168.0.120:3000',
+
     responseType: 'json',
     withCredentials: true,
 });

@@ -121,8 +121,8 @@ function Home({ navigation }) {
 
     const [isRefreshing,setIsRefreshing]=useState(false);
 
-    const handleRefresh=() => {
-        console.log('vao nha vao nha');
+
+    const handleRefresh = () => {
 
         setIsRefreshing(true);
         if (paging1!=1) setToursOutStanding([]);

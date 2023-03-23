@@ -13,14 +13,32 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import COLOR from '../../res/color';
 import stylesTour from '../tourScreen/styles';
 import { AppContext } from '../../../App';
-import { clearOldData } from '../../res/untils';
+// import { clearOldData } from '../../res/untils';
 
 function ManageScreen({ navigation }) {
-    const { user, setUser } = useContext(AppContext);
+    const {
+        user,
+        setUser,
+        setHistoryOrder,
+        setToursOutStanding,
+        setToursComming,
+        setListTour,
+        setListOrder,
+        setListStaff,
+    } = useContext(AppContext);
 
     const [isLogin, setIsLogin] = useState(user != '' && user != undefined && user != null);
     const [role, setRole] = useState(user?.role);
     const [navigateInforPerson, setNavigateInforPerson] = useState('Profile');
+
+    function clearOldData() {
+        setHistoryOrder([]);
+        setToursOutStanding([]);
+        setToursComming([]);
+        setListTour([]);
+        setListOrder([]);
+        setListStaff([]);
+    }
 
     function setRoleUser() {
         if (user?.role == 'customer') {

@@ -16,7 +16,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import stylesButton from '../../components/general/actionButton/styles';
 import stylesAllTour from '../allTour/style';
 import stylesTour from './styles';
-import {launchImageLibrary} from 'react-native-image-picker';
+import { launchImageLibrary } from 'react-native-image-picker';
 import COLOR from '../../res/color';
 import DatePicker from 'react-native-neat-date-picker';
 import moment from 'moment';
@@ -24,9 +24,10 @@ import CheckBox from 'react-native-check-box';
 import * as request from '../../services/untils';
 import API from '../../res/string';
 import SelectDropdown from 'react-native-select-dropdown';
+import {NavigationActions} from 'reac'
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { AppContext } from '../../../App';
-import { uploadImage } from '../../services/untils/uploadImage';
+import { uploadImage, deleteImage } from '../../services/untils/uploadImage';
 
 let nextId = 0;
 function TourScreen({ route, navigation }) {
@@ -166,7 +167,7 @@ function TourScreen({ route, navigation }) {
         let options = {
             title: 'Select Image',
             customButtons: [{ name: 'customOptionKey', title: 'Choose Photo from Custom Option' }],
-            mediaType: "Photo",
+
             storageOptions: {
                 skipBackup: true,
                 path: 'images',
@@ -192,7 +193,7 @@ function TourScreen({ route, navigation }) {
                     [
                         // with a new array
                         ...listImage, // that contains all the old items
-                        { id: nextId++, uri: response.assets }, // and one new item at the end
+                        { id: nextId++, uri: response.assets[0].uri }, // and one new item at the end
                     ],
                 );
 
@@ -245,6 +246,7 @@ function TourScreen({ route, navigation }) {
         }
         return images;
     };
+
     const addTour = async () => {
         const listUrlImages = await addImage();
         request
@@ -320,12 +322,59 @@ function TourScreen({ route, navigation }) {
             )
             .then((response) => {
                 console.log(response.data);
-                updateListTour();
 
                 if (response.data.status == true) {
                     Alert.alert('Thông báo!', 'Cập nhật thành công!', [{ text: 'OK', onPress: () => {} }]);
                 } else {
                     Alert.alert('Cập nhật thất bại!', response.data.message, [{ text: 'OK', onPress: () => {} }]);
+                }
+                updateListTour();
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+
+    const alertDelete = () => {
+        Alert.alert(
+            'Cảnh báo',
+            'Bạn có chắc chắn muốn xóa tour này?',
+            [
+                {
+                    text: 'Xóa',
+                    onPress: () => deleteTour(),
+                },
+                {
+                    text: 'Không',
+                    onPress: () => console.log('delete'),
+                },
+            ],
+            {
+                cancelable: true,
+            },
+        );
+    };
+
+    const deleteTour = async () => {
+        // const listUrlImages = await addImage();
+        request
+            .postPrivate(
+                '/tour/' + tour.idTour + '/delete',
+                {
+                    idTour: tour.idTour,
+                },
+                { 'Content-Type': 'application/json', authorization: user.accessToken },
+                'DELETE',
+            )
+            .then((response) => {
+                console.log(response.data);
+                navigation.goBack()
+                updateListTour();
+
+                if (response.data.status == true) {
+                    Alert.alert('Thông báo!', 'Xóa thành công!', [{ text: 'OK', onPress: () => {} }]);
+                } else {
+                    Alert.alert('Xóa thất bại!', response.data.message, [{ text: 'OK', onPress: () => {} }]);
                 }
             })
             .catch((err) => {
@@ -695,7 +744,7 @@ function TourScreen({ route, navigation }) {
                     <Text style={stylesTour.title}>Giá</Text>
                     <MaskInput
                         style={[stylesTour.input]}
-                        placeholder = "Nhập giá tour"
+                        placeholder="Nhập giá tour"
                         value={price}
                         mask={createNumberMask({
                             prefix: ['đ', '', ''],
@@ -709,7 +758,11 @@ function TourScreen({ route, navigation }) {
                     />
                 </View>
                 {type == 'edit' ? (
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => {
+                            alertDelete();
+                        }}
+                    >
                         <View
                             style={[
                                 stylesTour.btn,

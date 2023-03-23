@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { SafeAreaView, ScrollView, Text, View, StyleSheet } from 'react-native';
+import {
+    SafeAreaView,
+    ScrollView,
+    Text,
+    View,
+    StyleSheet,
+    ActivityIndicator,
+    Alert,
+    RefreshControl,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import stylesButton from '../../components/general/actionButton/styles';
@@ -11,76 +20,119 @@ import { AppContext } from '../../../App';
 import * as request from '../../services/untils';
 import API from '../../res/string';
 import Find from '../../components/home/find';
+import COLOR from '../../res/color';
 
 function ManageOrderFollowStatus({ navigation }) {
     const { user, listOrder, setListOrder } = useContext(AppContext);
     const [selected, setSelected] = useState('Tất cả');
     const [listStatus, setListStatus] = useState(['Tất cả']);
     const [paging, setPaging] = useState(1);
+    const [isLoading, setIsLoading] = useState(true);
+    const [loadingFooter, setLoadingFooter] = useState(false);
+    const [numberOrderTour, setNumberOrderTour] = useState(0);
 
-    // const [masterDataSource, setMasterDataSource] = useState(listOrder);
     const [filteredDataSource, setFilteredDataSource] = useState(listOrder);
     useEffect(() => {
-        // request
-        //     .get(API.historyOrder, {
-        //         headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
-        //     })
-        //     .then((response) => {
-        //         console.log(response.data);
-
-        //         if (response.status == true) {
-        //             setListOrder(response.data);
-        //             setMasterDataSource(response.data);
-        //             setFilteredDataSource(response.data);
-        //         } else {
-        //             Alert.alert('Thông báo!', response.message + '', [
-        //                 { text: 'OK', onPress: () => console.log('OK Pressed') },
-        //             ]);
-        //         }
-        //     })
-        //     .catch((err) => {
-        //         console.log(err);
-        //     });
-
         getStatus();
-        getListOrder();
+        getNumberOrderTour();
+        // getListOrder();
     }, []);
 
     useEffect(() => {
         if (!(user == '' || user == undefined || user == null)) {
-            setPaging(1);
-            setListOrder([]);
-            // setMasterDataSource(response.data);
-            setFilteredDataSource([]);
-            filterData();
-            console.log('listStatus: ', listStatus);
+            filterData(true, 1);
+            getNumberOrderTour();
         }
     }, [selected]);
 
-    async function getStatus() {
-        await request
-            .get(API.listStatus + '?type=tourorder')
-            .then((response) => {
-                console.log(response.data);
+    // useEffect(() => {
+    //     if (!(user == '' || user == undefined || user == null)) {
+    //         filterData();
+    //     }
+    // }, [paging]);
 
-                if (response.status == true) {
-                    setListStatus(listStatus.concat(response.data));
-                } else {
-                    Alert.alert('Thông báo!', response.message + '', [
-                        { text: 'OK', onPress: () => console.log('OK Pressed') },
-                    ]);
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }
-
-    async function getListOrder() {
+    async function getNumberOrderTour() {
         try {
-            const response = request.get(API.historyOrder + '?paging=' + paging, {
+            const res = await request.get(API.numberOrderOfCustomer + '?status=' + selected, {
                 headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
             });
+            if (res.status === true) {
+                setNumberOrderTour(res.data[0].number);
+            } else {
+                Alert.alert('Thông báo!', res.message + '', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async function getStatus() {
+        try {
+            const response = await await request.get(API.listStatus + '?type=tourorder');
+            if (response.status == true) {
+                setListStatus(listStatus.concat(response.data));
+            } else {
+                Alert.alert('Thông báo!', response.message + '', [
+                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                ]);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const loadMore = () => {
+        if (Math.ceil(Number(numberOrderTour) / 5 - 1) >= paging) {
+            setLoadingFooter(true);
+            filterData(false, paging + 1);
+            setPaging((preState) => preState + 1);
+        }
+    };
+
+    const [isRefreshing, setIsRefreshing] = useState(false);
+
+    const handleRefresh = () => {
+        setIsRefreshing(true);
+        setIsLoading(true);
+        filterData(true, 1);
+
+        setIsRefreshing(false);
+    };
+
+    // async function getListOrder() {
+    //     try {
+    //         const response = request.get(API.historyOrder + '?paging=' + paging, {
+    //             headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
+    //         });
+    //         if (response.status == true) {
+    //             setListOrder((preState) => {
+    //                 return [...preState, ...response.data];
+    //             });
+    //             // setMasterDataSource(response.data);
+    //             setFilteredDataSource((preState) => {
+    //                 return [...preState, ...response.data];
+    //             });
+    //         } else {
+    //             Alert.alert('Thông báo!', response.message + '', [
+    //                 { text: 'OK', onPress: () => console.log('OK Pressed') },
+    //             ]);
+    //         }
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // }
+
+    async function filterData(changeStatus = false, page = paging) {
+        try {
+            if (changeStatus) {
+                setPaging(1);
+                setListOrder([]);
+                setFilteredDataSource([]);
+            }
+            const response = await request.get(API.historyOrder + '?status=' + selected + '&paging=' + page, {
+                headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
+            });
+
             if (response.status == true) {
                 setListOrder((preState) => {
                     return [...preState, ...response.data];
@@ -94,38 +146,20 @@ function ManageOrderFollowStatus({ navigation }) {
                     { text: 'OK', onPress: () => console.log('OK Pressed') },
                 ]);
             }
+            setIsLoading(false);
+            setLoadingFooter(false);
         } catch (error) {
             console.log(error);
         }
     }
 
-    function filterData() {
-        request
-            .get(API.historyOrder + '?status=' + selected + '&paging=' + paging, {
-                headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
-            })
-            .then((response) => {
-                console.log(response.data);
-
-                if (response.status == true) {
-                    setListOrder((preState) => {
-                        return [...preState, ...response.data];
-                    });
-                    // setMasterDataSource(response.data);
-                    setFilteredDataSource((preState) => {
-                        return [...preState, ...response.data];
-                    });
-                } else {
-                    Alert.alert('Thông báo!', response.message + '', [
-                        { text: 'OK', onPress: () => console.log('OK Pressed') },
-                    ]);
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }
-
+    const handleScroll = (event) => {
+        const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+        const paddingToBottom = 20;
+        if (layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom) {
+            loadMore();
+        }
+    };
     return (
         <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
             <View
@@ -183,11 +217,21 @@ function ManageOrderFollowStatus({ navigation }) {
                 />
             </View>
 
-            <ScrollView>
-                {filteredDataSource.map((item) => (
-                    <CardOrder props={item} key={item.idTourOrder} />
-                ))}
-            </ScrollView>
+            {isLoading ? (
+                <View style={{ flex: 1 }}>
+                    <ActivityIndicator size="small" color={COLOR.primary} />
+                </View>
+            ) : (
+                <ScrollView
+                    onScroll={handleScroll}
+                    refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />}
+                >
+                    {filteredDataSource.map((item) => (
+                        <CardOrder props={item} key={item.idTourOrder} />
+                    ))}
+                    {loadingFooter ? <ActivityIndicator size="small" color={COLOR.primary} /> : ''}
+                </ScrollView>
+            )}
         </SafeAreaView>
     );
 }

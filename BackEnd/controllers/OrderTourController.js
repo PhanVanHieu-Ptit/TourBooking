@@ -6,6 +6,7 @@ var Customer = require("../models/customer_model");
 var Status = require("../models/status_model");
 var Picture = require("../models/picturetour_model");
 const connection = require("../utils/connection");
+const { notEqual, equal } = require("assert");
 function getImageTour(tour) {
   // Call Picture.getByIdTour() for the tour ID
   return Picture.getByIdTour(tour.idTour)
@@ -87,11 +88,12 @@ function getInforTour(res, result) {
 class OrderTourController {
   //[GET] /order-tours/list?id={id}&status={value}&paging={page}
   filter(req, res, next) {
-    var query = require("url").parse(req.url, true).query;
+    const query = require("url").parse(req.url, true).query;
 
-    var id = query.id;
-    var status = query.status;
-    var paging = query.paging | 1;
+    const id = query.id;
+    const status = query.status;
+    const paging = query.paging ? query.paging : 1;
+    console.log("page start: ", paging);
 
     switch (id) {
       case undefined:
@@ -129,19 +131,40 @@ class OrderTourController {
     }
   }
 
-  //[GET] /order-tours/number-order?idCustomer={id}&idTour={value}
-  getNumberOrder(req, res, next) {
-    var query = require("url").parse(req.url, true).query;
-    var idCustomer = query.idCustomer;
-    var idTour = query.idTour;
+  //[GET] /order-tours/number-order?idCustomer={id}&idTour={value}&status={status}
+  async getNumberOrder(req, res, next) {
+    const query = require("url").parse(req.url, true).query;
+    const idCustomer = query.idCustomer;
+    const idTour = query.idTour;
+    const status = query.status;
 
-    OrderTour.getNumberOrderOfCustomer(
-      idCustomer,
-      idTour,
-      function (result, status, mess) {
-        res.send(message(result, status, mess));
-      }
-    );
+    let idStatus = -1;
+    if (status != "Tất cả") {
+      let response = await Status.getByName(status, "tourorder");
+      idStatus = response[0].idStatus;
+    }
+    switch (idCustomer) {
+      case undefined:
+        OrderTour.getNumberTourOrder(idStatus)
+          .then((result) => {
+            res.send(message(result, true, "Thành công!"));
+          })
+          .catch((err) => {
+            console.log(err);
+            res.send(message([], false, "Thất bại!"));
+          });
+
+        break;
+      default:
+        OrderTour.getNumberOrderOfCustomer(
+          idCustomer,
+          idStatus,
+          function (result, status, mess) {
+            res.send(message(result, status, mess));
+          }
+        );
+        break;
+    }
   }
 
   //[GET] /order-tours/list
@@ -156,9 +179,9 @@ class OrderTourController {
 
   //[GET] /order-tours/find?key={key}
   find(req, res, next) {
-    var query = require("url").parse(req.url, true).query;
-    var key = query.key;
-    var paging = query.paging | 1;
+    const query = require("url").parse(req.url, true).query;
+    const key = query.key;
+    const paging = query.paging ? query.paging : 1;
 
     OrderTour.findBykey(key, paging)
       .then((result) => {
@@ -182,7 +205,7 @@ class OrderTourController {
 
   //[POST] /order-tours/order
   order(req, res, next) {
-    var data = req.body;
+    const data = req.body;
 
     OrderTour.create(data, function (data, status, mess) {
       res.send(message(data, status, mess));
@@ -194,7 +217,7 @@ class OrderTourController {
 
   //[PUT] /order-tours/:id/update
   update(req, res, next) {
-    var data = req.body;
+    const data = req.body;
     if (!data.quantity || Number(data.quantity) < 1) {
       res.send(message("", false, "Số lượng phải lớn hơn hoặc bằng 1!"));
     } else {

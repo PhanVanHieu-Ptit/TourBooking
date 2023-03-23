@@ -39,8 +39,11 @@ function ManageTourScreen({ navigation }) {
 
     async function getListTour() {
         try {
-            const response=await request.get(API.listTour+'?paging='+paging,{});
-            if (response.status==true) {
+
+            const response = await request.get(API.listTour + '?paging=' + paging, {});
+            if (response.status == true) {
+                isEmpty = false;
+
                 setLoading(false);
                 setListTour((preState) => {
                     return [...preState,...response.data];

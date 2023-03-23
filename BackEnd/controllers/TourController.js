@@ -58,7 +58,7 @@ class TourController {
   list(req, res, next) {
     var query = require("url").parse(req.url, true).query;
     var key = query.key | "";
-    const paging = query.paging || 1;
+    const paging = query.paging ? query.paging : 1;
 
     if (key == undefined) {
       Tour.getAll(paging, function (result) {
@@ -211,8 +211,8 @@ class TourController {
           idTour,
         ]
       );
-
-      if (rows[1].changedRows < 1)
+      console.log("rows: ", rows);
+      if (rows.affectedRows < 1)
         return res.send(message(rows, true, "Không có thay đổi!"));
       return res.send(message(rows[0], true, "Cập nhật tour thành công"));
     } catch (error) {

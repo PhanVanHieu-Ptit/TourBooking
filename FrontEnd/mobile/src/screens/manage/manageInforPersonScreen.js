@@ -39,9 +39,7 @@ function ManageInforPersonScreen({ route, navigation }) {
     const [address, setAddress] = useState(isLogin ? user?.address : '');
     const [phone, setPhone] = useState(isLogin ? user?.phoneNumber : '');
     const [imgPath, setImgPath] = useState(
-        isLogin
-            ? user?.imageUrl
-            : `https://img.freepik.com/free-photo/smiley-little-boy-isolated-pink_23-2148984798.jpg`,
+        isLogin ? user?.imageUrl : `https://freesvg.org/img/abstract-user-flat-4.png`,
     );
 
     // const [selected, setSelected] = useState('');

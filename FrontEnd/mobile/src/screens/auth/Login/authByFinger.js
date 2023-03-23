@@ -12,23 +12,32 @@ import API from '../../../res/string';
 import COLOR from '../../../res/color';
 import TouchID from 'react-native-touch-id';
 import { AppContext } from '../../../../App';
-import { clearOldData } from '../../../res/untils';
+// import { clearOldData } from '../../../res/untils';
 
 function AuthByFinger({ navigation }) {
-    const { user, setUser } = useContext(AppContext);
+    const {
+        user,
+        setUser,
+        setHistoryOrder,
+        setToursOutStanding,
+        setToursComming,
+        setListTour,
+        setListOrder,
+        setListStaff,
+    } = useContext(AppContext);
 
     let errorCount = 0;
     const maxErrorCount = 3;
     const [name, setName] = useState();
 
-    // function clearOldData() {
-    //     setHistoryOrder([]);
-    //     setToursOutStanding([]);
-    //     setToursComming([]);
-    //     setListTour([]);
-    //     setListOrder([]);
-    //     setListStaff([]);
-    // }
+    function clearOldData() {
+        setHistoryOrder([]);
+        setToursOutStanding([]);
+        setToursComming([]);
+        setListTour([]);
+        setListOrder([]);
+        setListStaff([]);
+    }
 
     const handleTouchID = () => {
         TouchID.authenticate('Xác thực bằng vân tay')
@@ -42,7 +51,7 @@ function AuthByFinger({ navigation }) {
                     console.log(`Bạn đã nhập sai ${errorCount} lần.`);
                     if (errorCount >= maxErrorCount) {
                         console.log('Bạn đã nhập sai quá nhiều lần.');
-                        navigation.navigate('Login');
+                        navigation.replace('Login');
                         // Xử lý khi nhập sai quá nhiều lần ở đây
                     }
                 } else if (error.name === 'LAErrorUserCancel') {
@@ -108,7 +117,17 @@ function AuthByFinger({ navigation }) {
                         >
                             <TouchableOpacity
                                 onPress={() => {
-                                    navigation.navigate('Login');
+                                    //delete old user
+                                    AsyncStorage.removeItem('user')
+                                        .then(() => {
+                                            console.log('user removed from AsyncStorage');
+                                        })
+                                        .catch((error) => {
+                                            console.error(error);
+                                        });
+                                    setUser(null);
+                                    clearOldData();
+                                    navigation.replace('Login');
                                 }}
                             >
                                 <Text style={styles.title2}>Đăng nhập với mật khẩu</Text>
@@ -125,7 +144,6 @@ function AuthByFinger({ navigation }) {
                             />
                             <TouchableOpacity
                                 onPress={() => {
-                                    navigation.replace('HomeScreen');
                                     //delete old user
                                     AsyncStorage.removeItem('user')
                                         .then(() => {
@@ -136,6 +154,7 @@ function AuthByFinger({ navigation }) {
                                         });
                                     setUser(null);
                                     clearOldData();
+                                    navigation.replace('HomeScreen');
                                 }}
                             >
                                 <Text style={styles.title2}>Sử dụng chế độ khách</Text>
