@@ -19,6 +19,22 @@ Status.getById = function (id, type) {
     });
 };
 
+Status.getByName = async function (nameStatus, typeStatus) {
+  try {
+    const [rows, fields] = await db.query(
+      `call managetour.sp_get_status_by_name('${nameStatus}','${typeStatus}' );`
+      // [nameStatus, typeStatus]
+    );
+    // console.log(
+    //   `call managetour.sp_get_status_by_name('${nameStatus}', '${typeStatus}');`
+    // );
+
+    return rows[0];
+  } catch (error) {
+    return error;
+  }
+};
+
 Status.getFollowType = function (type, result) {
   db.query("call managetour.sp_get_status_by_type(?);", type)
     .then(([rows, fields]) => {
