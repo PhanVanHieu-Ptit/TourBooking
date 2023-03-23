@@ -41,6 +41,20 @@ class SiteControllers {
       return res.send(message("", false, error.message));
     }
   }
+  // [GET] /site/number-staff
+  async getNumberStaff(req, res) {
+    try {
+      let rows, fields;
+      if (req.body.role == "admin") {
+        [rows, fields] = await connection.execute(
+          "SELECT * FROM managetour.v_staff_number;"
+        );
+        return res.send(message(rows[0], true, "Thành công!"));
+      } else return res.send(message([], false, "Không có quyền truy cập!"));
+    } catch (error) {
+      return res.send(message("", false, error.message));
+    }
+  }
 
   // [GET] /site/number-tour
   numberTour(req, res) {

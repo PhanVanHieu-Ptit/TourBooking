@@ -16,9 +16,21 @@ const OrderTour = function (order) {
 };
 
 OrderTour.getAll = function (paging, result) {
-  console.log("calculateStart(paging): ", calculateStart(paging));
-  console.log("paging: ", paging);
   db.query("call managetour.sp_get_all_order(?);", calculateStart(paging))
+    .then(([rows, fields]) => {
+      result(rows[0]);
+    })
+    .catch((err) => {
+      console.log;
+      result(err);
+    });
+};
+
+OrderTour.getByIdTour = function (idTour, paging, result) {
+  db.query("call managetour.sp_get_order_by_id_tour(?, ?);", [
+    idTour,
+    calculateStart(paging),
+  ])
     .then(([rows, fields]) => {
       result(rows[0]);
     })

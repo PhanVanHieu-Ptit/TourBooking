@@ -18,6 +18,7 @@ const API = {
     addStaff: '/staff/add',
     numberTour: '/site/number-tour',
     numberOrderOfCustomer: '/order-tours/number-order',
+    getInfor: '/site/get-own-infor',
 };
 
 export default API;
