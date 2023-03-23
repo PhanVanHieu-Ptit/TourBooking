@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Image, SafeAreaView, ScrollView, Text, View, ActivityIndicator, RefreshControl } from 'react-native';
+import React,{ useContext,useEffect,useState } from 'react';
+import { Image,SafeAreaView,ScrollView,Text,View,ActivityIndicator,RefreshControl } from 'react-native';
 import Find from '../../components/home/find';
 import stylesManage from '../manage/styles';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -12,16 +12,16 @@ import API from '../../res/string';
 import * as request from '../../services/untils';
 
 function ManageTourScreen({ navigation }) {
-    const { user, listTour, setListTour } = useContext(AppContext);
+    const { user,listTour,setListTour }=useContext(AppContext);
 
     // const [masterDataSource, setMasterDataSource] = useState(listTour);
-    const [filteredDataSource, setFilteredDataSource] = useState([]);
-    const [isLoading, setLoading] = useState(true);
-    const [refresh, setFresh] = useState(false);
-    const [paging, setPaging] = useState(1);
-    let isEmpty = false;
+    const [filteredDataSource,setFilteredDataSource]=useState([]);
+    const [isLoading,setLoading]=useState(true);
+    const [refresh,setFresh]=useState(false);
+    const [paging,setPaging]=useState(1);
+    let isEmpty=false;
 
-    const loader = () => {
+    const loader=() => {
         if (isLoading) {
             return <ActivityIndicator size={'small'} color={'#021A5A'} />;
         }
@@ -35,26 +35,28 @@ function ManageTourScreen({ navigation }) {
         setListTour([]);
         getListTour();
         // setFilteredDataSource(listTour);
-    }, []);
+    },[]);
 
     async function getListTour() {
         try {
+
             const response = await request.get(API.listTour + '?paging=' + paging, {});
             if (response.status == true) {
                 isEmpty = false;
+
                 setLoading(false);
                 setListTour((preState) => {
-                    return [...preState, ...response.data];
+                    return [...preState,...response.data];
                 });
                 // setMasterDataSource(response.data);
                 setFilteredDataSource((preState) => {
-                    return [...preState, ...response.data];
+                    return [...preState,...response.data];
                 });
             } else {
                 setLoading(false);
-                isEmpty = true;
-                Alert.alert('Thông báo!', response.message + '', [
-                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                isEmpty=true;
+                Alert.alert('Thông báo!',response.message+'',[
+                    { text: 'OK',onPress: () => console.log('OK Pressed') },
                 ]);
             }
         } catch (error) {
@@ -63,7 +65,7 @@ function ManageTourScreen({ navigation }) {
     }
 
     return (
-        <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+        <SafeAreaView style={{ justifyContent: 'center',alignItems: 'center',flex: 1 }}>
             <View
                 style={{
                     flexDirection: 'row',
@@ -82,9 +84,9 @@ function ManageTourScreen({ navigation }) {
                 </TouchableOpacity>
                 <Text style={stylesAllTour.title}>Quản lý tour</Text>
                 <TouchableOpacity
-                    style={[stylesAllTour.title, { marginLeft: 130 }]}
+                    style={[stylesAllTour.title,{ marginLeft: 130 }]}
                     onPress={() => {
-                        navigation.navigate('EditTour', { type: 'add' });
+                        navigation.navigate('EditTour',{ type: 'add' });
                     }}
                 >
                     <Icon name="add" size={25} color="#021A5A" />
@@ -110,17 +112,17 @@ function ManageTourScreen({ navigation }) {
                         }}
                     />
                 }
-                // refreshControl={<RefreshControl refreshing={refresh} />}
+            // refreshControl={<RefreshControl refreshing={refresh} />}
             >
-                {isEmpty ? (
+                {isEmpty? (
                     <View>
-                    <Image
-                    source = {require('./No-data-cuate.png')}
-                        style={{height: 300, width: 200, marginTop: 100, marginBottom: 0}}
-                    />
-                    <Text style={{text: 5, textAlign: 'center', marginTop: 0}}>Chưa có dữ liệu</Text>
+                        <Image
+                            source={require('./No-data-cuate.png')}
+                            style={{ height: 300,width: 200,marginTop: 100,marginBottom: 0 }}
+                        />
+                        <Text style={{ text: 5,textAlign: 'center',marginTop: 0 }}>Chưa có dữ liệu</Text>
                     </View>
-                ) : (
+                ):(
                     filteredDataSource.map((item) => (
                         <CardCommingTour tour={item} key={item.idTour} navigation={navigation} screen="EditTour" />
                     ))

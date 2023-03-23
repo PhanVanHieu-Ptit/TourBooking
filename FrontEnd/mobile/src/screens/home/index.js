@@ -47,7 +47,6 @@ function Home({ navigation }) {
         if (paging2 == 1) setIsLoading2(true);
         loadCommingTour();
     }, [paging2]);
-
     // useEffect(() => {
     //     loadToursOutStanding();
     //     loadCommingTour();
@@ -134,6 +133,7 @@ function Home({ navigation }) {
     async function loadCommingTour() {
         try {
             const res = await request.get(API.toursOutStanding + '?paging=' + paging2 + '&status=1');
+
             setIsLoading2(false);
             if (res.status == true) {
                 // setToursComming(res.data);
