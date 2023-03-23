@@ -173,7 +173,7 @@ function ManageTourScreen({ navigation }) {
                             <CardCommingTour tour={item} key={item.idTour} navigation={navigation} screen="EditTour" />
                         ))}
                     </ScrollView>
-             
+                )}
                 {isLoadingFooter ? <ActivityIndicator size="small" color={COLOR.primary} /> : ''}
             </SafeAreaView>
         </ScrollView>
