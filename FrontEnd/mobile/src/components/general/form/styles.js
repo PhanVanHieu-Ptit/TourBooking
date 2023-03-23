@@ -5,7 +5,7 @@ const stylesModal = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        // marginTop: 22,
+        // marginTop: 500,
         backgroundColor: '#000000',
         opacity: 1, //0.8,
     },
