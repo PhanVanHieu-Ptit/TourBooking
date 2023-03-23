@@ -54,14 +54,15 @@ function getSlotsLeftTour(res, result) {
 }
 
 class TourController {
-  //[GET] /tour/list?key={key}&paging={paging}
+  //[GET] /tour/list?key={key}&paging={paging}&status={}
   list(req, res, next) {
-    var query = require("url").parse(req.url, true).query;
-    var key = query.key | "";
+    const query = require("url").parse(req.url, true).query;
+    const key = query.key;
     const paging = query.paging ? query.paging : 1;
+    const status = query.status ? query.status : 0;
 
     if (key == undefined) {
-      Tour.getAll(paging, function (result) {
+      Tour.getAll(paging, status, function (result) {
         // console.log(result);
         // res.send(message(seperateString(result), true, "Thành công!"));
         getSlotsLeftTour(res, seperateString(result));
@@ -158,7 +159,27 @@ class TourController {
   }
   async update(req, res, next) {
     const idTour = req.params.id;
+
     try {
+      let [rows, fields] = await connection.execute(
+        "call managetour.sp_get_tour_by_id(?);",
+        [idTour]
+      );
+
+      if (rows[0][0].idStatus != 1) {
+        return res.send(message([], false, "Không thể cập nhật tour!"));
+      }
+
+      [rows, fields] = await connection.execute(
+        "call managetour.sp_check_tour_exist_customer(?); ",
+        [idTour]
+      );
+      console.log("row123: ", rows);
+      if (rows[0].length != 0) {
+        return res.send(
+          message([], false, "Đã tồn có khách đặt, không thể cập nhật tour!")
+        );
+      }
       let {
         name,
         startDate,
@@ -188,7 +209,7 @@ class TourController {
           imageUrl,
         ]);
       });
-      let [rows, fields] = await connection.execute(
+      [rows, fields] = await connection.execute(
         "call managetour.sp_update_tour(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
         [
           name,
