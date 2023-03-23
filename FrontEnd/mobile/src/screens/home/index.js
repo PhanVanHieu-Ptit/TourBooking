@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React,{ useEffect,useState,useContext } from 'react';
 import {
     FlatList,
     SafeAreaView,
@@ -16,38 +16,37 @@ import Header from '../../components/home/header';
 import stylesHome from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import COLOR from '../../res/color';
-import { CardCommingTour, CardNewTour } from '../../components/home/card';
+import { CardCommingTour,CardNewTour } from '../../components/home/card';
 import stylesFind from '../../components/home/find/styles';
 import { AppContext } from '../../../App';
 import * as request from '../../services/untils';
 import API from '../../res/string';
 
 function Home({ navigation }) {
-    const { toursOutStanding, setToursOutStanding, toursComing, setToursComming } = useContext(AppContext);
-    const [numberTourFeatured, setNumberTourFeatured] = useState(0);
-    const [numberTour, setNumberTour] = useState(0);
-    const [isLoading1, setIsLoading1] = useState(true);
-    const [isLoading2, setIsLoading2] = useState(true);
-    const [loadingFooter, setLoadingFooter] = useState(false);
-    const [loadingFooter2, setLoadingFooter2] = useState(false);
-    const [paging1, setPaging1] = useState(1);
-    const [paging2, setPaging2] = useState(1);
+    const { toursOutStanding,setToursOutStanding,toursComing,setToursComming }=useContext(AppContext);
+    const [numberTourFeatured,setNumberTourFeatured]=useState(0);
+    const [numberTour,setNumberTour]=useState(0);
+    const [isLoading1,setIsLoading1]=useState(true);
+    const [isLoading2,setIsLoading2]=useState(true);
+    const [loadingFooter,setLoadingFooter]=useState(false);
+    const [loadingFooter2,setLoadingFooter2]=useState(false);
+    const [paging1,setPaging1]=useState(1);
+    const [paging2,setPaging2]=useState(1);
     useEffect(() => {
         getNumberTour();
         getNumberTourFeatured();
-    }, []);
+    },[]);
 
     useEffect(() => {
-        if (paging1 == 1) setIsLoading1(true);
+        if (paging1==1) setIsLoading1(true);
         console.log();
-        loadToursOutStanding('toursOutStanding: ', toursOutStanding);
-    }, [paging1]);
+        loadToursOutStanding('toursOutStanding: ',toursOutStanding);
+    },[paging1]);
 
     useEffect(() => {
-        if (paging2 == 1) setIsLoading2(true);
+        if (paging2==1) setIsLoading2(true);
         loadCommingTour();
-    }, [paging2]);
-
+    },[paging2]);
     // useEffect(() => {
     //     loadToursOutStanding();
     //     loadCommingTour();
@@ -55,11 +54,11 @@ function Home({ navigation }) {
 
     async function getNumberTourFeatured() {
         try {
-            const res = await request.get(API.numberTour + '?type=featured');
-            if (res.status === true) {
+            const res=await request.get(API.numberTour+'?type=featured');
+            if (res.status===true) {
                 setNumberTourFeatured(res.data[0].number);
             } else {
-                Alert.alert('Thông báo!', res.message + '', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
+                Alert.alert('Thông báo!',res.message+'',[{ text: 'OK',onPress: () => console.log('OK Pressed') }]);
             }
         } catch (error) {
             console.log(error);
@@ -68,11 +67,11 @@ function Home({ navigation }) {
 
     async function getNumberTour() {
         try {
-            const res = await request.get(API.numberTour);
-            if (res.status === true) {
+            const res=await request.get(API.numberTour);
+            if (res.status===true) {
                 setNumberTour(res.data[0].number);
             } else {
-                Alert.alert('Thông báo!', res.message + '', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
+                Alert.alert('Thông báo!',res.message+'',[{ text: 'OK',onPress: () => console.log('OK Pressed') }]);
             }
         } catch (error) {
             console.log(error);
@@ -81,32 +80,32 @@ function Home({ navigation }) {
 
     async function loadToursOutStanding() {
         try {
-            const res = await request.get(API.toursOutStanding + '?key=featured&paging=' + paging1);
+            const res=await request.get(API.toursOutStanding+'?key=featured&paging='+paging1);
             setIsLoading1(false);
-            if (res.status == true) {
+            if (res.status==true) {
                 setToursOutStanding((preState) => {
-                    return [...preState, ...res.data];
+                    return [...preState,...res.data];
                 });
                 setLoadingFooter(false);
             } else {
-                Alert.alert('Thông báo!', res.message + '', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
+                Alert.alert('Thông báo!',res.message+'',[{ text: 'OK',onPress: () => console.log('OK Pressed') }]);
             }
         } catch (error) {
             console.log(error);
         }
     }
 
-    const loadMore1 = () => {
-        if (Math.ceil(Number(numberTourFeatured) / 5 - 1) >= paging1) {
+    const loadMore1=() => {
+        if (Math.ceil(Number(numberTourFeatured)/5-1)>=paging1) {
             setLoadingFooter(true);
-            setPaging1((preState) => preState + 1);
+            setPaging1((preState) => preState+1);
         }
     };
 
-    const loadMore2 = () => {
-        if (Math.ceil(Number(numberTour) / 5 - 1) >= paging2) {
+    const loadMore2=() => {
+        if (Math.ceil(Number(numberTour)/5-1)>=paging2) {
             setLoadingFooter2(true);
-            setPaging2((preState) => preState + 1);
+            setPaging2((preState) => preState+1);
         }
     };
 
@@ -120,14 +119,14 @@ function Home({ navigation }) {
     //     setIsLoading2(false);
     // };
 
-    const [isRefreshing, setIsRefreshing] = useState(false);
+    const [isRefreshing,setIsRefreshing]=useState(false);
 
-    const handleRefresh = () => {
+    const handleRefresh=() => {
         console.log('vao nha vao nha');
 
         setIsRefreshing(true);
-        if (paging1 != 1) setToursOutStanding([]);
-        if (paging2 != 1) setToursComming([]);
+        if (paging1!=1) setToursOutStanding([]);
+        if (paging2!=1) setToursComming([]);
         setPaging1(1);
         setPaging2(1);
         setIsRefreshing(false);
@@ -135,23 +134,23 @@ function Home({ navigation }) {
 
     async function loadCommingTour() {
         try {
-            const res = await request.get(API.toursOutStanding + '?paging=' + paging2);
+            const res=await request.get(API.toursOutStanding+'?paging='+paging2);
             setIsLoading2(false);
-            if (res.status == true) {
+            if (res.status==true) {
                 // setToursComming(res.data);
                 setToursComming((preState) => {
-                    return [...preState, ...res.data];
+                    return [...preState,...res.data];
                 });
                 setLoadingFooter2(false);
             } else {
-                Alert.alert('Thông báo!', res.message + '', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
+                Alert.alert('Thông báo!',res.message+'',[{ text: 'OK',onPress: () => console.log('OK Pressed') }]);
             }
         } catch (error) {
             console.log(error);
         }
     }
 
-    const renderFooter = () => {
+    const renderFooter=() => {
         if (!loadingFooter) return null;
         return (
             <View style={{ paddingVertical: 20 }}>
@@ -160,10 +159,10 @@ function Home({ navigation }) {
         );
     };
 
-    const handleScroll = (event) => {
-        const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
-        const paddingToBottom = 20;
-        if (layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom) {
+    const handleScroll=(event) => {
+        const { layoutMeasurement,contentOffset,contentSize }=event.nativeEvent;
+        const paddingToBottom=20;
+        if (layoutMeasurement.height+contentOffset.y>=contentSize.height-paddingToBottom) {
             loadMore2();
         }
     };
@@ -172,13 +171,13 @@ function Home({ navigation }) {
             onScroll={handleScroll}
             refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />}
         >
-            <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+            <SafeAreaView style={{ justifyContent: 'center',alignItems: 'center',flex: 1 }}>
                 <StatusBar translucent={false} backgroundColor={COLOR.primary} />
                 <Header />
                 {/* find */}
                 <TouchableOpacity
                     onPress={() => {
-                        navigation.navigate('AllTour', { isFind: true });
+                        navigation.navigate('AllTour',{ isFind: true });
                     }}
                 >
                     <View style={stylesFind.view}>
@@ -192,7 +191,7 @@ function Home({ navigation }) {
                 <View style={{ flex: 1 }}>
                     <TouchableOpacity
                         onPress={() => {
-                            navigation.navigate('AllTour', { isFind: false });
+                            navigation.navigate('AllTour',{ isFind: false });
                         }}
                     >
                         <View style={stylesHome.txt1}>
@@ -203,9 +202,9 @@ function Home({ navigation }) {
                     <View>
                         <Text style={stylesHome.txt2}>Các tour nổi bật</Text>
                     </View>
-                    {isLoading1 ? (
+                    {isLoading1? (
                         <ActivityIndicator size="small" color={COLOR.primary} />
-                    ) : (
+                    ):(
                         <FlatList
                             horizontal
                             style={{ flex: 1 }}
@@ -222,9 +221,9 @@ function Home({ navigation }) {
                     <View style={{ marginTop: 50 }}>
                         <Text style={stylesHome.txt2}>Các tour sắp diễn ra</Text>
                     </View>
-                    {isLoading2 ? (
+                    {isLoading2? (
                         <ActivityIndicator size="small" color={COLOR.primary} />
-                    ) : (
+                    ):(
                         <View>
                             {toursComing.map((item) => (
                                 <CardCommingTour
@@ -234,7 +233,7 @@ function Home({ navigation }) {
                                     screen="DetailTour"
                                 />
                             ))}
-                            {loadingFooter2 ? <ActivityIndicator size="small" color={COLOR.primary} /> : ''}
+                            {loadingFooter2? <ActivityIndicator size="small" color={COLOR.primary} />:''}
                         </View>
                     )}
                 </View>
