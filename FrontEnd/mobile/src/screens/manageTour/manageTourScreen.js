@@ -169,6 +169,8 @@ function ManageTourScreen({ navigation }) {
                     </ScrollView>
                 )}
 
+)}
+             
                 {isLoadingFooter ? <ActivityIndicator size="small" color={COLOR.primary} /> : ''}
             </SafeAreaView>
         </ScrollView>
