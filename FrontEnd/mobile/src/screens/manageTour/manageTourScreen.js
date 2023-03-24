@@ -14,7 +14,7 @@ import * as request from '../../services/untils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function ManageTourScreen({ navigation }) {
-    const { user, setUser, setHistoryOrder, setListTour, listTour, setListOrder, setListStaff } =
+    const { user, setUser, isLogin, setIsLogin, setHistoryOrder, setListTour, listTour, setListOrder, setListStaff } =
         useContext(AppContext);
 
     // const [masterDataSource, setMasterDataSource] = useState(listTour);
@@ -71,6 +71,7 @@ function ManageTourScreen({ navigation }) {
                 console.log('res2.message: ', res2.data.message);
                 if (res2.data.message == 'Refesh token không hợp lệ!') {
                     setUser(null);
+                    setIsLogin(false);
                     clearOldData();
                     //delete old user
                     AsyncStorage.removeItem('user')
@@ -110,7 +111,9 @@ function ManageTourScreen({ navigation }) {
             loadMoreTour();
         }
     };
-
+    useEffect(() => {
+        if (!isLogin) navigation.goBack();
+    }, [isLogin]);
     useEffect(() => {
         getNumberTour();
     }, []);
@@ -140,7 +143,7 @@ function ManageTourScreen({ navigation }) {
             } else {
                 setLoading(false);
                 isEmpty = true;
-                if (res.message == 'Token đã hết hạn') {
+                if (response.message == 'Token đã hết hạn') {
                     getRefreshToken();
                 } else
                     Alert.alert('Thông báo!', response.message + '', [

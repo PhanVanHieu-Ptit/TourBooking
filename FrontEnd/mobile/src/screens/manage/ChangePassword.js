@@ -15,14 +15,15 @@ import API from '../../res/string';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function ChangePassword({ route, navigation }) {
-    const { user, setUser, setHistoryOrder, setListTour, setListOrder, setListStaff } = useContext(AppContext);
+    const { user, setUser, isLogin, setIsLogin, setHistoryOrder, setListTour, setListOrder, setListStaff } =
+        useContext(AppContext);
 
     const [imageUrl, setImageUrl] = useState(
-        user != undefined
-            ? user.imageUrl
+        isLogin
+            ? user?.imageUrl
             : 'https://img.freepik.com/free-photo/smiley-little-boy-isolated-pink_23-2148984798.jpg',
     );
-    const [name, setName] = useState(user != undefined ? user.name : '');
+    const [name, setName] = useState(isLogin ? user?.name : '');
     const [seeOldPassWord, setSeeOldPassword] = useState(true);
     const [seeNewPassWord, setSeeNewPassword] = useState(true);
     const [seeConfirmPassWord, setSeeConfirmPassword] = useState(true);
@@ -47,7 +48,7 @@ function ChangePassword({ route, navigation }) {
                     id: user.id,
                     name: user.name,
                     imageUrl: user.imageUrl,
-                    role: user.role,
+                    role: user?.role,
                     phoneNumber: user.phoneNumber,
                     email: user.email,
                     address: user.address,
@@ -75,6 +76,7 @@ function ChangePassword({ route, navigation }) {
                 console.log('res2.message: ', res2.data.message);
                 if (res2.data.message == 'Refesh token không hợp lệ!') {
                     setUser(null);
+                    setIsLogin(false);
                     clearOldData();
                     //delete old user
                     AsyncStorage.removeItem('user')
@@ -152,11 +154,11 @@ function ChangePassword({ route, navigation }) {
         }
     }
 
-    const [role, setRole] = useState(user.role);
+    const [role, setRole] = useState(user?.role);
     function setRoleUser() {
-        if (user.role == 'customer') {
+        if (user?.role == 'customer') {
             setRole('Khách hàng');
-        } else if (user.role == 'staff') {
+        } else if (user?.role == 'staff') {
             setRole('Nhân viên');
         }
     }

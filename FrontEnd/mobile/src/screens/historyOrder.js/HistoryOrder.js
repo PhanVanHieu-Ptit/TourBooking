@@ -24,7 +24,7 @@ import COLOR from '../../res/color';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function HistoryOrderScreen({ navigation }) {
-    const { user, setUser, historyOrder, setHistoryOrder } = useContext(AppContext);
+    const { user, setUser, isLogin, setIsLogin, historyOrder, setHistoryOrder } = useContext(AppContext);
     const [selected, setSelected] = useState('Tất cả');
     const [listStatus, setListStatus] = useState(['Tất cả']);
     const [paging, setPaging] = useState(1);
@@ -80,6 +80,7 @@ function HistoryOrderScreen({ navigation }) {
                 console.log('res2.message: ', res2.data.message);
                 if (res2.data.message == 'Refesh token không hợp lệ!') {
                     setUser(null);
+                    setIsLogin(false);
                     clearOldData();
                     //delete old user
                     AsyncStorage.removeItem('user')
@@ -99,7 +100,7 @@ function HistoryOrderScreen({ navigation }) {
     }
 
     useEffect(() => {
-        if (user == '' || user == undefined || user == null) {
+        if (isLogin) {
             Alert.alert('Bạn chưa đăng nhập!', 'Bạn hãy đăng nhập ngay để xem lịch sử đặt của bạn.', [
                 { text: 'OK', onPress: () => navigation.replace('Login') },
             ]);

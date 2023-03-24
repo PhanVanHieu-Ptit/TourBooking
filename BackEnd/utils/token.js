@@ -1,5 +1,5 @@
 function getToken(email, mailChangePassword = false, role = "customer") {
-  let minutes = 1; //1200;
+  let minutes = 1200;
   if (mailChangePassword) minutes = 50;
   require("dotenv").config();
   var jwt = require("jsonwebtoken");
@@ -18,7 +18,7 @@ function getToken(email, mailChangePassword = false, role = "customer") {
 }
 
 function getRefeshToken(email, role = "customer") {
-  let minutes = 2; //4320;
+  let minutes = 4320;
   require("dotenv").config();
   // Generate a refresh token
   var jwt = require("jsonwebtoken");
