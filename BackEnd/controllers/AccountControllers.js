@@ -1,7 +1,7 @@
 const message = require("../utils/message");
 const connection = require("../utils/connection");
 const { encode, compare } = require("../utils/my-bcrypt");
-const { getToken } = require("../utils/token");
+const { getToken, getRefeshToken } = require("../utils/token");
 const path = require("path");
 const { sendChangePassMail } = require("../utils/mail");
 class AccountControllers {
@@ -86,11 +86,21 @@ class AccountControllers {
       }
       //set token for client
       const token = getToken(username, false, role);
+      const refreshToken = getRefeshToken(username, role);
       res.setHeader("Authorization", token);
       res.setHeader("Access-Control-Expose-Headers", "*");
       return res.send(
         message(
-          { id, name, imageUrl, role, phoneNumber, email, address },
+          {
+            id,
+            name,
+            imageUrl,
+            role,
+            phoneNumber,
+            email,
+            address,
+            refreshToken,
+          },
           true,
           "Đăng nhập thành công"
         )
@@ -174,6 +184,22 @@ class AccountControllers {
   }
   async changePasswordForm(req, res) {
     res.sendFile(path.join(__dirname, "../public/change-password-form.html"));
+  }
+
+  // [POST] /account/refresh-token
+  async refeshToken(req, res) {
+    const refreshToken = req.body.token;
+    console.log(req.body);
+    if (!refreshToken) return res.sendStatus(401);
+
+    var jwt = require("jsonwebtoken");
+    jwt.verify(refreshToken, process.env.JWT_SECRET, (err, user) => {
+      if (err)
+        return res.send(message("", false, "Refesh token không hợp lệ!"));
+
+      const token = getToken(user.email, false, user.role);
+      return res.send(message({ token }, true, "Refesh token thành công!"));
+    });
   }
 }
 module.exports = new AccountControllers();

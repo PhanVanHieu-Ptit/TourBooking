@@ -21,9 +21,11 @@ import * as request from '../../services/untils';
 import API from '../../res/string';
 import Find from '../../components/home/find';
 import COLOR from '../../res/color';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function ManageOrderFollowStatus({ navigation }) {
-    const { user, listOrder, setListOrder } = useContext(AppContext);
+    const { user, setUser, setHistoryOrder, setListTour, listOrder, setListOrder, setListStaff } =
+        useContext(AppContext);
     const [selected, setSelected] = useState('Tất cả');
     const [listStatus, setListStatus] = useState(['Tất cả']);
     const [paging, setPaging] = useState(1);
@@ -51,6 +53,68 @@ function ManageOrderFollowStatus({ navigation }) {
     //     }
     // }, [paging]);
 
+    function clearOldData() {
+        setHistoryOrder([]);
+        setListTour([]);
+        setListOrder([]);
+        setListStaff([]);
+    }
+
+    async function getRefreshToken() {
+        try {
+            const res2 = await request.post(API.refeshToken, { token: user.refreshToken });
+            console.log('res2: ', res2);
+            if (res2.data.status == true) {
+                const newUser = {
+                    id: user.id,
+                    name: user.name,
+                    imageUrl: user.imageUrl,
+                    role: user.role,
+                    phoneNumber: user.phoneNumber,
+                    email: user.email,
+                    address: user.address,
+                    accessToken: res2.data.data[0].token,
+                    refreshToken: user.refreshToken,
+                };
+                //update user in side client
+                setUser(newUser);
+
+                //delete old user
+                AsyncStorage.removeItem('user')
+                    .then(() => {
+                        console.log('user removed from AsyncStorage');
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+                console.log('user: ', newUser);
+                AsyncStorage.setItem('user', JSON.stringify(newUser))
+                    .then(() => console.log('Object stored successfully'))
+                    .catch((error) => console.log('Error storing object: ', error));
+                return true;
+            } else {
+                // Alert.alert('Thông báo!', res2.message + '', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
+                console.log('res2.message: ', res2.data.message);
+                if (res2.data.message == 'Refesh token không hợp lệ!') {
+                    setUser(null);
+                    clearOldData();
+                    //delete old user
+                    AsyncStorage.removeItem('user')
+                        .then(() => {
+                            console.log('user removed from AsyncStorage');
+                        })
+                        .catch((error) => {
+                            console.error(error);
+                        });
+                    navigation.replace('Login');
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+        return false;
+    }
+
     async function getNumberOrderTour() {
         try {
             const res = await request.get(API.numberOrderOfCustomer + '?status=' + selected, {
@@ -59,7 +123,12 @@ function ManageOrderFollowStatus({ navigation }) {
             if (res.status === true) {
                 setNumberOrderTour(res.data[0].number);
             } else {
-                Alert.alert('Thông báo!', res.message + '', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
+                if (res.message == 'Token đã hết hạn') {
+                    getRefreshToken();
+                } else
+                    Alert.alert('Thông báo!', res.message + '', [
+                        { text: 'OK', onPress: () => console.log('OK Pressed') },
+                    ]);
             }
         } catch (error) {
             console.log(error);
@@ -142,9 +211,12 @@ function ManageOrderFollowStatus({ navigation }) {
                     return [...preState, ...response.data];
                 });
             } else {
-                Alert.alert('Thông báo!', response.message + '', [
-                    { text: 'OK', onPress: () => console.log('OK Pressed') },
-                ]);
+                if (response.message == 'Token đã hết hạn') {
+                    getRefreshToken();
+                } else
+                    Alert.alert('Thông báo!', response.message + '', [
+                        { text: 'OK', onPress: () => console.log('OK Pressed') },
+                    ]);
             }
             setIsLoading(false);
             setLoadingFooter(false);
