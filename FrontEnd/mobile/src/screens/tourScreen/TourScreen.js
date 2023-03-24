@@ -39,6 +39,8 @@ function TourScreen({ route, navigation }) {
     const [date, setDate] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [name, setName] = useState(tour != undefined ? tour.name : '');
+    const [detailPickUpPoint, setDetailPickUpPoint] = useState(tour != undefined ? tour.detailPickUpPoint : '');
+    const [detailTourDestination, setDetailTourDestination] = useState(tour != undefined ? tour.detailTourDestination : '');
     const [tourIntro, setTourIntro] = useState(tour != undefined ? tour.tourIntro : '');
     const [tourDetail, setTourDetail] = useState(tour != undefined ? tour.tourDetail : '');
     const [pickUpPoint, setPickUpPoint] = useState(tour != undefined ? tour.pickUpPoint : '');
@@ -266,8 +268,8 @@ function TourScreen({ route, navigation }) {
                     tourDetail: tourDetail,
                     pickUpPoint: pickUpPoint,
                     tourDestination: tourDestination,
-                    detailPickUpPoint: pickUpPoint,
-                    detailTourDestination: tourDestination,
+                    detailPickUpPoint: detailPickUpPoint,
+                    detailTourDestination: detailTourDestination,
                     price: price,
                     featured: featured,
                     tourPictures: listUrlImages,
@@ -500,8 +502,8 @@ function TourScreen({ route, navigation }) {
                     <TextInput
                         placeholder="Nhập quận huyện vào đây"
                         style={[stylesTour.input, { marginTop: 5 }]}
-                        value={tourDestination}
-                        onChangeText={(newText) => setTourDestination(newText)}
+                        value={detailTourDestination}
+                        onChangeText={(newText) => setDetailTourDestination(newText)}
                     />
                 </View>
                 <View style={{ width: 320, marginTop: 20 }}>
@@ -547,8 +549,8 @@ function TourScreen({ route, navigation }) {
                     <TextInput
                         placeholder="Nhập quận huyện vào đây"
                         style={[stylesTour.input, { marginTop: 5 }]}
-                        value={pickUpPoint}
-                        onChangeText={(newText) => setPickUpPoint(newText)}
+                        value={detailPickUpPoint}
+                        onChangeText={(newText) => setDetailPickUpPoint(newText)}
                     />
                 </View>
                 <View style={{ width: 320, marginTop: 20 }}>
