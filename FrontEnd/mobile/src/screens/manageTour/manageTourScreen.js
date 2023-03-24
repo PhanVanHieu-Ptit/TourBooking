@@ -1,5 +1,5 @@
-import React,{ useContext,useEffect,useState } from 'react';
-import { Image,SafeAreaView,ScrollView,Text,View,ActivityIndicator,RefreshControl } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { Image, SafeAreaView, ScrollView, Text, View, ActivityIndicator, RefreshControl } from 'react-native';
 import Find from '../../components/home/find';
 import stylesManage from '../manage/styles';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -13,7 +13,7 @@ import API from '../../res/string';
 import * as request from '../../services/untils';
 
 function ManageTourScreen({ navigation }) {
-    const { user,listTour,setListTour }=useContext(AppContext);
+    const { user, listTour, setListTour } = useContext(AppContext);
 
     // const [masterDataSource, setMasterDataSource] = useState(listTour);
 
@@ -25,8 +25,7 @@ function ManageTourScreen({ navigation }) {
     const [paging, setPaging] = useState(1);
     let isEmpty = false;
 
-
-    const loader=() => {
+    const loader = () => {
         if (isLoading) {
             return <ActivityIndicator size={'small'} color={COLOR.primary} />;
         }
@@ -59,28 +58,26 @@ function ManageTourScreen({ navigation }) {
         getListTour();
     }, [paging]);
 
-
     async function getListTour() {
         try {
-
             const response = await request.get(API.listTour + '?paging=' + paging, {});
             if (response.status == true) {
                 isEmpty = false;
 
                 setLoading(false);
                 setListTour((preState) => {
-                    return [...preState,...response.data];
+                    return [...preState, ...response.data];
                 });
                 // setMasterDataSource(response.data);
                 setFilteredDataSource((preState) => {
-                    return [...preState,...response.data];
+                    return [...preState, ...response.data];
                 });
                 setLoadingFooter(false);
             } else {
                 setLoading(false);
-                isEmpty=true;
-                Alert.alert('Thông báo!',response.message+'',[
-                    { text: 'OK',onPress: () => console.log('OK Pressed') },
+                isEmpty = true;
+                Alert.alert('Thông báo!', response.message + '', [
+                    { text: 'OK', onPress: () => console.log('OK Pressed') },
                 ]);
             }
         } catch (error) {
@@ -102,7 +99,6 @@ function ManageTourScreen({ navigation }) {
     }
 
     return (
-
         <ScrollView
             refreshControl={
                 <RefreshControl
@@ -128,14 +124,12 @@ function ManageTourScreen({ navigation }) {
                         flexDirection: 'row',
                         justifyContent: 'flex-start',
                         marginLeft: -20,
-
                     }}
                 >
                     <TouchableOpacity
                         onPress={() => {
                             navigation.goBack();
                         }}
-
                     >
                         <View style={stylesButton.btn_back}>
                             <Icon name="chevron-back" size={25} color="#021A5A" />
@@ -168,12 +162,13 @@ function ManageTourScreen({ navigation }) {
                     </View>
                 ) : (
                     // <View></View>
-                    <ScrollView onScroll={handleScroll} style={{marginTop: 10, height: 600}}>
+                    <ScrollView onScroll={handleScroll} style={{ marginTop: 10, height: 600 }}>
                         {filteredDataSource.map((item) => (
                             <CardCommingTour tour={item} key={item.idTour} navigation={navigation} screen="EditTour" />
                         ))}
                     </ScrollView>
                 )}
+
                 {isLoadingFooter ? <ActivityIndicator size="small" color={COLOR.primary} /> : ''}
             </SafeAreaView>
         </ScrollView>

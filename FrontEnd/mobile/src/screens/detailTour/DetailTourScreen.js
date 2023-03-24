@@ -15,6 +15,7 @@ import { AppContext } from '../../../App';
 
 function DetailTourScreen({ route, navigation }) {
     const { user } = useContext(AppContext);
+
     const tour = route.params.tour;
     const [modalVisible, setModalVisible] = useState(false);
     const [role, setRole] = useState(user?.role);
@@ -146,6 +147,14 @@ function DetailTourScreen({ route, navigation }) {
                         ) : (
                             ''
                         )}
+                        <Text style={[stylesDetailTour.title, { marginTop: 30 }]}>Quy định phí hủy</Text>
+                        <Text style={[stylesDetailTour.title, { fontSize: 15, marginTop: 10 }]}>
+                            Hủy sau khi đã xác nhận: {tour.normalPenaltyFee}%
+                        </Text>
+
+                        <Text style={[stylesDetailTour.title, { fontSize: 15, marginTop: 10 }]}>
+                            Hủy sau {tour.minDate} ngày trước khởi hành: {tour.strictPenaltyFee}%
+                        </Text>
                     </View>
 
                     <View
