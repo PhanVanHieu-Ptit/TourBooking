@@ -68,6 +68,7 @@ function Login({ navigation }) {
                             email: response.data.data[0].email,
                             address: response.data.data[0].address,
                             accessToken: response.headers.authorization,
+                            refreshToken: response.data.data[0].refreshToken,
                         };
                         console.log('user: ', user);
                         AsyncStorage.setItem('user', JSON.stringify(user))

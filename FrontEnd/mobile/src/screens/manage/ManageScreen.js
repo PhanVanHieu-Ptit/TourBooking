@@ -54,6 +54,7 @@ function ManageScreen({ navigation }) {
     }
     useEffect(() => {
         setRoleUser();
+        setIsLogin(user != '' && user != undefined && user != null);
     }, []);
 
     return (
