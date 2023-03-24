@@ -24,14 +24,16 @@ import CheckBox from 'react-native-check-box';
 import * as request from '../../services/untils';
 import API from '../../res/string';
 import SelectDropdown from 'react-native-select-dropdown';
-import {NavigationActions} from 'reac'
+import { NavigationActions } from 'reac';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { AppContext } from '../../../App';
 import { uploadImage, deleteImage } from '../../services/untils/uploadImage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 let nextId = 0;
 function TourScreen({ route, navigation }) {
-    const { user, setListTour } = useContext(AppContext);
+    const { user, setUser, setIsLogin, setListTour, setHistoryOrder, setListOrder, setListStaff } =
+        useContext(AppContext);
     const type = route.params?.type;
 
     const tour = route.params?.tour;
@@ -40,7 +42,9 @@ function TourScreen({ route, navigation }) {
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [name, setName] = useState(tour != undefined ? tour.name : '');
     const [detailPickUpPoint, setDetailPickUpPoint] = useState(tour != undefined ? tour.detailPickUpPoint : '');
-    const [detailTourDestination, setDetailTourDestination] = useState(tour != undefined ? tour.detailTourDestination : '');
+    const [detailTourDestination, setDetailTourDestination] = useState(
+        tour != undefined ? tour.detailTourDestination : '',
+    );
     const [tourIntro, setTourIntro] = useState(tour != undefined ? tour.tourIntro : '');
     const [tourDetail, setTourDetail] = useState(tour != undefined ? tour.tourDetail : '');
     const [pickUpPoint, setPickUpPoint] = useState(tour != undefined ? tour.pickUpPoint : '');
@@ -54,6 +58,69 @@ function TourScreen({ route, navigation }) {
     const [price, setPrice] = useState(tour != undefined ? tour.price + '' : '');
     const [tourDestination, setTourDestination] = useState(tour != undefined ? tour.tourDestination : '');
     const [featured, setFeatured] = useState(tour != undefined ? (tour.featured == '1' ? true : false) : false);
+
+    function clearOldData() {
+        setHistoryOrder([]);
+        setListTour([]);
+        setListOrder([]);
+        setListStaff([]);
+    }
+
+    async function getRefreshToken() {
+        try {
+            const res2 = await request.post(API.refeshToken, { token: user.refreshToken });
+            console.log('res2: ', res2);
+            if (res2.data.status == true) {
+                const newUser = {
+                    id: user.id,
+                    name: user.name,
+                    imageUrl: user.imageUrl,
+                    role: user.role,
+                    phoneNumber: user.phoneNumber,
+                    email: user.email,
+                    address: user.address,
+                    accessToken: res2.data.data[0].token,
+                    refreshToken: user.refreshToken,
+                };
+                //update user in side client
+                setUser(newUser);
+
+                //delete old user
+                AsyncStorage.removeItem('user')
+                    .then(() => {
+                        console.log('user removed from AsyncStorage');
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+                console.log('user: ', newUser);
+                AsyncStorage.setItem('user', JSON.stringify(newUser))
+                    .then(() => console.log('Object stored successfully'))
+                    .catch((error) => console.log('Error storing object: ', error));
+                return true;
+            } else {
+                // Alert.alert('Thông báo!', res2.message + '', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
+                console.log('res2.message: ', res2.data.message);
+                if (res2.data.message == 'Refesh token không hợp lệ!') {
+                    setUser(null);
+                    setIsLogin(false);
+                    clearOldData();
+                    //delete old user
+                    AsyncStorage.removeItem('user')
+                        .then(() => {
+                            console.log('user removed from AsyncStorage');
+                        })
+                        .catch((error) => {
+                            console.error(error);
+                        });
+                    navigation.replace('Login');
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+        return false;
+    }
 
     // const checkData = () => {
     //     if (name.trim().length == 0) {
@@ -284,7 +351,9 @@ function TourScreen({ route, navigation }) {
                 if (response.data.status == true) {
                     Alert.alert('Thông báo!', 'Thêm thành công!', [{ text: 'OK', onPress: () => {} }]);
                 } else {
-                    Alert.alert('Thêm thất bại!', response.data.message, [{ text: 'OK', onPress: () => {} }]);
+                    if (response.data.message == 'Token đã hết hạn') {
+                        getRefreshToken();
+                    } else Alert.alert('Thêm thất bại!', response.data.message, [{ text: 'OK', onPress: () => {} }]);
                 }
             })
             .catch((err) => {
@@ -328,7 +397,10 @@ function TourScreen({ route, navigation }) {
                 if (response.data.status == true) {
                     Alert.alert('Thông báo!', 'Cập nhật thành công!', [{ text: 'OK', onPress: () => {} }]);
                 } else {
-                    Alert.alert('Cập nhật thất bại!', response.data.message, [{ text: 'OK', onPress: () => {} }]);
+                    if (response.data.message == 'Token đã hết hạn') {
+                        getRefreshToken();
+                    } else
+                        Alert.alert('Cập nhật thất bại!', response.data.message, [{ text: 'OK', onPress: () => {} }]);
                 }
                 updateListTour();
             })
@@ -370,13 +442,15 @@ function TourScreen({ route, navigation }) {
             )
             .then((response) => {
                 console.log(response.data);
-                navigation.goBack()
+                navigation.goBack();
                 updateListTour();
 
                 if (response.data.status == true) {
                     Alert.alert('Thông báo!', 'Xóa thành công!', [{ text: 'OK', onPress: () => {} }]);
                 } else {
-                    Alert.alert('Xóa thất bại!', response.data.message, [{ text: 'OK', onPress: () => {} }]);
+                    if (response.data.message == 'Token đã hết hạn') {
+                        getRefreshToken();
+                    } else Alert.alert('Xóa thất bại!', response.data.message, [{ text: 'OK', onPress: () => {} }]);
                 }
             })
             .catch((err) => {
@@ -395,9 +469,12 @@ function TourScreen({ route, navigation }) {
                 if (response.status == true) {
                     setListTour(response.data);
                 } else {
-                    Alert.alert('Thông báo!', response.message + '', [
-                        { text: 'OK', onPress: () => console.log('OK Pressed') },
-                    ]);
+                    if (response.message == 'Token đã hết hạn') {
+                        getRefreshToken();
+                    } else
+                        Alert.alert('Thông báo!', response.message + '', [
+                            { text: 'OK', onPress: () => console.log('OK Pressed') },
+                        ]);
                 }
             })
             .catch((err) => {

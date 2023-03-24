@@ -24,7 +24,7 @@ import COLOR from '../../res/color';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function ManageOrderFollowStatus({ navigation }) {
-    const { user, setUser, setHistoryOrder, setListTour, listOrder, setListOrder, setListStaff } =
+    const { user, setUser, isLogin, setIsLogin, setHistoryOrder, setListTour, listOrder, setListOrder, setListStaff } =
         useContext(AppContext);
     const [selected, setSelected] = useState('Tất cả');
     const [listStatus, setListStatus] = useState(['Tất cả']);
@@ -34,6 +34,7 @@ function ManageOrderFollowStatus({ navigation }) {
     const [numberOrderTour, setNumberOrderTour] = useState(0);
 
     const [filteredDataSource, setFilteredDataSource] = useState(listOrder);
+
     useEffect(() => {
         getStatus();
         getNumberOrderTour();
@@ -41,7 +42,7 @@ function ManageOrderFollowStatus({ navigation }) {
     }, []);
 
     useEffect(() => {
-        if (!(user == '' || user == undefined || user == null)) {
+        if (isLogin) {
             filterData(true, 1);
             getNumberOrderTour();
         }
@@ -97,6 +98,7 @@ function ManageOrderFollowStatus({ navigation }) {
                 console.log('res2.message: ', res2.data.message);
                 if (res2.data.message == 'Refesh token không hợp lệ!') {
                     setUser(null);
+                    setIsLogin(false);
                     clearOldData();
                     //delete old user
                     AsyncStorage.removeItem('user')

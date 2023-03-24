@@ -23,7 +23,7 @@ import COLOR from '../../res/color';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function ManageStaffScreen({ navigation }) {
-    const { user, setUser, setHistoryOrder, setListTour, setListOrder, listStaff, setListStaff } =
+    const { user, setUser, setIsLogin, setHistoryOrder, setListTour, setListOrder, listStaff, setListStaff } =
         useContext(AppContext);
     const [isLoading, setIsLoading] = useState(true);
     const [loadingFooter, setLoadingFooter] = useState(false);
@@ -79,6 +79,7 @@ function ManageStaffScreen({ navigation }) {
                 console.log('res2.message: ', res2.data.message);
                 if (res2.data.message == 'Refesh token không hợp lệ!') {
                     setUser(null);
+                    setIsLogin(false);
                     clearOldData();
                     //delete old user
                     AsyncStorage.removeItem('user')

@@ -13,7 +13,8 @@ import API from '../../res/string';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function EditInforStaffScreen({ route, navigation }) {
-    const { user, setUser, setHistoryOrder, setListTour, setListOrder, setListStaff } = useContext(AppContext);
+    const { user, setUser, setIsLogin, setHistoryOrder, setListTour, setListOrder, setListStaff } =
+        useContext(AppContext);
     const staff = route.params?.staff;
     const type = route.params?.type == 'add';
     const [title, setTitle] = useState(type ? 'Thêm nhân viên' : 'Cập nhật thông tin nhân viên');
@@ -68,6 +69,7 @@ function EditInforStaffScreen({ route, navigation }) {
                 console.log('res2.message: ', res2.data.message);
                 if (res2.data.message == 'Refesh token không hợp lệ!') {
                     setUser(null);
+                    setIsLogin(false);
                     clearOldData();
                     //delete old user
                     AsyncStorage.removeItem('user')

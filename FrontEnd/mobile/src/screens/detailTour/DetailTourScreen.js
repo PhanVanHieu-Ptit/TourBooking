@@ -15,12 +15,13 @@ import { AppContext } from '../../../App';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function DetailTourScreen({ route, navigation }) {
-    const { user, setUser, setHistoryOrder, setToursOutStanding, setToursComming } = useContext(AppContext);
+    const { user, setUser, isLogin, setIsLogin, setHistoryOrder, setToursOutStanding, setToursComming } =
+        useContext(AppContext);
 
     const tour = route.params.tour;
     const [modalVisible, setModalVisible] = useState(false);
     const [role, setRole] = useState(user?.role);
-    const [isLogin, setIsLogin] = useState(!(user == null || user == '' || user == undefined));
+    // const [isLogin, setIsLogin] = useState(!(user == null || user == '' || user == undefined));
     const listImage = tour.imageUrl;
     const [selectImage, setSelectImage] = useState(listImage[0]);
 

@@ -28,10 +28,11 @@ import { uploadImage, deleteImage } from '../../services/untils/uploadImage';
 import COLOR from '../../res/color';
 
 function ManageInforPersonScreen({ route, navigation }) {
-    const { user, setUser, setHistoryOrder, setListTour, setListOrder, setListStaff } = useContext(AppContext);
+    const { user, setUser, isLogin, setIsLogin, setHistoryOrder, setListTour, setListOrder, setListStaff } =
+        useContext(AppContext);
     const type = route?.params?.type;
     const [listAddress, setListAddress] = useState([]);
-    const [isLogin, setIsLogin] = useState(user != null && user != undefined && user != '');
+    // const [isLogin, setIsLogin] = useState(user != null && user != undefined && user != '');
     const [name, setName] = useState(isLogin ? user?.name : '');
     const [email, setEmail] = useState(isLogin ? user?.email : type == 'register' ? '' : '1');
     const [address, setAddress] = useState(isLogin ? user?.address : '');
@@ -86,6 +87,7 @@ function ManageInforPersonScreen({ route, navigation }) {
                 console.log('res2.message: ', res2.data.message);
                 if (res2.data.message == 'Refesh token không hợp lệ!') {
                     setUser(null);
+                    setIsLogin(false);
                     clearOldData();
                     //delete old user
                     AsyncStorage.removeItem('user')
