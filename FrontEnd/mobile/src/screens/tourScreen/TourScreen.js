@@ -69,7 +69,7 @@ function TourScreen({ route, navigation }) {
     async function getRefreshToken() {
         try {
             const res2 = await request.post(API.refeshToken, { token: user.refreshToken });
-            console.log('res2: ', res2);
+
             if (res2.data.status == true) {
                 const newUser = {
                     id: user.id,

@@ -983,10 +983,23 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_status_tour`( IN id1 int,
-                                     IN id2 int)
-update tour set idStatus =id1 where idTour=id2 
-and id2 in (select status.idStatus from status where type = 'tour') ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_status_tour`( IN p_idTour int,
+                                     IN p_idStatus int)
+begin
+	 if p_idStatus=2 then
+     update tour set idStatus =p_idStatus, dateCancel=CURDATE() where idTour=p_idTour 
+        and idStatus= 1
+		and p_idStatus in (select status.idStatus from status where type = 'tour');
+     elseif  p_idStatus=3 then
+     update tour set idStatus =p_idStatus where idTour=p_idTour 
+        and idStatus= 1
+		and p_idStatus in (select status.idStatus from status where type = 'tour');
+	 elseif  p_idStatus=4 then
+     update tour set idStatus =p_idStatus where idTour=p_idTour 
+        and idStatus= 3
+		and p_idStatus in (select status.idStatus from status where type = 'tour');
+     end if;
+end ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -1125,4 +1138,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-24 22:36:43
+-- Dump completed on 2023-03-25 11:25:56
