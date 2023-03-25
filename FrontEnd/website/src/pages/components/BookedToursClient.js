@@ -1,13 +1,9 @@
 import css from './style.module.css';
-import calendarSvg from '../../assets/svg/calendar.svg';
-import moneySvg from '../../assets/svg/money.svg';
-import hourglassSvg from '../../assets/svg/hourglass.svg';
-import tourGuideSvg from '../../assets/svg/tour-guide.svg';
-import destinationSvg from '../../assets/svg/destination.svg';
-import groupPersonSvg from '../../assets/svg/group-person.svg';
 import React, {useState, useEffect} from 'react';
 import {getListOrderTour, getOwnInfor, requestCancelTour} from '../../utils/services';
 import formatMoney from '../../utils/formatMoney';
+import svg from './../../assets/svg/index';
+import formatDate from './../../utils/formatDate';
 
 function BookedToursClient() {
     const [tours, setTours] = useState();
@@ -31,15 +27,15 @@ function BookedToursClient() {
                 tours.map((e, i) => {
                     return (
                         <div className={css.tour} key={i}>
-                            <img src={e.tour.imageUrl[0]} alt='' className={css.bg} />
-                            <div className={css.details}>
+                            <img src={e.tour.imageUrl[0]} alt='img' className={css.bg} />
+                            <div className={css['details-container']}>
                                 <div className={css.heading}>
+                                    <p className={css.name}>{e.tour.name}</p>
                                     <i className={css.id}>
                                         #{e.tour.idTour} - Trạng thái: {e.status.name}
                                     </i>
-                                    <p className={css.name}>{e.tour.name}</p>
                                 </div>
-                                <div className={css.body}>
+                                <div className={css['details-body']}>
                                     {(e.status.idStatus == 9 || e.status.idStatus == 8) && (
                                         <button
                                             className='btn--gold'
@@ -49,48 +45,48 @@ function BookedToursClient() {
                                     )}
                                     <div className={css.wrapper}>
                                         <div className={css.detail}>
-                                            <img src={calendarSvg} alt='' />
+                                            <img src={svg.calendar} alt='img' />
                                             <p className={css.title}>Ngày đặt:</p>
-                                            <p className={css.value}>{e.tour.orderDateTime}</p>
+                                            <p className={css.value}>{formatDate(e.orderDateTime)[1]}</p>
                                         </div>
                                         <div className={css.detail}>
-                                            <img src={calendarSvg} alt='' />
+                                            <img src={svg.calendar} alt='img' />
                                             <p className={css.title}>Ngày khởi hành:</p>
-                                            <p className={css.value}>{e.tour.startDate}</p>
+                                            <p className={css.value}>{formatDate(e.tour.startDate)[1]}</p>
                                         </div>
                                     </div>
                                     <div className={css.wrapper}>
                                         <div className={css.detail}>
-                                            <img src={destinationSvg} alt='' />
+                                            <img src={svg.destination} alt='img' />
                                             <p className={css.title}>Điểm đón:</p>
                                             <p className={css.value}>{e.tour.pickUpPoint}</p>
                                         </div>
                                         <div className={css.detail}>
-                                            <img src={destinationSvg} alt='' />
+                                            <img src={svg.destination} alt='img' />
                                             <p className={css.title}>Điểm đến:</p>
                                             <p className={css.value}>{e.tour.tourDestination}</p>
                                         </div>
                                     </div>
                                     <div className={css.wrapper}>
                                         <div className={css.detail}>
-                                            <img src={hourglassSvg} alt='' />
+                                            <img src={svg.hourglass} alt='img' />
                                             <p className={css.title}>Độ dài:</p>
                                             <p className={css.value}>{e.tour.totalDay} ngày</p>
                                         </div>
                                         <div className={css.detail}>
-                                            <img src={tourGuideSvg} alt='' />
+                                            <img src={svg.tourGuide} alt='img' />
                                             <p className={css.title}>Hướng dẫn viên:</p>
                                             <p className={css.value}>{e.tour.tourGuide ? 'Có' : 'Không'}</p>
                                         </div>
                                     </div>
                                     <div className={css.wrapper}>
                                         <div className={css.detail}>
-                                            <img src={groupPersonSvg} alt='' />
+                                            <img src={svg.groupPerson} alt='img' />
                                             <p className={css.title}>Số chỗ đặt:</p>
-                                            <p className={css.value}>{e.tour.quantity}</p>
+                                            <p className={css.value}>{e.quantity}</p>
                                         </div>
                                         <div className={css.detail}>
-                                            <img src={moneySvg} alt='' />
+                                            <img src={svg.money} alt='img' />
                                             <p className={css.title}>Tổng tiền:</p>
                                             <p className={css.value}>{formatMoney(e.totalMoney)}</p>
                                         </div>
