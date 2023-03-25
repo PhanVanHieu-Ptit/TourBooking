@@ -23,6 +23,7 @@ import COLOR from '../../res/color';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function ManageStaffScreen({ navigation }) {
+
     const { user, setUser, setIsLogin, setHistoryOrder, setListTour, setListOrder, listStaff, setListStaff } =
         useContext(AppContext);
     const [isLoading, setIsLoading] = useState(true);
@@ -30,10 +31,32 @@ function ManageStaffScreen({ navigation }) {
     const [refresh, setFresh] = useState(false);
     let isEmpty = false;
 
+
     useEffect(() => {
+        getNumberStaff();
+    },[]);
+
+    useEffect(() => {
+        // if (paging==1) setIsLoading(true);
         loadStaffOutStanding();
         console.log('Load');
-    }, []);
+    },[paging]);
+
+    const loadMore=() => {
+        if (Math.ceil(Number(numberStaff)/5-1)>=paging) {
+            setLoadingFooter(true);
+            setPaging((preState) => preState+1);
+        }
+    };
+
+    const handleScroll=(event) => {
+        const { layoutMeasurement,contentOffset,contentSize }=event.nativeEvent;
+        const paddingToBottom=20;
+        if (layoutMeasurement.height+contentOffset.y>=contentSize.height-paddingToBottom) {
+            loadMore();
+        }
+    };
+
 
     function clearOldData() {
         setHistoryOrder([]);
@@ -98,6 +121,7 @@ function ManageStaffScreen({ navigation }) {
         return false;
     }
 
+
     async function loadStaffOutStanding() {
         try {
             const res = await request.get(API.listStaff, {
@@ -106,7 +130,9 @@ function ManageStaffScreen({ navigation }) {
             console.log('API');
             if (res.status === true) {
                 setIsLoading(false);
-                setListStaff(res.data);
+                setListStaff((preState) => {
+                    return [...preState,...res.data];
+                });
                 setLoadingFooter(false);
             } else {
                 isEmpty = true;
@@ -121,26 +147,19 @@ function ManageStaffScreen({ navigation }) {
             console.log(error);
         }
     }
-    // useEffect(() => {
-    //     request
-    //         .get(API.listStaff, {
-    //             headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
-    //         })
-    //         .then((response) => {
-    //             console.log(response.data);
 
-    //             if (response.status == true) {
-    //                 setListStaff(response.data);
-    //             } else {
-    //                 Alert.alert('Thông báo!', response.message + '', [
-    //                     { text: 'OK', onPress: () => console.log('OK Pressed') },
-    //                 ]);
-    //             }
-    //         })
-    //         .catch((err) => {
-    //             console.log(err);
-    //         });
-    // }, []);
+    async function getNumberStaff() {
+        try {
+            const res=await request.get(API.numberStaff);
+            if (res.status===true) {
+                setNumberStaff(res.data[0].number);
+            } else {
+                Alert.alert('Thông báo!',res.message+'',[{ text: 'OK',onPress: () => console.log('OK Pressed') }]);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
         <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
             <View
@@ -167,6 +186,8 @@ function ManageStaffScreen({ navigation }) {
             </View>
             <Find />
             <ScrollView
+                style={{ height: 200 }}
+                onScroll={handleScroll}
                 refreshControl={
                     <RefreshControl
                         enabled={true}
@@ -190,13 +211,19 @@ function ManageStaffScreen({ navigation }) {
                         />
                         <Text style={{ text: 5, textAlign: 'center', marginTop: 0 }}>Chưa có dữ liệu</Text>
                     </View>
-                ) : isLoading ? (
-                    <ActivityIndicator size="small" color={COLOR.primary} />
-                ) : (
-                    listStaff.map((item) => <CardStaff staff={item} key={item.idStaff} navigation={navigation} />)
+                ):(
+                    isLoading? (
+                        <ActivityIndicator size="small" color={COLOR.primary} />
+                    ):(
+                        <View>
+                            {listStaff.map((item) => (
+                                <CardStaff staff={item} key={item.idStaff} navigation={navigation} />
+                            ))
+                            }
+                            {loadingFooter? <ActivityIndicator size="small" color={COLOR.primary} />:''}
+                        </View>
+                    )
                 )}
-
-                {loadingFooter ? <ActivityIndicator size="small" color={COLOR.primary} /> : ''}
             </ScrollView>
         </SafeAreaView>
     );

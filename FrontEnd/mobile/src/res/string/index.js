@@ -1,4 +1,4 @@
-const API = {
+const API={
     login: '/account/sign-in',
     register: '/account/sign-up',
     forgotpassword: '/account/forgot-password',
@@ -18,6 +18,7 @@ const API = {
     listStaff: '/staff/list',
     addStaff: '/staff/add',
     numberTour: '/site/number-tour',
+    numberStaff: '/site/number-staff',
     numberOrderOfCustomer: '/order-tours/number-order',
     getInfor: '/site/get-own-infor',
 };
