@@ -13,7 +13,10 @@ export async function getListAddress() {
     return axios.get('/site/list-address');
 }
 export async function getListTour(searchKey = '', paging = 1) {
-    return axios.get(`/tour/list?key=${searchKey}&paging=${paging}`);
+    return axios.get(`/tour/list?${searchKey && 'key=' + searchKey}&paging=${paging}`);
+}
+export async function getListOrderOfTour(idTour) {
+    return axios.get(`/order-tours/list?idTour=${idTour}`);
 }
 export async function getTour(id) {
     return axios.get(`/tour/${id}/detail`);
@@ -31,7 +34,7 @@ export async function changePassword(data) {
     return axios.patch('/account/change-password', data);
 }
 export async function updateCustomerInfo(data) {
-    return axios.post('/customer/update', data);
+    return axios.patch('/customer/update', data);
 }
 export async function updateStaffInfo(data, id) {
     return axios.put(`/staff/${id}/update`, data);
@@ -51,6 +54,13 @@ export async function updateTour(data, idTour) {
 export async function requestCancelTour(idTourOrder) {
     return axios.patch(`/order-tours/${idTourOrder}/customer-need-cancel`);
 }
+export async function confirmCancelTour(idTourOrder) {
+    return axios.patch(`/order-tours/${idTourOrder}/cancel`);
+}
+export async function confirmOrderTour(idTourOrder) {
+    return axios.patch(`/order-tours/${idTourOrder}/confirm`);
+}
+
 export async function addTour(data) {
     return axios.post('/tour/add', data);
 }

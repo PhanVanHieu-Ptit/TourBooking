@@ -20,6 +20,7 @@ nav a {
     margin: 8px 12px;
     transition: .2s;
     font-weight: 500;
+    color: var(--white)
 }
 
 nav a:hover {

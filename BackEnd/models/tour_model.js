@@ -24,9 +24,17 @@ const Tour = function (tour) {
   this.featured = tour.featured;
 };
 
-Tour.getAll = function (paging, result) {
-  db.query("call managetour.sp_get_all_tour(?); ", calculateStart(paging))
+Tour.getAll = function (paging, status, result) {
+  db.query(
+    `call managetour.sp_get_all_tour('${calculateStart(paging)}','${status}'); `
+  )
     .then(([rows, fields]) => {
+      console.log(
+        `call managetour.sp_get_all_tour('${calculateStart(
+          paging
+        )}','${status}'); `
+      );
+      console.log("rows 1298: ", rows);
       result(rows[0]);
     })
     .catch((err) => {
@@ -135,11 +143,11 @@ Tour.getNumberTourFeatured = function () {
     });
 };
 
-Tour.getNumberTour = function () {
+Tour.getNumberTour = function (status) {
   return db
-    .query("SELECT * FROM managetour.v_tour_number;")
+    .query(`call managetour.sp_number_tour('${status}');`)
     .then(([rows, fields]) => {
-      return rows;
+      return rows[0];
     })
     .catch((err) => {
       console.log(err);

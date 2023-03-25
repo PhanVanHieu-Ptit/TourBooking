@@ -6,6 +6,7 @@ import tourGuideSvg from '../../assets/svg/tour-guide.svg';
 import moneySvg from '../../assets/svg/money.svg';
 import css from './style.module.css';
 import formatMoney from '../../utils/formatMoney';
+import formatDate from '../../utils/formatDate';
 function MainDetail({memoizedOptions}) {
     const data = memoizedOptions;
     return (
@@ -14,7 +15,7 @@ function MainDetail({memoizedOptions}) {
                 <p className={css['main-detail-heading']}>Ngày khởi hành</p>
                 <div className={css['main-detail-wrapper']}>
                     <img className={css['main-detail-icon']} src={calendarSvg} />
-                    <div className={css['main-detail-value']}>{data.startDate.split(' ')[0]}</div>
+                    <div className={css['main-detail-value']}>{formatDate(data.startDate)[1]}</div>
                 </div>
             </div>
             <div className={css['main-detail']}>
@@ -28,7 +29,7 @@ function MainDetail({memoizedOptions}) {
                 <p className={css['main-detail-heading']}>Số chỗ còn lại</p>
                 <div className={css['main-detail-wrapper']}>
                     <img className={css['main-detail-icon']} src={groupPersonSvg} />
-                    <div className={css['main-detail-value']}>{data.maxQuantity} người</div>
+                    <div className={css['main-detail-value']}>{data.slotsLeft} người</div>
                 </div>
             </div>
             <div className={css['main-detail']}>

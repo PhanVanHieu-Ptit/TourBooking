@@ -16,9 +16,21 @@ const OrderTour = function (order) {
 };
 
 OrderTour.getAll = function (paging, result) {
-  console.log("calculateStart(paging): ", calculateStart(paging));
-  console.log("paging: ", paging);
   db.query("call managetour.sp_get_all_order(?);", calculateStart(paging))
+    .then(([rows, fields]) => {
+      result(rows[0]);
+    })
+    .catch((err) => {
+      console.log;
+      result(err);
+    });
+};
+
+OrderTour.getByIdTour = function (idTour, paging, result) {
+  db.query("call managetour.sp_get_order_by_id_tour(?, ?);", [
+    idTour,
+    calculateStart(paging),
+  ])
     .then(([rows, fields]) => {
       result(rows[0]);
     })
@@ -209,7 +221,7 @@ OrderTour.update = async function (data, result) {
   ])
     .then(([rows, fields]) => {
       if (rows.affectedRows == 1) result(data, true, "Cập nhật thành công!");
-      else result([{}], true, "Cập nhật thất bại!");
+      else result([{}], false, "Cập nhật thất bại!");
     })
     .catch((err) => {
       console.log(err);

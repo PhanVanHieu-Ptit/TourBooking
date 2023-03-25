@@ -12,16 +12,18 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { AppContext } from '../../../App';
 import * as request from '../../services/untils';
 import API from '../../res/string';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function ChangePassword({ route, navigation }) {
-    const { user } = useContext(AppContext);
+    const { user, setUser, isLogin, setIsLogin, setHistoryOrder, setListTour, setListOrder, setListStaff } =
+        useContext(AppContext);
 
     const [imageUrl, setImageUrl] = useState(
-        user != undefined
-            ? user.imageUrl
+        isLogin
+            ? user?.imageUrl
             : 'https://img.freepik.com/free-photo/smiley-little-boy-isolated-pink_23-2148984798.jpg',
     );
-    const [name, setName] = useState(user != undefined ? user.name : '');
+    const [name, setName] = useState(isLogin ? user?.name : '');
     const [seeOldPassWord, setSeeOldPassword] = useState(true);
     const [seeNewPassWord, setSeeNewPassword] = useState(true);
     const [seeConfirmPassWord, setSeeConfirmPassword] = useState(true);
@@ -29,6 +31,69 @@ function ChangePassword({ route, navigation }) {
     const [oldPass, setOldPass] = useState('');
     const [newPass, setNewPass] = useState('');
     const [confirmNewPass, setConfirmNewPass] = useState('');
+
+    function clearOldData() {
+        setHistoryOrder([]);
+        setListTour([]);
+        setListOrder([]);
+        setListStaff([]);
+    }
+
+    async function getRefreshToken() {
+        try {
+            const res2 = await request.post(API.refeshToken, { token: user.refreshToken });
+            console.log('res2: ', res2);
+            if (res2.data.status == true) {
+                const newUser = {
+                    id: user.id,
+                    name: user.name,
+                    imageUrl: user.imageUrl,
+                    role: user?.role,
+                    phoneNumber: user.phoneNumber,
+                    email: user.email,
+                    address: user.address,
+                    accessToken: res2.data.data[0].token,
+                    refreshToken: user.refreshToken,
+                };
+                //update user in side client
+                setUser(newUser);
+
+                //delete old user
+                AsyncStorage.removeItem('user')
+                    .then(() => {
+                        console.log('user removed from AsyncStorage');
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+                console.log('user: ', newUser);
+                AsyncStorage.setItem('user', JSON.stringify(newUser))
+                    .then(() => console.log('Object stored successfully'))
+                    .catch((error) => console.log('Error storing object: ', error));
+                return true;
+            } else {
+                // Alert.alert('Thông báo!', res2.message + '', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
+                console.log('res2.message: ', res2.data.message);
+                if (res2.data.message == 'Refesh token không hợp lệ!') {
+                    setUser(null);
+                    setIsLogin(false);
+                    clearOldData();
+                    //delete old user
+                    AsyncStorage.removeItem('user')
+                        .then(() => {
+                            console.log('user removed from AsyncStorage');
+                        })
+                        .catch((error) => {
+                            console.error(error);
+                        });
+                    navigation.replace('Login');
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+        return false;
+    }
 
     function checkValue() {
         if (oldPass.trim().length == 0) {
@@ -75,9 +140,12 @@ function ChangePassword({ route, navigation }) {
                             { text: 'OK', onPress: () => console.log('OK Pressed') },
                         ]);
                     } else {
-                        Alert.alert('Cập nhật thất bại!', response.data.message + '', [
-                            { text: 'OK', onPress: () => console.log('OK Pressed') },
-                        ]);
+                        if (response.data.message == 'Token đã hết hạn') {
+                            getRefreshToken();
+                        } else
+                            Alert.alert('Cập nhật thất bại!', response.data.message + '', [
+                                { text: 'OK', onPress: () => console.log('OK Pressed') },
+                            ]);
                     }
                 })
                 .catch((err) => {
@@ -86,11 +154,11 @@ function ChangePassword({ route, navigation }) {
         }
     }
 
-    const [role, setRole] = useState(user.role);
+    const [role, setRole] = useState(user?.role);
     function setRoleUser() {
-        if (user.role == 'customer') {
+        if (user?.role == 'customer') {
             setRole('Khách hàng');
-        } else if (user.role == 'staff') {
+        } else if (user?.role == 'staff') {
             setRole('Nhân viên');
         }
     }

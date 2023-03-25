@@ -13,8 +13,15 @@ import { AppContext } from '../../../../App';
 // import { clearOldData } from '../../../res/untils';
 
 function Login({ navigation }) {
-    const { setHistoryOrder, setToursOutStanding, setToursComming, setListTour, setListOrder, setListStaff } =
-        useContext(AppContext);
+    const {
+        setHistoryOrder,
+        setIsLogin,
+        setToursOutStanding,
+        setToursComming,
+        setListTour,
+        setListOrder,
+        setListStaff,
+    } = useContext(AppContext);
     const [seePassword, setSeePassword] = useState(true);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -68,8 +75,10 @@ function Login({ navigation }) {
                             email: response.data.data[0].email,
                             address: response.data.data[0].address,
                             accessToken: response.headers.authorization,
+                            refreshToken: response.data.data[0].refreshToken,
                         };
                         console.log('user: ', user);
+                        setIsLogin(true);
                         AsyncStorage.setItem('user', JSON.stringify(user))
                             .then(() => console.log('Object stored successfully'))
                             .catch((error) => console.log('Error storing object: ', error));

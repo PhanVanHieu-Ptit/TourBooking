@@ -1,22 +1,23 @@
 import { NavigationContainer } from '@react-navigation/native';
 import HomeNavigation from './src/navigation/home';
-import React,{ createContext,useState,useEffect } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 import AuthByFinger from './src/screens/auth/Login/authByFinger';
-import Splash from './src/screens/home/splash'
+import Splash from './src/screens/home/splash';
 
-const AppContext=createContext();
+const AppContext = createContext();
 
-const AppContextProvider=({ children }) => {
-    const [user,setUser]=useState('');
-    const [toursOutStanding,setToursOutStanding]=useState([]);
-    const [toursComing,setToursComming]=useState([]);
-    const [historyOrder,setHistoryOrder]=useState([]);
-    const [listTour,setListTour]=useState([]);
-    const [listOrder,setListOrder]=useState([]);
-    const [listStaff,setListStaff]=useState([]);
-    const [listAllTour,setListAllTour]=useState([]);
+const AppContextProvider = ({ children }) => {
+    const [user, setUser] = useState('');
+    const [toursOutStanding, setToursOutStanding] = useState([]);
+    const [toursComing, setToursComming] = useState([]);
+    const [historyOrder, setHistoryOrder] = useState([]);
+    const [listTour, setListTour] = useState([]);
+    const [listOrder, setListOrder] = useState([]);
+    const [listStaff, setListStaff] = useState([]);
+    const [listAllTour, setListAllTour] = useState([]);
+    const [isLogin, setIsLogin] = useState(false);
 
-    const contextValues={
+    const contextValues = {
         user,
         setUser,
         toursOutStanding,
@@ -31,11 +32,13 @@ const AppContextProvider=({ children }) => {
         setListOrder,
         listStaff,
         setListStaff,
+        isLogin,
+        setIsLogin,
     };
 
     return <AppContext.Provider value={contextValues}>{children}</AppContext.Provider>;
 };
-export { AppContext,AppContextProvider };
+export { AppContext, AppContextProvider };
 
 export default function App() {
     return (

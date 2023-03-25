@@ -1,10 +1,10 @@
 import { StyleSheet } from 'react-native';
 import COLOR from '../../../res/color';
-const stylesCard=StyleSheet.create({
+const stylesCard = StyleSheet.create({
     img: {
         borderRadius: 15,
         width: 140,
-        height: 160,
+        height: 180,
         marginLeft: 10,
         marginTop: 10,
         overflow: 'hidden',
@@ -41,7 +41,7 @@ const stylesCard=StyleSheet.create({
         borderRadius: 20,
         display: 'flex',
         width: 343,
-        height: 112,
+        height: 150,
         backgroundColor: '#010126',
         marginTop: 10,
         marginLeft: 8,
@@ -50,8 +50,8 @@ const stylesCard=StyleSheet.create({
         flexDirection: 'row',
     },
     img2: {
-        width: 100,
-        height: 100,
+        width: 120,
+        height: 120,
         marginLeft: 7,
         borderRadius: 11,
     },

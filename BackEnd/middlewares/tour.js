@@ -53,7 +53,7 @@ async function tourInsert(req, res, next) {
   if (name.lenght < 10) {
     return res.send(message({ name }, false, "Tên tour có 10 kí tự!"));
   }
-  if (!checkStartDate(startDate)) {
+  if (checkStartDate(startDate)) {
     return res.send(
       message({ startDate }, false, "Ngày bắt đầu không hợp lệ!")
     );
@@ -158,7 +158,7 @@ async function tourInsert(req, res, next) {
 
   next();
 }
-function checkStartDate() {
-  return true;
+function checkStartDate(dateStart) {
+  return new Date().getTime() < new Date(dateStart).getTime();
 }
 module.exports = { tourInsert };

@@ -10,10 +10,11 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { AppContext } from '../../../App';
 import * as request from '../../services/untils';
 import API from '../../res/string';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function EditInforStaffScreen({ route, navigation }) {
-    
-    const { user, setListStaff } = useContext(AppContext);
+    const { user, setUser, setIsLogin, setHistoryOrder, setListTour, setListOrder, setListStaff } =
+        useContext(AppContext);
     const staff = route.params?.staff;
     const type = route.params?.type == 'add';
     const [title, setTitle] = useState(type ? 'Thêm nhân viên' : 'Cập nhật thông tin nhân viên');
@@ -23,6 +24,70 @@ function EditInforStaffScreen({ route, navigation }) {
     const [name, setName] = useState(staff != undefined ? staff.name : '');
     const [email, setEmail] = useState(staff != undefined ? staff.email : '');
     // const [status, setstatus] = useState(staff != undefined ? staff.status : '');
+
+    function clearOldData() {
+        setHistoryOrder([]);
+        setListTour([]);
+        setListOrder([]);
+        setListStaff([]);
+    }
+
+    async function getRefreshToken() {
+        try {
+            const res2 = await request.post(API.refeshToken, { token: user.refreshToken });
+            console.log('res2: ', res2);
+            if (res2.data.status == true) {
+                const newUser = {
+                    id: user.id,
+                    name: user.name,
+                    imageUrl: user.imageUrl,
+                    role: user.role,
+                    phoneNumber: user.phoneNumber,
+                    email: user.email,
+                    address: user.address,
+                    accessToken: res2.data.data[0].token,
+                    refreshToken: user.refreshToken,
+                };
+                //update user in side client
+                setUser(newUser);
+
+                //delete old user
+                AsyncStorage.removeItem('user')
+                    .then(() => {
+                        console.log('user removed from AsyncStorage');
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+                console.log('user: ', newUser);
+                AsyncStorage.setItem('user', JSON.stringify(newUser))
+                    .then(() => console.log('Object stored successfully'))
+                    .catch((error) => console.log('Error storing object: ', error));
+                return true;
+            } else {
+                // Alert.alert('Thông báo!', res2.message + '', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
+                console.log('res2.message: ', res2.data.message);
+                if (res2.data.message == 'Refesh token không hợp lệ!') {
+                    setUser(null);
+                    setIsLogin(false);
+                    clearOldData();
+                    //delete old user
+                    AsyncStorage.removeItem('user')
+                        .then(() => {
+                            console.log('user removed from AsyncStorage');
+                        })
+                        .catch((error) => {
+                            console.error(error);
+                        });
+                    navigation.replace('Login');
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+        return false;
+    }
+
     const [responseImage, setResponseImage] = useState('');
     const chooseImage = () => {
         let options = {
@@ -73,7 +138,10 @@ function EditInforStaffScreen({ route, navigation }) {
                         { text: 'OK', onPress: () => navigation.goBack() },
                     ]);
                 } else {
-                    Alert.alert('Cập nhật thất bại!', response.data.message, [{ text: 'OK', onPress: () => {} }]);
+                    if (response.data.message == 'Token đã hết hạn') {
+                        getRefreshToken();
+                    } else
+                        Alert.alert('Cập nhật thất bại!', response.data.message, [{ text: 'OK', onPress: () => {} }]);
                 }
             })
             .catch((err) => {
@@ -103,7 +171,10 @@ function EditInforStaffScreen({ route, navigation }) {
                         { text: 'OK', onPress: () => navigation.goBack() },
                     ]);
                 } else {
-                    Alert.alert('Cập nhật thất bại!', response.data.message, [{ text: 'OK', onPress: () => {} }]);
+                    if (response.data.message == 'Token đã hết hạn') {
+                        getRefreshToken();
+                    } else
+                        Alert.alert('Cập nhật thất bại!', response.data.message, [{ text: 'OK', onPress: () => {} }]);
                 }
             })
             .catch((err) => {
@@ -133,7 +204,10 @@ function EditInforStaffScreen({ route, navigation }) {
                         { text: 'OK', onPress: () => navigation.goBack() },
                     ]);
                 } else {
-                    Alert.alert('Cập nhật thất bại!', response.data.message, [{ text: 'OK', onPress: () => {} }]);
+                    if (res.message == 'Token đã hết hạn') {
+                        getRefreshToken();
+                    } else
+                        Alert.alert('Cập nhật thất bại!', response.data.message, [{ text: 'OK', onPress: () => {} }]);
                 }
             })
             .catch((err) => {
@@ -152,9 +226,12 @@ function EditInforStaffScreen({ route, navigation }) {
                 if (response.status == true) {
                     setListStaff(response.data);
                 } else {
-                    Alert.alert('Thông báo!', response.message + '', [
-                        { text: 'OK', onPress: () => console.log('OK Pressed') },
-                    ]);
+                    if (response.data.message == 'Token đã hết hạn') {
+                        getRefreshToken();
+                    } else
+                        Alert.alert('Thông báo!', response.message + '', [
+                            { text: 'OK', onPress: () => console.log('OK Pressed') },
+                        ]);
                 }
             })
             .catch((err) => {

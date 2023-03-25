@@ -27,13 +27,12 @@ import SelectDropdown from 'react-native-select-dropdown';
 import { uploadImage, deleteImage } from '../../services/untils/uploadImage';
 import COLOR from '../../res/color';
 
-const FormData = require('form-data');
-
 function ManageInforPersonScreen({ route, navigation }) {
-    const { user, setUser } = useContext(AppContext);
+    const { user, setUser, isLogin, setIsLogin, setHistoryOrder, setListTour, setListOrder, setListStaff } =
+        useContext(AppContext);
     const type = route?.params?.type;
     const [listAddress, setListAddress] = useState([]);
-    const [isLogin, setIsLogin] = useState(user != null && user != undefined && user != '');
+    // const [isLogin, setIsLogin] = useState(user != null && user != undefined && user != '');
     const [name, setName] = useState(isLogin ? user?.name : '');
     const [email, setEmail] = useState(isLogin ? user?.email : type == 'register' ? '' : '1');
     const [address, setAddress] = useState(isLogin ? user?.address : '');
@@ -43,6 +42,69 @@ function ManageInforPersonScreen({ route, navigation }) {
     );
 
     // const [selected, setSelected] = useState('');
+
+    function clearOldData() {
+        setHistoryOrder([]);
+        setListTour([]);
+        setListOrder([]);
+        setListStaff([]);
+    }
+
+    async function getRefreshToken() {
+        try {
+            const res2 = await request.post(API.refeshToken, { token: user.refreshToken });
+            console.log('res2: ', res2);
+            if (res2.data.status == true) {
+                const newUser = {
+                    id: user.id,
+                    name: user.name,
+                    imageUrl: user.imageUrl,
+                    role: user.role,
+                    phoneNumber: user.phoneNumber,
+                    email: user.email,
+                    address: user.address,
+                    accessToken: res2.data.data[0].token,
+                    refreshToken: user.refreshToken,
+                };
+                //update user in side client
+                setUser(newUser);
+
+                //delete old user
+                AsyncStorage.removeItem('user')
+                    .then(() => {
+                        console.log('user removed from AsyncStorage');
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+                console.log('user: ', newUser);
+                AsyncStorage.setItem('user', JSON.stringify(newUser))
+                    .then(() => console.log('Object stored successfully'))
+                    .catch((error) => console.log('Error storing object: ', error));
+                return true;
+            } else {
+                // Alert.alert('Thông báo!', res2.message + '', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
+                console.log('res2.message: ', res2.data.message);
+                if (res2.data.message == 'Refesh token không hợp lệ!') {
+                    setUser(null);
+                    setIsLogin(false);
+                    clearOldData();
+                    //delete old user
+                    AsyncStorage.removeItem('user')
+                        .then(() => {
+                            console.log('user removed from AsyncStorage');
+                        })
+                        .catch((error) => {
+                            console.error(error);
+                        });
+                    navigation.replace('Login');
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+        return false;
+    }
 
     const [responseImage, setResponseImage] = useState('');
     const chooseImage = () => {
@@ -160,7 +222,7 @@ function ManageInforPersonScreen({ route, navigation }) {
                     API.updateInfoPersonal,
                     { name, address, phoneNumber: phone, imageUrl: url },
                     { 'Content-Type': 'application/json', authorization: user.accessToken },
-                    'PATCH',
+                    'PUT',
                 )
                 .then((response) => {
                     console.log(response.data);
@@ -196,9 +258,12 @@ function ManageInforPersonScreen({ route, navigation }) {
                             { text: 'OK', onPress: () => console.log('OK Pressed') },
                         ]);
                     } else {
-                        Alert.alert('Cập nhật thất bại!', response.data.message + '', [
-                            { text: 'OK', onPress: () => console.log('OK Pressed') },
-                        ]);
+                        if (response.data.message == 'Token đã hết hạn') {
+                            getRefreshToken();
+                        } else
+                            Alert.alert('Cập nhật thất bại!', response.data.message + '', [
+                                { text: 'OK', onPress: () => console.log('OK Pressed') },
+                            ]);
                     }
                 })
                 .catch((err) => {
@@ -250,9 +315,12 @@ function ManageInforPersonScreen({ route, navigation }) {
                             { text: 'OK', onPress: () => console.log('OK Pressed') },
                         ]);
                     } else {
-                        Alert.alert('Cập nhật thất bại!', response.data.message + '', [
-                            { text: 'OK', onPress: () => console.log('OK Pressed') },
-                        ]);
+                        if (response.data.message == 'Token đã hết hạn') {
+                            getRefreshToken();
+                        } else
+                            Alert.alert('Cập nhật thất bại!', response.data.message + '', [
+                                { text: 'OK', onPress: () => console.log('OK Pressed') },
+                            ]);
                     }
                 })
                 .catch((err) => {

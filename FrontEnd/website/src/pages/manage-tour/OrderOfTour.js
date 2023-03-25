@@ -1,17 +1,32 @@
-import svg from '../../assets/svg/index';
-function OrderOfTour() {
+import {useState} from 'react';
+import {useEffect} from 'react';
+import OrderOfTourRowData from './OrderOfTourRowData';
+import {confirmCancelTour, confirmOrderTour, getListOrderOfTour} from '../../utils/services';
+
+function OrderOfTour({tourData}) {
+    const [listOrderOfTour, setListOrderOfTour] = useState([]);
+
+    useEffect(() => {
+        getListOrderOfTour(tourData.idTour).then((rs) => setListOrderOfTour(rs.data));
+    }, []);
+
+    const handleConfirm = (action, index) => {
+        console.log(index);
+
+        if (action == 'order') {
+            confirmOrderTour(listOrderOfTour[index].idTourOrder);
+        }
+        if (action == 'cancel') {
+            confirmCancelTour(listOrderOfTour[index].idTourOrder);
+        }
+    };
     return (
         <>
             <div className='row-wrapper'>
                 <div>
-                    <p className='id-value'>#idTour</p>
-                    <h3>Tour 3 ngày 1 đêm</h3>
+                    <p className='id-value'>#{tourData.idTour}</p>
+                    <h3>{tourData.name}</h3>
                 </div>
-                <select name id className='filter mt--18'>
-                    <option value>Chờ xác nhận</option>
-                    <option value>Chờ hủy</option>
-                    <option value>Đã hủy</option>
-                </select>
             </div>
             <table>
                 <tbody>
@@ -26,23 +41,11 @@ function OrderOfTour() {
                         <th>TỔNG TIỀN</th>
                         <th />
                     </tr>
-                    <tr className='value'>
-                        <td>
-                            <img src={svg.dropDown} alt='' />
-                        </td>
-                        <td className='id-value'>#id</td>
-                        <td>Nguyễn Văn A</td>
-                        <td>0973343599</td>
-                        <td>2</td>
-                        <td>20/11/2023</td>
-                        <td>
-                            <p className='status-green '>Hiện hành</p>
-                        </td>
-                        <td>2.000.000 VNĐ</td>
-                        <td className='options'>
-                            <div className='btn-red'>Xác nhận huỷ</div>
-                        </td>
-                    </tr>
+                    {listOrderOfTour.map((e, i) => {
+                        return (
+                            <OrderOfTourRowData orderOfTour={{index: i, ...e}} handleConfirm={handleConfirm} key={i} />
+                        );
+                    })}
                 </tbody>
             </table>
         </>

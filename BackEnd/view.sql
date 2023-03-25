@@ -16,6 +16,18 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Temporary view structure for view `v_staff_number`
+--
+
+DROP TABLE IF EXISTS `v_staff_number`;
+/*!50001 DROP VIEW IF EXISTS `v_staff_number`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `v_staff_number` AS SELECT 
+ 1 AS `number`*/;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Temporary view structure for view `v_tour_number`
 --
 
@@ -68,13 +80,41 @@ SET character_set_client = @saved_cs_client;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `auto_update_status_order`(IN id int)
 BEGIN
-	if id = 12 then
+	if id=11 then
+		UPDATE tourorder SET idStatus = id, cancelDate = CURDATE()
+		WHERE (idStatus=8 or idStatus=10) and idTour in (select idTour from tour where DATE(startDate) <= CURDATE());
+	elseif id = 12 then
 		UPDATE tourorder SET idStatus = id 
-		WHERE idTour in (select idTour from tour where DATE(startDate) <= CURDATE());
+		WHERE idStatus=9 and idTour in (select idTour from tour where DATE(startDate) <= CURDATE());
     elseif id = 13 then
 		UPDATE tourorder SET idStatus = id 
-		WHERE idTour in (select idTour from tour 
+		WHERE idStatus=12 and idTour in (select idTour from tour 
 						where DATE(DATE_ADD(startDate, INTERVAL totalDay DAY)) <= CURDATE());
+    end if;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `auto_update_status_tour` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `auto_update_status_tour`(IN id int)
+BEGIN
+	if id = 3 then
+		UPDATE tour SET idStatus = id 
+		WHERE idStatus=1 and DATE(startDate) <= CURDATE();
+    elseif id = 4 then
+		UPDATE tour SET idStatus = id 
+		WHERE idStatus=3 and DATE(DATE_ADD(startDate, INTERVAL totalDay DAY)) <= CURDATE();
     end if;
 END ;;
 DELIMITER ;
@@ -95,6 +135,24 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_add_image_tour`( IN id int,
 									IN image varchar(500))
 insert into tourpicture(idTour,imageUrl) values(id,image) ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_check_tour_exist_customer` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_check_tour_exist_customer`( IN p_idTour int)
+select idTourOrder from tourorder where idTour=p_idTour and 
+	(idStatus=9 or idStatus=10 or idStatus=12 or idStatus=13) limit 1 ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -251,13 +309,26 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_all_tour`(
-    IN page int)
-SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ',') AS image_list
- FROM tour
- JOIN tourpicture ON tour.idTour = tourpicture.idTour
- GROUP BY tour.idTour
- ORDER BY tour.dateCreate DESC 
-LIMIT 5 OFFSET page ;;
+    IN page int,
+    IN status int)
+begin
+	if status=1 then
+		SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ',') AS image_list
+		 FROM tour
+		 JOIN tourpicture ON tour.idTour = tourpicture.idTour
+         where idStatus=1
+		 GROUP BY tour.idTour
+		 ORDER BY tour.dateCreate DESC 
+		LIMIT 5 OFFSET page;
+    else
+		SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ',') AS image_list
+		 FROM tour
+		 JOIN tourpicture ON tour.idTour = tourpicture.idTour
+		 GROUP BY tour.idTour
+		 ORDER BY tour.dateCreate DESC 
+		LIMIT 5 OFFSET page;
+    end if;
+end ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -326,10 +397,13 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_list_staff_by_key`( IN noteKey varchar(255))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_list_staff_by_key`( IN noteKey varchar(255),
+																		IN page int)
 select staff.*, status.name as status 
 from staff inner join status on staff.idStatus = status.idStatus 
-where idstaff like noteKey or staff.name like noteKey or email like noteKey ;;
+where idstaff<>12 and (idstaff like noteKey or staff.name like noteKey or email like noteKey)
+ORDER BY staff.name ASC
+LIMIT 5 OFFSET page ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -347,6 +421,25 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_order_by_id`( IN id int)
 SELECT * FROM `tourorder` where idTourOrder= id ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_get_order_by_id_tour` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_order_by_id_tour`( IN p_idTour int,
+                                        IN page int)
+SELECT * FROM `tourorder` WHERE idTour = p_idTour 
+ORDER BY tourorder.orderDateTime DESC LIMIT 5 OFFSET page ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -613,7 +706,7 @@ BEGIN
 	SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ',') AS image_list
 	 FROM tour
 	 JOIN tourpicture ON tour.idTour = tourpicture.idTour 
-	WHERE featured = 1
+	WHERE featured = 1 and idStatus=1
 	 GROUP BY tour.idTour
 	 ORDER BY tour.dateCreate DESC 
 	LIMIT 5 OFFSET page;
@@ -663,6 +756,36 @@ Begin
 	else
 		SELECT count(*) as currentNumber FROM `tourorder` 
 		where idCustomer = p_idCustomer and idStatus = p_idStatus;
+	end if;
+end ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_number_tour` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_number_tour`( IN p_idStatus int)
+Begin
+	 if p_idStatus = 1 then
+		SELECT 
+			COUNT(0) AS `number`
+		FROM
+			`tour`
+		where idStatus =1;
+	else
+		SELECT 
+			COUNT(0) AS `number`
+		FROM
+			`tour`;
 	end if;
 end ;;
 DELIMITER ;
@@ -863,10 +986,23 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_status_tour`( IN id1 int,
-                                     IN id2 int)
-update tour set idStatus =id1 where idTour=id2 
-and id2 in (select status.idStatus from status where type = 'tour') ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_status_tour`( IN p_idTour int,
+                                     IN p_idStatus int)
+begin
+	 if p_idStatus=2 then
+     update tour set idStatus =p_idStatus, dateCancel=CURDATE() where idTour=p_idTour 
+        and idStatus= 1
+		and p_idStatus in (select status.idStatus from status where type = 'tour');
+     elseif  p_idStatus=3 then
+     update tour set idStatus =p_idStatus where idTour=p_idTour 
+        and idStatus= 1
+		and p_idStatus in (select status.idStatus from status where type = 'tour');
+	 elseif  p_idStatus=4 then
+     update tour set idStatus =p_idStatus where idTour=p_idTour 
+        and idStatus= 3
+		and p_idStatus in (select status.idStatus from status where type = 'tour');
+     end if;
+end ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -925,6 +1061,24 @@ DELIMITER ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
+-- Final view structure for view `v_staff_number`
+--
+
+/*!50001 DROP VIEW IF EXISTS `v_staff_number`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `v_staff_number` AS select count(`staff`.`idStaff`) AS `number` from `staff` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
 -- Final view structure for view `v_tour_number`
 --
 
@@ -955,7 +1109,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `v_tour_number_featured` AS select count(0) AS `number` from `tour` where (`tour`.`featured` = 1) */;
+/*!50001 VIEW `v_tour_number_featured` AS select count(0) AS `number` from `tour` where ((`tour`.`featured` = 1) and (`tour`.`idStatus` = 1)) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -987,4 +1141,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-22 22:46:26
+-- Dump completed on 2023-03-25 21:29:12

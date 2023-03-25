@@ -1,6 +1,8 @@
 const message = require("../utils/message");
 const connection = require("../utils/connection");
 const seperateString = require("../utils/seperateString");
+var Staff = require("../models/staff_model");
+var Status = require("../models/status_model");
 var Tour = require("../models/tour_model");
 var Picture = require("../models/picturetour_model");
 
@@ -32,15 +34,38 @@ function getImageTour(res, result) {
 
 function getSlotsLeftTour(res, result) {
   const tourPromises = [];
+  const statusPromises = [];
+
   // Loop through each tour order and call Tour.getById() for its ID
+  // for (let item in result) {
+  //   tourPromises.push(Tour.getSlotsLeft(result[item].idTour));
+  //   statusPromises.push(Status.getById(result[item].idStatus, "tour"));
+  // }
   result.forEach((tour) => {
     tourPromises.push(Tour.getSlotsLeft(tour.idTour));
+    statusPromises.push(Status.getById(tour.idStatus, "tour"));
   });
 
-  Promise.all(tourPromises)
-    .then((tourResponses) => {
-      console.log("tourResponses: ", tourResponses);
+  // Promise.all([Promise.all(tourPromises), Promise.all(statusPromises)])
+  //   .then(([tourResponses, statusPromises]) => {
+  //     let tours = result.map((tour, index) => {
+  //       tour["slotsLeft"] = tourResponses[index][0][0].slotLeft;
+  //       tour["status"] = statusPromises[index][0][0].name;
+  //       console.log(
+  //         "========================================================="
+  //       );
+  //       console.log("tour: ", tour);
+  //       return tour;
+  //     });
+
+  //     res.send(message(tours, true, "Thành công!"));
+  //   })
+
+  Promise.all([Promise.all(tourPromises), Promise.all(statusPromises)])
+    .then(([tourResponses, statusResponse]) => {
       let tours = result.map((tour, index) => {
+        tour["status"] = statusResponse[index][0];
+
         tour["slotsLeft"] = tourResponses[index][0][0].slotLeft;
         return tour;
       });
@@ -53,25 +78,88 @@ function getSlotsLeftTour(res, result) {
     });
 }
 
+function getSlotsLeftTourAdmin(res, result) {
+  const tourPromises = [];
+  const statusPromises = [];
+  const staffPromises = [];
+  const staffCanelPromises = [];
+  // Loop through each tour order and call Tour.getById() for its ID
+  // for (let item in result) {
+  //   tourPromises.push(Tour.getSlotsLeft(result[item].idTour));
+  //   statusPromises.push(Status.getById(result[item].idStatus, "tour"));
+  // }
+  result.forEach((tour) => {
+    tourPromises.push(Tour.getSlotsLeft(tour.idTour));
+    statusPromises.push(Status.getById(tour.idStatus, "tour"));
+    staffPromises.push(Staff.getById(tour.idStaffCreate));
+    staffCanelPromises.push(Staff.getById(tour.idStaffCancel));
+  });
+
+  // Promise.all([Promise.all(tourPromises), Promise.all(statusPromises)])
+  //   .then(([tourResponses, statusPromises]) => {
+  //     let tours = result.map((tour, index) => {
+  //       tour["slotsLeft"] = tourResponses[index][0][0].slotLeft;
+  //       tour["status"] = statusPromises[index][0][0].name;
+  //       console.log(
+  //         "========================================================="
+  //       );
+  //       console.log("tour: ", tour);
+  //       return tour;
+  //     });
+
+  //     res.send(message(tours, true, "Thành công!"));
+  //   })
+
+  Promise.all([
+    Promise.all(tourPromises),
+    Promise.all(statusPromises),
+    Promise.all(staffPromises),
+    Promise.all(staffCanelPromises),
+  ])
+    .then(
+      ([tourResponses, statusResponse, staffResponse, staffCancleResponse]) => {
+        let tours = result.map((tour, index) => {
+          tour["status"] = statusResponse[index][0];
+          tour["staffCreate"] = staffResponse[index][0];
+          tour["staffCancel"] = staffCancleResponse[index][0];
+          tour["slotsLeft"] = tourResponses[index][0][0].slotLeft;
+          return tour;
+        });
+
+        res.send(message(tours, true, "Thành công!"));
+      }
+    )
+
+    .catch((err) => {
+      res.send(message(err, false, "Thất bại!"));
+    });
+}
+
 class TourController {
-  //[GET] /tour/list?key={key}&paging={paging}
+  //[GET] /tour/list?key={key}&paging={paging}&status={}
   list(req, res, next) {
-    var query = require("url").parse(req.url, true).query;
-    var key = query.key | "";
+    const query = require("url").parse(req.url, true).query;
+    const key = query.key;
     const paging = query.paging ? query.paging : 1;
+    const status = query.status ? query.status : 0;
 
     if (key == undefined) {
-      Tour.getAll(paging, function (result) {
+      Tour.getAll(paging, status, function (result) {
         // console.log(result);
         // res.send(message(seperateString(result), true, "Thành công!"));
-        getSlotsLeftTour(res, seperateString(result));
+
+        if (req.body.role == "admin")
+          getSlotsLeftTourAdmin(res, seperateString(result));
+        else getSlotsLeftTour(res, seperateString(result));
       });
     } else if (key == "featured") {
       Tour.getListFeatured(paging)
         .then((result) => {
           // getImageTour(res, result);
           //   res.send(message(seperateString(result), true, "Thành công!"));
-          getSlotsLeftTour(res, seperateString(result));
+          if (req.body.role == "admin")
+            getSlotsLeftTourAdmin(res, seperateString(result));
+          else getSlotsLeftTour(res, seperateString(result));
         })
         .catch((err) => {
           res.send(message(err, false, "Thất bại!"));
@@ -81,7 +169,9 @@ class TourController {
         .then((result) => {
           // getImageTour(res, result);
           //   res.send(message(seperateString(result), true, "Thành công!"));
-          getSlotsLeftTour(res, seperateString(result));
+          if (req.body.role == "admin")
+            getSlotsLeftTourAdmin(res, seperateString(result));
+          else getSlotsLeftTour(res, seperateString(result));
         })
         .catch((err) => {
           res.send(message(err, false, "Thất bại!"));
@@ -158,7 +248,27 @@ class TourController {
   }
   async update(req, res, next) {
     const idTour = req.params.id;
+
     try {
+      let [rows, fields] = await connection.execute(
+        "call managetour.sp_get_tour_by_id(?);",
+        [idTour]
+      );
+
+      if (rows[0][0].idStatus != 1) {
+        return res.send(message([], false, "Không thể cập nhật tour!"));
+      }
+
+      [rows, fields] = await connection.execute(
+        "call managetour.sp_check_tour_exist_customer(?); ",
+        [idTour]
+      );
+      console.log("row123: ", rows);
+      if (rows[0].length != 0) {
+        return res.send(
+          message([], false, "Đã tồn có khách đặt, không thể cập nhật tour!")
+        );
+      }
       let {
         name,
         startDate,
@@ -188,7 +298,7 @@ class TourController {
           imageUrl,
         ]);
       });
-      let [rows, fields] = await connection.execute(
+      [rows, fields] = await connection.execute(
         "call managetour.sp_update_tour(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
         [
           name,

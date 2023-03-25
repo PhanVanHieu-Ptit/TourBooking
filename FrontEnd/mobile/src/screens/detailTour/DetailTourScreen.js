@@ -12,19 +12,35 @@ import ModalOrder from '../../components/general/form/ModalOrder';
 import { FlatList } from 'react-native-gesture-handler';
 import { formatDate, formatMoney } from '../../res/untils';
 import { AppContext } from '../../../App';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function DetailTourScreen({ route, navigation }) {
-    const { user } = useContext(AppContext);
+    const { user, setUser, isLogin, setIsLogin, setHistoryOrder, setToursOutStanding, setToursComming } =
+        useContext(AppContext);
+
     const tour = route.params.tour;
     const [modalVisible, setModalVisible] = useState(false);
     const [role, setRole] = useState(user?.role);
+    // const [isLogin, setIsLogin] = useState(!(user == null || user == '' || user == undefined));
     const listImage = tour.imageUrl;
     const [selectImage, setSelectImage] = useState(listImage[0]);
+
+    function clearOldData() {
+        setHistoryOrder([]);
+        // setToursOutStanding([]);
+        // setToursComming([]);
+    }
 
     return (
         <ScrollView>
             <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center' }}>
-                <ModalOrder modalVisible={modalVisible} setModalVisible={setModalVisible} DATA={tour} />
+                <ModalOrder
+                    modalVisible={modalVisible}
+                    setModalVisible={setModalVisible}
+                    DATA={tour}
+                    navigation={navigation}
+                    setIsLogin={setIsLogin}
+                />
                 <ImageBackground
                     source={{ uri: `${selectImage}` }}
                     style={{
@@ -146,6 +162,14 @@ function DetailTourScreen({ route, navigation }) {
                         ) : (
                             ''
                         )}
+                        <Text style={[stylesDetailTour.title, { marginTop: 30 }]}>Quy định phí hủy</Text>
+                        <Text style={[stylesDetailTour.title, { fontSize: 15, marginTop: 10 }]}>
+                            Hủy sau khi đã xác nhận: {tour.normalPenaltyFee}%
+                        </Text>
+
+                        <Text style={[stylesDetailTour.title, { fontSize: 15, marginTop: 10 }]}>
+                            Hủy sau {tour.minDate} ngày trước khởi hành: {tour.strictPenaltyFee}%
+                        </Text>
                     </View>
 
                     <View
@@ -160,11 +184,22 @@ function DetailTourScreen({ route, navigation }) {
                             <Text style={{ marginTop: 10 }}>/ chuyến</Text>
                         </View>
 
-                        {user.role == 'customer' ? (
+                        {user?.role == 'customer' || isLogin == false ? (
                             <TouchableOpacity
                                 onPress={() => {
-                                    if (user == null || user == '' || user == undefined) navigation.replace('Login');
-                                    else setModalVisible(true);
+                                    if (!isLogin) {
+                                        clearOldData();
+                                        setUser(null);
+                                        //delete old user
+                                        AsyncStorage.removeItem('user')
+                                            .then(() => {
+                                                console.log('user removed from AsyncStorage');
+                                            })
+                                            .catch((error) => {
+                                                console.error(error);
+                                            });
+                                        navigation.replace('Login');
+                                    } else setModalVisible(true);
                                 }}
                             >
                                 <View style={stylesDetailTour.btn}>

@@ -41,11 +41,26 @@ class SiteControllers {
       return res.send(message("", false, error.message));
     }
   }
+  // [GET] /site/number-staff
+  async getNumberStaff(req, res) {
+    try {
+      let rows, fields;
+      if (req.body.role == "admin") {
+        [rows, fields] = await connection.execute(
+          "SELECT * FROM managetour.v_staff_number;"
+        );
+        return res.send(message(rows[0], true, "Thành công!"));
+      } else return res.send(message([], false, "Không có quyền truy cập!"));
+    } catch (error) {
+      return res.send(message("", false, error.message));
+    }
+  }
 
   // [GET] /site/number-tour
   numberTour(req, res) {
-    var query = require("url").parse(req.url, true).query;
-    var type = query.type;
+    const query = require("url").parse(req.url, true).query;
+    const type = query.type;
+    const status = query.status ? query.status : 0;
     if (type == "featured") {
       Tour.getNumberTourFeatured()
         .then((result) => {
@@ -55,7 +70,7 @@ class SiteControllers {
           res.send(message(err, false, "Thất bại!"));
         });
     } else {
-      Tour.getNumberTour()
+      Tour.getNumberTour(status)
         .then((result) => {
           res.send(message(result, true, "Thành công!"));
         })

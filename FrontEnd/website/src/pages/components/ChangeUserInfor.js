@@ -38,7 +38,7 @@ const PersonalInfo = ({setPersonalInfoForm}) => {
             {formData && (
                 <>
                     <label className='col-wrapper' style={{cursor: 'pointer'}} htmlFor='avt'>
-                        <img src={formData.imageUrl || defaultAvtSvg} alt='' />
+                        <img src={formData.imageUrl || defaultAvtSvg} alt='' className='radius-50' />
                         <input
                             type='file'
                             className='avt'
@@ -82,7 +82,11 @@ const PersonalInfo = ({setPersonalInfoForm}) => {
                             <Address formData={formData} handleInputChange={handleInputChange} />
                         </>
                     )}
-                    <button className='btn--gold mt--24' onClick={handleSaveUserInfo} type='button'>
+                    <button
+                        className='btn--gold mt--24'
+                        onClick={handleSaveUserInfo}
+                        type='button'
+                        style={{margin: '0 auto', display: 'block'}}>
                         Lưu
                     </button>
                 </>

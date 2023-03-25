@@ -32,4 +32,5 @@ router.get(
   authenticateToken,
   accountControllers.changePasswordForm
 );
+router.post("/refresh-token", accountControllers.refeshToken);
 module.exports = router;
