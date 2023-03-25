@@ -127,7 +127,11 @@ function ManageTourScreen({ navigation }) {
 
     async function getListTour() {
         try {
-            const response = await request.get(API.listTour + '?paging=' + paging, {});
+            const response = await request.get(API.listTour + '?paging=' + paging, {
+                headers: {
+                    authorization: user.accessToken,
+                },
+            });
             if (response.status == true) {
                 isEmpty = false;
 
@@ -169,79 +173,79 @@ function ManageTourScreen({ navigation }) {
     }
 
     return (
-        <ScrollView
-            refreshControl={
-                <RefreshControl
-                    enabled={true}
-                    refreshing={refresh}
-                    onRefresh={() => {
-                        setFresh(true);
-                        // setPaging(1);
-                        // setFilteredDataSource([]);
-                        // setListTour([]);
-                        // getListTour();
-                        if (paging != 1) setListTour([]);
-                        if (paging != 1) setFilteredDataSource([]);
-                        setPaging(1);
-                        setFresh(false);
-                    }}
-                />
-            }
-        >
-            <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        justifyContent: 'flex-start',
-                        marginLeft: -20,
+        <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+            <View
+                style={{
+                    flexDirection: 'row',
+                    justifyContent: 'flex-start',
+                    marginLeft: -20,
+                }}
+            >
+                <TouchableOpacity
+                    onPress={() => {
+                        navigation.goBack();
                     }}
                 >
-                    <TouchableOpacity
-                        onPress={() => {
-                            navigation.goBack();
-                        }}
-                    >
-                        <View style={stylesButton.btn_back}>
-                            <Icon name="chevron-back" size={25} color="#021A5A" />
-                        </View>
-                    </TouchableOpacity>
-                    <Text style={stylesAllTour.title}>Quản lý tour</Text>
-                    <TouchableOpacity
-                        style={[stylesAllTour.title, { marginLeft: 130 }]}
-                        onPress={() => {
-                            navigation.navigate('EditTour', { type: 'add' });
-                        }}
-                    >
-                        <Icon name="add" size={25} color="#021A5A" />
-                    </TouchableOpacity>
-                </View>
-                <Find
-                    masterDataSource={listTour}
-                    // setMasterDataSource={setMasterDataSource}
-                    setFilteredDataSource={setFilteredDataSource}
-                />
-                {loader()}
-
-                {isEmpty ? (
-                    <View>
-                        <Image
-                            source={require('./No-data-cuate.png')}
-                            style={{ height: 300, width: 200, marginTop: 100, marginBottom: 0 }}
-                        />
-                        <Text style={{ text: 5, textAlign: 'center', marginTop: 0 }}>Chưa có dữ liệu</Text>
+                    <View style={stylesButton.btn_back}>
+                        <Icon name="chevron-back" size={25} color="#021A5A" />
                     </View>
-                ) : (
-                    // <View></View>
-                    <ScrollView onScroll={handleScroll} style={{ marginTop: 10, height: 600 }}>
-                        {filteredDataSource.map((item) => (
-                            <CardCommingTour tour={item} key={item.idTour} navigation={navigation} screen="EditTour" />
-                        ))}
-                    </ScrollView>
-                )}
+                </TouchableOpacity>
+                <Text style={stylesAllTour.title}>Quản lý tour</Text>
+                <TouchableOpacity
+                    style={[stylesAllTour.title, { marginLeft: 130 }]}
+                    onPress={() => {
+                        navigation.navigate('EditTour', { type: 'add' });
+                    }}
+                >
+                    <Icon name="add" size={25} color="#021A5A" />
+                </TouchableOpacity>
+            </View>
+            <Find
+                masterDataSource={listTour}
+                // setMasterDataSource={setMasterDataSource}
+                setFilteredDataSource={setFilteredDataSource}
+            />
+            {loader()}
 
-                {isLoadingFooter ? <ActivityIndicator size="small" color={COLOR.primary} /> : ''}
-            </SafeAreaView>
-        </ScrollView>
+            {isEmpty ? (
+                <View>
+                    <Image
+                        source={require('./No-data-cuate.png')}
+                        style={{ height: 300, width: 200, marginTop: 100, marginBottom: 0 }}
+                    />
+                    <Text style={{ text: 5, textAlign: 'center', marginTop: 0 }}>Chưa có dữ liệu</Text>
+                </View>
+            ) : (
+                // <View></View>
+                <ScrollView
+                    onScroll={handleScroll}
+                    style={{ marginTop: 10, height: 600 }}
+                    refreshControl={
+                        <RefreshControl
+                            enabled={true}
+                            refreshing={refresh}
+                            onRefresh={() => {
+                                setFresh(true);
+                                // setPaging(1);
+                                // setFilteredDataSource([]);
+                                // setListTour([]);
+                                // getListTour();
+                                if (paging != 1) setListTour([]);
+                                if (paging != 1) setFilteredDataSource([]);
+                                setPaging(1);
+                                setFresh(false);
+                            }}
+                        />
+                    }
+                >
+                    {filteredDataSource.map((item) => (
+                        <CardCommingTour tour={item} key={item.idTour} navigation={navigation} screen="EditTour" />
+                    ))}
+                </ScrollView>
+            )}
+
+            {isLoadingFooter ? <ActivityIndicator size="small" color={COLOR.primary} /> : ''}
+        </SafeAreaView>
     );
 }
 

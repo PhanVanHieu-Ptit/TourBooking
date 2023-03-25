@@ -25,7 +25,7 @@ import * as request from '../../../services/untils';
 import API from '../../../res/string';
 
 function ModalOrder(props) {
-    const { user, setUser, setHistoryOrder, setToursOutStanding, setToursComming } = useContext(AppContext);
+    const { user, setUser, setHistoryOrder } = useContext(AppContext);
     const [inforCustomer, setInforCustomer] = useState({});
     const imageUrl = props.DATA.imageUrl[0];
     const [number, setNumber] = useState('');
