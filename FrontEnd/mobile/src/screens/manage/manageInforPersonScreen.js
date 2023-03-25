@@ -222,7 +222,7 @@ function ManageInforPersonScreen({ route, navigation }) {
                     API.updateInfoPersonal,
                     { name, address, phoneNumber: phone, imageUrl: url },
                     { 'Content-Type': 'application/json', authorization: user.accessToken },
-                    'PATCH',
+                    'PUT',
                 )
                 .then((response) => {
                     console.log(response.data);
