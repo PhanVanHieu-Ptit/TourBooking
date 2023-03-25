@@ -7,9 +7,10 @@ const {
   managerCheck,
   authenticateToken,
   staffCheck,
+  decodedToken,
 } = require("../middlewares/authentication");
 
-router.get("/list", tourController.list);
+router.get("/list", decodedToken, tourController.list);
 router.get("/:id/detail", tourController.detail);
 router.delete(
   "/:id/delete",
