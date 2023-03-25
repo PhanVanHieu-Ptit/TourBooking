@@ -26,12 +26,35 @@ function ManageStaffScreen({ navigation }) {
     const [isLoading,setIsLoading]=useState(true);
     const [loadingFooter,setLoadingFooter]=useState(false);
     const [refresh,setFresh]=useState(false);
+    const [paging,setPaging]=useState(1);
+    const [numberStaff,setNumberStaff]=useState(0);
+
     let isEmpty=false;
 
     useEffect(() => {
+        getNumberStaff();
+    },[]);
+
+    useEffect(() => {
+        // if (paging==1) setIsLoading(true);
         loadStaffOutStanding();
         console.log('Load');
-    },[]);
+    },[paging]);
+
+    const loadMore=() => {
+        if (Math.ceil(Number(numberStaff)/5-1)>=paging) {
+            setLoadingFooter(true);
+            setPaging((preState) => preState+1);
+        }
+    };
+
+    const handleScroll=(event) => {
+        const { layoutMeasurement,contentOffset,contentSize }=event.nativeEvent;
+        const paddingToBottom=20;
+        if (layoutMeasurement.height+contentOffset.y>=contentSize.height-paddingToBottom) {
+            loadMore();
+        }
+    };
 
     async function loadStaffOutStanding() {
         try {
@@ -41,7 +64,9 @@ function ManageStaffScreen({ navigation }) {
             console.log('API');
             if (res.status===true) {
                 setIsLoading(false);
-                setListStaff(res.data);
+                setListStaff((preState) => {
+                    return [...preState,...res.data];
+                });
                 setLoadingFooter(false);
             } else {
                 isEmpty=true;
@@ -53,26 +78,19 @@ function ManageStaffScreen({ navigation }) {
             console.log(error);
         }
     }
-    // useEffect(() => {
-    //     request
-    //         .get(API.listStaff, {
-    //             headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
-    //         })
-    //         .then((response) => {
-    //             console.log(response.data);
 
-    //             if (response.status == true) {
-    //                 setListStaff(response.data);
-    //             } else {
-    //                 Alert.alert('Thông báo!', response.message + '', [
-    //                     { text: 'OK', onPress: () => console.log('OK Pressed') },
-    //                 ]);
-    //             }
-    //         })
-    //         .catch((err) => {
-    //             console.log(err);
-    //         });
-    // }, []);
+    async function getNumberStaff() {
+        try {
+            const res=await request.get(API.numberStaff);
+            if (res.status===true) {
+                setNumberStaff(res.data[0].number);
+            } else {
+                Alert.alert('Thông báo!',res.message+'',[{ text: 'OK',onPress: () => console.log('OK Pressed') }]);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
         <SafeAreaView style={{ justifyContent: 'center',alignItems: 'center',flex: 1 }}>
             <View
@@ -99,6 +117,8 @@ function ManageStaffScreen({ navigation }) {
             </View>
             <Find />
             <ScrollView
+                style={{ height: 200 }}
+                onScroll={handleScroll}
                 refreshControl={
                     <RefreshControl
                         enabled={true}
@@ -126,13 +146,16 @@ function ManageStaffScreen({ navigation }) {
                     isLoading? (
                         <ActivityIndicator size="small" color={COLOR.primary} />
                     ):(
-                        listStaff.map((item) => (
-                            <CardStaff staff={item} key={item.idStaff} navigation={navigation} />
-                        ))
+                        <View>
+                            {listStaff.map((item) => (
+                                <CardStaff staff={item} key={item.idStaff} navigation={navigation} />
+                            ))
+                            }
+                            {loadingFooter? <ActivityIndicator size="small" color={COLOR.primary} />:''}
+                        </View>
                     )
                 )}
 
-                {loadingFooter? <ActivityIndicator size="small" color={COLOR.primary} />:''}
             </ScrollView>
 
         </SafeAreaView>
