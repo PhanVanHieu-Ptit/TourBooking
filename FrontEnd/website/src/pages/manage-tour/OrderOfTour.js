@@ -1,5 +1,8 @@
 import svg from '../../assets/svg/index';
-function OrderOfTour() {
+import {useState} from 'react';
+import {useEffect} from 'react';
+
+function OrderOfTour({tourData}) {
     return (
         <>
             <div className='row-wrapper'>

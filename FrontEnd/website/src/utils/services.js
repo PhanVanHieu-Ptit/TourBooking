@@ -13,7 +13,7 @@ export async function getListAddress() {
     return axios.get('/site/list-address');
 }
 export async function getListTour(searchKey = '', paging = 1) {
-    return axios.get(`/tour/list?key=${searchKey}&paging=${paging}`);
+    return axios.get(`/tour/list?${searchKey && 'key=' + searchKey}&paging=${paging}`);
 }
 export async function getTour(id) {
     return axios.get(`/tour/${id}/detail`);
