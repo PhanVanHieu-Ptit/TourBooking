@@ -19,6 +19,8 @@ function ManageScreen({ navigation }) {
     const {
         user,
         setUser,
+        isLogin,
+        setIsLogin,
         setHistoryOrder,
         setToursOutStanding,
         setToursComming,
@@ -27,7 +29,7 @@ function ManageScreen({ navigation }) {
         setListStaff,
     } = useContext(AppContext);
 
-    const [isLogin, setIsLogin] = useState(user != '' && user != undefined && user != null);
+    // const [isLogin, setIsLogin] = useState(user != '' && user != undefined && user != null);
     const [role, setRole] = useState(user?.role);
     const [navigateInforPerson, setNavigateInforPerson] = useState('Profile');
 
@@ -54,6 +56,7 @@ function ManageScreen({ navigation }) {
     }
     useEffect(() => {
         setRoleUser();
+        setIsLogin(user != '' && user != undefined && user != null);
     }, []);
 
     return (
@@ -65,7 +68,7 @@ function ManageScreen({ navigation }) {
                             source={{
                                 uri:
                                     user?.imageUrl != undefined
-                                        ? user.imageUrl
+                                        ? user?.imageUrl
                                         : `https://freesvg.org/img/abstract-user-flat-4.png`,
                             }}
                             style={stylesManage.img}

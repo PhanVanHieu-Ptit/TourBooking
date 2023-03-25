@@ -2,6 +2,7 @@ const API = {
     login: '/account/sign-in',
     register: '/account/sign-up',
     forgotpassword: '/account/forgot-password',
+    refeshToken: '/account/refresh-token',
     toursOutStanding: 'tour/list',
     // toursComing: 'tour/find',
     // allTours: 'tour/find',
