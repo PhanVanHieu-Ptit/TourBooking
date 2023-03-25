@@ -397,10 +397,13 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_list_staff_by_key`( IN noteKey varchar(255))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_list_staff_by_key`( IN noteKey varchar(255),
+																		IN page int)
 select staff.*, status.name as status 
 from staff inner join status on staff.idStatus = status.idStatus 
-where idstaff like noteKey or staff.name like noteKey or email like noteKey ;;
+where idstaff<>12 and (idstaff like noteKey or staff.name like noteKey or email like noteKey)
+ORDER BY staff.name ASC
+LIMIT 5 OFFSET page ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -1138,4 +1141,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-25 11:25:56
+-- Dump completed on 2023-03-25 21:29:12
