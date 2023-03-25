@@ -5,6 +5,7 @@ import calendarSvg from '../../assets/svg/calendar.svg';
 import destinationSvg from '../../assets/svg/destination.svg';
 import hourglassSvg from '../../assets/svg/hourglass.svg';
 import formatMoney from './../../utils/formatMoney';
+import formatDate from './../../utils/formatDate';
 
 function SearchedTour({searchKey, tours}) {
     searchKey = searchKey.toLowerCase();
@@ -35,7 +36,7 @@ function SearchedTour({searchKey, tours}) {
                                 </div>
                                 <div className='row-wrapper flex-align-l mt--12'>
                                     <img src={calendarSvg} alt='' /> &nbsp;&nbsp;
-                                    {e.startDate.split(' ')[0]}
+                                    {formatDate(e.startDate)[0]}
                                 </div>
                                 <label className={css.price}>{formatMoney(e.price)}</label>
                             </div>

@@ -24,7 +24,12 @@ function Header() {
                                 href='#'
                                 className='user'
                                 onClick={() => setShowChangeUserInforPopup(!showChangeUserInforPopup)}>
-                                <img src={userData.imageUrl || userSvg} alt='' style={{width: '35px'}} />
+                                <img
+                                    src={userData.imageUrl || userSvg}
+                                    alt=''
+                                    style={{width: '35px'}}
+                                    className='radius-50'
+                                />
                                 <span className={css['user-name']}>{userData.name}</span>
                             </a>
                             <a href='#' onClick={() => setShowOrderedTourPopup(!showOrderedTourPopup)}>

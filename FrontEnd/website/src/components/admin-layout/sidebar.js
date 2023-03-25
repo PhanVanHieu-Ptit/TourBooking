@@ -3,9 +3,11 @@ import svg from './../../assets/svg/index';
 function SideBar() {
     return (
         <div className={css['side-bar']}>
-            <a href='manage-staff'>
-                <img src={svg.groupPersonBlack} alt='' /> Quản lý nhân viên
-            </a>
+            {localStorage.role == 'admin' && (
+                <a href='manage-staff'>
+                    <img src={svg.groupPersonBlack} alt='' /> Quản lý nhân viên
+                </a>
+            )}
             <a href='manage-tour'>
                 <img src={svg.tour} alt='' />
                 Quản lý tour
