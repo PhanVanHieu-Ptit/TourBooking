@@ -55,7 +55,7 @@ function Register({ navigation, route }) {
                     name: route.params.name,
                     email: username,
                     phoneNumber: route.params.phone,
-                    imageUrl: '',
+                    imageUrl: route.params.responseImage,
                     address: route.params.address,
                 })
                 .then((response) => {
@@ -71,7 +71,7 @@ function Register({ navigation, route }) {
                             },
                         ]);
                     } else {
-                        Alert.alert('Thông báo!', response.message, [
+                        Alert.alert('Thông báo!', response.data.message, [
                             {
                                 text: 'OK',
                                 onPress: () => {},
