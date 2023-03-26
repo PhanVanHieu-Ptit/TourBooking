@@ -1,5 +1,5 @@
-import React,{ useContext,useEffect,useState } from 'react';
-import { Image,SafeAreaView,ScrollView,Text,View,ActivityIndicator,RefreshControl } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { Image, SafeAreaView, ScrollView, Text, View, ActivityIndicator, RefreshControl } from 'react-native';
 import Find from '../../components/home/find';
 import stylesManage from '../manage/styles';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -14,18 +14,18 @@ import * as request from '../../services/untils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function ManageTourScreen({ navigation }) {
-    const { user,setUser,isLogin,setIsLogin,setHistoryOrder,setListTour,listTour,setListOrder,setListStaff }=
+    const { user, setUser, isLogin, setIsLogin, setHistoryOrder, setListTour, listTour, setListOrder, setListStaff } =
         useContext(AppContext);
 
     // const [masterDataSource, setMasterDataSource] = useState(listTour);
 
-    const [filteredDataSource,setFilteredDataSource]=useState([]);
-    const [isLoading,setLoading]=useState(true);
-    const [numberTour,setNumberTour]=useState(0);
-    const [isLoadingFooter,setLoadingFooter]=useState(false);
-    const [refresh,setFresh]=useState(false);
-    const [paging,setPaging]=useState(1);
-    let isEmpty=false;
+    const [filteredDataSource, setFilteredDataSource] = useState([]);
+    const [isLoading, setLoading] = useState(true);
+    const [numberTour, setNumberTour] = useState(0);
+    const [isLoadingFooter, setLoadingFooter] = useState(false);
+    const [refresh, setFresh] = useState(false);
+    const [paging, setPaging] = useState(1);
+    let isEmpty = false;
 
     function clearOldData() {
         setHistoryOrder([]);
@@ -36,10 +36,10 @@ function ManageTourScreen({ navigation }) {
 
     async function getRefreshToken() {
         try {
-            const res2=await request.post(API.refeshToken,{ token: user.refreshToken });
-            console.log('res2: ',res2);
-            if (res2.data.status==true) {
-                const newUser={
+            const res2 = await request.post(API.refeshToken, { token: user.refreshToken });
+            console.log('res2: ', res2);
+            if (res2.data.status == true) {
+                const newUser = {
                     id: user.id,
                     name: user.name,
                     imageUrl: user.imageUrl,
@@ -61,15 +61,15 @@ function ManageTourScreen({ navigation }) {
                     .catch((error) => {
                         console.error(error);
                     });
-                console.log('user: ',newUser);
-                AsyncStorage.setItem('user',JSON.stringify(newUser))
+                console.log('user: ', newUser);
+                AsyncStorage.setItem('user', JSON.stringify(newUser))
                     .then(() => console.log('Object stored successfully'))
-                    .catch((error) => console.log('Error storing object: ',error));
+                    .catch((error) => console.log('Error storing object: ', error));
                 return true;
             } else {
                 // Alert.alert('Thông báo!', res2.message + '', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
-                console.log('res2.message: ',res2.data.message);
-                if (res2.data.message=='Refesh token không hợp lệ!') {
+                console.log('res2.message: ', res2.data.message);
+                if (res2.data.message == 'Refesh token không hợp lệ!') {
                     setUser(null);
                     setIsLogin(false);
                     clearOldData();
@@ -90,68 +90,68 @@ function ManageTourScreen({ navigation }) {
         return false;
     }
 
-    const loader=() => {
+    const loader = () => {
         if (isLoading) {
             return <ActivityIndicator size={'small'} color={COLOR.primary} />;
         }
     };
 
-    const loadMoreTour=() => {
-        if (Math.ceil(Number(numberTour)/5-1)>=paging) {
+    const loadMoreTour = () => {
+        if (Math.ceil(Number(numberTour) / 5 - 1) >= paging) {
             setLoadingFooter(true);
-            setPaging((preState) => preState+1);
+            setPaging((preState) => preState + 1);
         }
     };
 
-    const handleScroll=(event) => {
-        const { layoutMeasurement,contentOffset,contentSize }=event.nativeEvent;
+    const handleScroll = (event) => {
+        const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
         // console.log(layoutMeasurement, contentOffset, contentSize);
-        const paddingToBottom=20;
-        if (layoutMeasurement.height+contentOffset.y>=contentSize.height-paddingToBottom) {
+        const paddingToBottom = 20;
+        if (layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom) {
             loadMoreTour();
         }
     };
     useEffect(() => {
         if (!isLogin) navigation.goBack();
-    },[isLogin]);
+    }, [isLogin]);
     useEffect(() => {
         getNumberTour();
-    },[]);
+    }, []);
 
     useEffect(() => {
         setListTour([]);
         // setPaging(1);
         // if (paging == 1) setLoading(true);
         getListTour();
-    },[paging]);
+    }, [paging]);
 
     async function getListTour() {
         try {
-            const response=await request.get(API.listTour+'?paging='+paging,{
+            const response = await request.get(API.listTour + '?paging=' + paging, {
                 headers: {
                     authorization: user.accessToken,
                 },
             });
-            if (response.status==true) {
-                isEmpty=false;
+            if (response.status == true) {
+                isEmpty = false;
 
                 setLoading(false);
                 setListTour((preState) => {
-                    return [...preState,...response.data];
+                    return [...preState, ...response.data];
                 });
                 // setMasterDataSource(response.data);
                 setFilteredDataSource((preState) => {
-                    return [...preState,...response.data];
+                    return [...preState, ...response.data];
                 });
                 setLoadingFooter(false);
             } else {
                 setLoading(false);
-                isEmpty=true;
-                if (response.message=='Token đã hết hạn') {
+                isEmpty = true;
+                if (response.message == 'Token đã hết hạn') {
                     getRefreshToken();
                 } else
-                    Alert.alert('Thông báo!',response.message+'',[
-                        { text: 'OK',onPress: () => console.log('OK Pressed') },
+                    Alert.alert('Thông báo!', response.message + '', [
+                        { text: 'OK', onPress: () => console.log('OK Pressed') },
                     ]);
             }
         } catch (error) {
@@ -161,12 +161,11 @@ function ManageTourScreen({ navigation }) {
 
     async function getNumberTour() {
         try {
-            const res=await request.get(API.numberTour);
-            if (res.status===true) {
+            const res = await request.get(API.numberTour);
+            if (res.status === true) {
                 setNumberTour(res.data[0].number);
-                console.log(res.data[0].number);
             } else {
-                Alert.alert('Thông báo!',res.message+'',[{ text: 'OK',onPress: () => console.log('OK Pressed') }]);
+                Alert.alert('Thông báo!', res.message + '', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
             }
         } catch (error) {
             console.log(error);
@@ -174,7 +173,7 @@ function ManageTourScreen({ navigation }) {
     }
 
     return (
-        <SafeAreaView style={{ justifyContent: 'center',alignItems: 'center',flex: 1 }}>
+        <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
             <View
                 style={{
                     flexDirection: 'row',
@@ -193,9 +192,9 @@ function ManageTourScreen({ navigation }) {
                 </TouchableOpacity>
                 <Text style={stylesAllTour.title}>Quản lý tour</Text>
                 <TouchableOpacity
-                    style={[stylesAllTour.title,{ marginLeft: 130 }]}
+                    style={[stylesAllTour.title, { marginLeft: 130 }]}
                     onPress={() => {
-                        navigation.navigate('EditTour',{ type: 'add' });
+                        navigation.navigate('EditTour', { type: 'add' });
                     }}
                 >
                     <Icon name="add" size={25} color="#021A5A" />
@@ -208,19 +207,19 @@ function ManageTourScreen({ navigation }) {
             />
             {loader()}
 
-            {isEmpty? (
+            {isEmpty ? (
                 <View>
                     <Image
                         source={require('./No-data-cuate.png')}
-                        style={{ height: 300,width: 200,marginTop: 100,marginBottom: 0 }}
+                        style={{ height: 300, width: 200, marginTop: 100, marginBottom: 0 }}
                     />
-                    <Text style={{ text: 5,textAlign: 'center',marginTop: 0 }}>Chưa có dữ liệu</Text>
+                    <Text style={{ text: 5, textAlign: 'center', marginTop: 0 }}>Chưa có dữ liệu</Text>
                 </View>
-            ):(
+            ) : (
                 // <View></View>
                 <ScrollView
                     onScroll={handleScroll}
-                    style={{ marginTop: 10,height: 600 }}
+                    style={{ marginTop: 10, height: 600 }}
                     refreshControl={
                         <RefreshControl
                             enabled={true}
@@ -231,8 +230,8 @@ function ManageTourScreen({ navigation }) {
                                 // setFilteredDataSource([]);
                                 // setListTour([]);
                                 // getListTour();
-                                if (paging!=1) setListTour([]);
-                                if (paging!=1) setFilteredDataSource([]);
+                                if (paging != 1) setListTour([]);
+                                if (paging != 1) setFilteredDataSource([]);
                                 setPaging(1);
                                 setFresh(false);
                             }}
@@ -245,7 +244,7 @@ function ManageTourScreen({ navigation }) {
                 </ScrollView>
             )}
 
-            {isLoadingFooter? <ActivityIndicator size="small" color={COLOR.primary} />:''}
+            {isLoadingFooter ? <ActivityIndicator size="small" color={COLOR.primary} /> : ''}
         </SafeAreaView>
     );
 }
