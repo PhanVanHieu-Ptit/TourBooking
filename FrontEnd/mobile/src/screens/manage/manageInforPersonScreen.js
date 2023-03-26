@@ -116,7 +116,7 @@ function ManageInforPersonScreen({ route, navigation }) {
                 path: 'images',
             },
         };
-        launchImageLibrary(options, (response) => {
+        launchImageLibrary(options, async (response) => {
             // console.log('Response = ', response);
 
             if (response.didCancel) {
@@ -129,8 +129,12 @@ function ManageInforPersonScreen({ route, navigation }) {
             } else {
                 // console.log('source', response);
 
+                // setImgPath(response.assets[0].uri);
+
+                const url = await uploadImage(response.assets[0].uri);
                 setImgPath(response.assets[0].uri);
-                setResponseImage(response);
+                console.log('url: ', url);
+                setResponseImage(url);
             }
         });
     };
@@ -163,7 +167,7 @@ function ManageInforPersonScreen({ route, navigation }) {
                 path: 'images',
             },
         };
-        launchCamera(options, (response) => {
+        launchCamera(options, async (response) => {
             console.log('Response = ', response);
 
             if (response.didCancel) {
@@ -176,8 +180,10 @@ function ManageInforPersonScreen({ route, navigation }) {
             } else {
                 // console.log('source', response);
 
+                const url = await uploadImage(response.assets[0].uri);
                 setImgPath(response.assets[0].uri);
-                setResponseImage(response);
+                console.log('url: ', url);
+                setResponseImage(url);
             }
         });
     };
@@ -189,13 +195,13 @@ function ManageInforPersonScreen({ route, navigation }) {
             ]);
             return false;
         }
-        if (email.trim().length == 0) {
+        if (email.trim().length == 0 && isLogin) {
             Alert.alert('Thông báo!', 'Không được để trống email!', [
                 { text: 'OK', onPress: () => console.log('OK Pressed') },
             ]);
             return false;
         }
-        if (isLogin && user?.role == 'customer') {
+        if ((isLogin && user?.role == 'customer') || !isLogin) {
             if (address.trim().length == 0) {
                 Alert.alert('Thông báo!', 'Không được để trống địa chỉ!', [
                     { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -213,14 +219,10 @@ function ManageInforPersonScreen({ route, navigation }) {
     };
     const update = async () => {
         if (checkValue()) {
-            const url = await uploadImage(imgPath);
-            console.log('url: ', url);
-            // await deleteImage('nM0hvJF');
-
             request
                 .postPrivate(
                     API.updateInfoPersonal,
-                    { name, address, phoneNumber: phone, imageUrl: url },
+                    { name, address, phoneNumber: phone, responseImage },
                     { 'Content-Type': 'application/json', authorization: user.accessToken },
                     'PUT',
                 )
@@ -274,12 +276,12 @@ function ManageInforPersonScreen({ route, navigation }) {
 
     const updateStaff = async () => {
         if (checkValue()) {
-            const url = await uploadImage(imgPath);
-            console.log('url: ', url);
+            // const url = await uploadImage(imgPath);
+            // console.log('url: ', url);
             request
                 .postPrivate(
                     '/staff/' + user.id + '/update',
-                    { name, imageUrl: url },
+                    { name, imageUrl: responseImage },
                     { 'Content-Type': 'application/json', authorization: user.accessToken },
                     'PUT',
                 )
@@ -290,7 +292,7 @@ function ManageInforPersonScreen({ route, navigation }) {
                         const newUser = {
                             id: user.id,
                             name: name,
-                            imageUrl: url,
+                            imageUrl: responseImage,
                             role: user.role,
                             email: user.email,
                             accessToken: user.accessToken,
@@ -331,7 +333,7 @@ function ManageInforPersonScreen({ route, navigation }) {
 
     const addInfo = () => {
         if (checkValue()) {
-            navigation.navigate('Register', { name: name, address: address, phone: phone });
+            navigation.navigate('Register', { name: name, address: address, phone: phone, responseImage });
         }
     };
 
@@ -432,7 +434,7 @@ function ManageInforPersonScreen({ route, navigation }) {
                         <AntDesign name="check" size={20} color="#0D6EFD" />
                     </View>
                 </View>
-                {isLogin || type == 'register' ? (
+                {isLogin ? (
                     <View style={{ marginTop: 20 }}>
                         <Text style={stylesManage.title}>Email</Text>
                         <View
