@@ -3,14 +3,18 @@ const { encode } = require("../utils/my-bcrypt");
 const { getToken } = require("../utils/token");
 const connection = require("../utils/connection");
 const { sendChangePassMail } = require("../utils/mail");
+const calculateStart = require("../utils/calculateStart");
 class StaffController {
   index(req, res) {
     res.send(message([], true, "Staff"));
   }
   async getListStaff(req, res) {
     const key = req.query.key || "";
+    const paging = req.query.paging ? req.query.paging : 1;
     let [rows, fields] = await connection.execute(
-      `call managetour.sp_get_list_staff_by_key('%${key}%');`
+      `call managetour.sp_get_list_staff_by_key('%${key}%',${calculateStart(
+        paging
+      )});`
     );
 
     return res.send(message(rows[0], true, "Key:" + key));

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React,{ useContext,useState,useEffect } from 'react';
 import {
     FlatList,
     SafeAreaView,
@@ -23,17 +23,83 @@ import COLOR from '../../res/color';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function ManageStaffScreen({ navigation }) {
-    const { user, setUser, setIsLogin, setHistoryOrder, setListTour, setListOrder, listStaff, setListStaff } =
+
+    const { user,setUser,setIsLogin,setHistoryOrder,setListTour,setListOrder,listStaff,setListStaff }=
         useContext(AppContext);
-    const [isLoading, setIsLoading] = useState(true);
-    const [loadingFooter, setLoadingFooter] = useState(false);
-    const [refresh, setFresh] = useState(false);
-    let isEmpty = false;
+    const [isLoading,setIsLoading]=useState(true);
+    const [loadingFooter,setLoadingFooter]=useState(false);
+    const [paging,setPaging]=useState(1);
+    const [numberStaff,setNumberStaff]=useState(0);
+    const [refresh,setFresh]=useState(false);
+    let isEmpty=false;
+
 
     useEffect(() => {
+        getNumberStaff();
+    },[]);
+
+    useEffect(() => {
+        setListStaff([]);
         loadStaffOutStanding();
-        console.log('Load');
-    }, []);
+    },[paging]);
+
+    const handleScroll=(event) => {
+        const { layoutMeasurement,contentOffset,contentSize }=event.nativeEvent;
+        const paddingToBottom=20;
+        if (layoutMeasurement.height+contentOffset.y>=contentSize.height-paddingToBottom) {
+            loadMore();
+        }
+    };
+
+    const loadMore=() => {
+
+        if (Math.ceil(Number(numberStaff)/5-1)>=paging) {
+            setLoadingFooter(true);
+            setPaging((preState) => preState+1);
+        }
+    };
+
+    async function loadStaffOutStanding() {
+        try {
+            const res=await request.get(API.listStaff+'?paging='+paging,{
+                headers: { 'Content-Type': 'application/json',authorization: user.accessToken },
+            });
+            console.log('API');
+            if (res.status===true) {
+                setIsLoading(false);
+                setListStaff((preState) => {
+                    return [...preState,...res.data];
+                });
+                setLoadingFooter(false);
+            } else {
+                isEmpty=true;
+                if (res.message=='Token đã hết hạn') {
+                    getRefreshToken();
+                } else
+                    Alert.alert('Thông báo!',res.message+'',[
+                        { text: 'OK',onPress: () => console.log('OK Pressed') },
+                    ]);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async function getNumberStaff() {
+        try {
+            const res=await request.get(API.numberStaff,{
+                headers: { authorization: user.accessToken },
+            });
+            if (res.status===true) {
+                setNumberStaff(res.data[0].number);
+            } else {
+                Alert.alert('Thông báo!',res.message+'',[{ text: 'OK',onPress: () => console.log('OK Pressed') }]);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
 
     function clearOldData() {
         setHistoryOrder([]);
@@ -44,10 +110,10 @@ function ManageStaffScreen({ navigation }) {
 
     async function getRefreshToken() {
         try {
-            const res2 = await request.post(API.refeshToken, { token: user.refreshToken });
-            console.log('res2: ', res2);
-            if (res2.data.status == true) {
-                const newUser = {
+            const res2=await request.post(API.refeshToken,{ token: user.refreshToken });
+            console.log('res2: ',res2);
+            if (res2.data.status==true) {
+                const newUser={
                     id: user.id,
                     name: user.name,
                     imageUrl: user.imageUrl,
@@ -69,15 +135,15 @@ function ManageStaffScreen({ navigation }) {
                     .catch((error) => {
                         console.error(error);
                     });
-                console.log('user: ', newUser);
-                AsyncStorage.setItem('user', JSON.stringify(newUser))
+                console.log('user: ',newUser);
+                AsyncStorage.setItem('user',JSON.stringify(newUser))
                     .then(() => console.log('Object stored successfully'))
-                    .catch((error) => console.log('Error storing object: ', error));
+                    .catch((error) => console.log('Error storing object: ',error));
                 return true;
             } else {
                 // Alert.alert('Thông báo!', res2.message + '', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
-                console.log('res2.message: ', res2.data.message);
-                if (res2.data.message == 'Refesh token không hợp lệ!') {
+                console.log('res2.message: ',res2.data.message);
+                if (res2.data.message=='Refesh token không hợp lệ!') {
                     setUser(null);
                     setIsLogin(false);
                     clearOldData();
@@ -98,51 +164,8 @@ function ManageStaffScreen({ navigation }) {
         return false;
     }
 
-    async function loadStaffOutStanding() {
-        try {
-            const res = await request.get(API.listStaff, {
-                headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
-            });
-            console.log('API');
-            if (res.status === true) {
-                setIsLoading(false);
-                setListStaff(res.data);
-                setLoadingFooter(false);
-            } else {
-                isEmpty = true;
-                if (res.message == 'Token đã hết hạn') {
-                    getRefreshToken();
-                } else
-                    Alert.alert('Thông báo!', res.message + '', [
-                        { text: 'OK', onPress: () => console.log('OK Pressed') },
-                    ]);
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
-    // useEffect(() => {
-    //     request
-    //         .get(API.listStaff, {
-    //             headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
-    //         })
-    //         .then((response) => {
-    //             console.log(response.data);
-
-    //             if (response.status == true) {
-    //                 setListStaff(response.data);
-    //             } else {
-    //                 Alert.alert('Thông báo!', response.message + '', [
-    //                     { text: 'OK', onPress: () => console.log('OK Pressed') },
-    //                 ]);
-    //             }
-    //         })
-    //         .catch((err) => {
-    //             console.log(err);
-    //         });
-    // }, []);
     return (
-        <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+        <SafeAreaView style={{ justifyContent: 'center',alignItems: 'center',flex: 1 }}>
             <View
                 style={{
                     flexDirection: 'row',
@@ -155,11 +178,11 @@ function ManageStaffScreen({ navigation }) {
                         <Icon name="chevron-back" size={25} color="#021A5A" />
                     </View>
                 </TouchableOpacity>
-                <Text style={[stylesAllTour.title, { marginLeft: 10 }]}>Quản lý nhân viên</Text>
+                <Text style={[stylesAllTour.title,{ marginLeft: 10 }]}>Quản lý nhân viên</Text>
                 <TouchableOpacity
-                    style={[stylesAllTour.title, { marginLeft: 130 }]}
+                    style={[stylesAllTour.title,{ marginLeft: 130 }]}
                     onPress={() => {
-                        navigation.navigate('EditStaff', { type: 'add' });
+                        navigation.navigate('EditStaff',{ type: 'add' });
                     }}
                 >
                     <Icon name="add" size={25} color="#021A5A" />
@@ -167,6 +190,7 @@ function ManageStaffScreen({ navigation }) {
             </View>
             <Find />
             <ScrollView
+                onScroll={handleScroll}
                 refreshControl={
                     <RefreshControl
                         enabled={true}
@@ -180,24 +204,29 @@ function ManageStaffScreen({ navigation }) {
                         }}
                     />
                 }
-                // refreshControl={<RefreshControl refreshing={refresh} />}
+            // refreshControl={<RefreshControl refreshing={refresh} />}
             >
-                {isEmpty ? (
+                {isEmpty? (
                     <View>
                         <Image
                             source={require('../manageTour/No-data-cuate.png')}
-                            style={{ height: 300, width: 200, marginTop: 100, marginBottom: 0 }}
+                            style={{ height: 300,width: 200,marginTop: 100,marginBottom: 0 }}
                         />
-                        <Text style={{ text: 5, textAlign: 'center', marginTop: 0 }}>Chưa có dữ liệu</Text>
+                        <Text style={{ text: 5,textAlign: 'center',marginTop: 0 }}>Chưa có dữ liệu</Text>
                     </View>
-                ) : isLoading ? (
-                    <ActivityIndicator size="small" color={COLOR.primary} />
-                ) : (
-                    listStaff.map((item) => <CardStaff staff={item} key={item.idStaff} navigation={navigation} />)
-                )}
+                ):(
+                    isLoading? (
+                        <ActivityIndicator size="small" color={COLOR.primary} />
+                    ):(
 
-                {loadingFooter ? <ActivityIndicator size="small" color={COLOR.primary} /> : ''}
+                        listStaff.map((item) => (
+                            <CardStaff staff={item} key={item.idStaff} navigation={navigation} />
+                        ))
+
+                    )
+                )}
             </ScrollView>
+            {loadingFooter? <ActivityIndicator size="small" color={COLOR.primary} />:''}
         </SafeAreaView>
     );
 }

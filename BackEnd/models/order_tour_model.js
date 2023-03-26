@@ -221,7 +221,7 @@ OrderTour.update = async function (data, result) {
   ])
     .then(([rows, fields]) => {
       if (rows.affectedRows == 1) result(data, true, "Cập nhật thành công!");
-      else result([{}], true, "Cập nhật thất bại!");
+      else result([{}], false, "Cập nhật thất bại!");
     })
     .catch((err) => {
       console.log(err);
