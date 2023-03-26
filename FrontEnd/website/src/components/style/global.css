@@ -298,12 +298,17 @@
    display: inline-block;
    border-radius: 16px;
    padding: 4px 16px;
+   white-space: nowrap;
  }
 
  .status-red {
    background-color: var(--red);
    color: var(--black);
    display: inline;
+   white-space: nowrap;
+   border-radius: 16px;
+   padding: 4px 16px;
+
  }
 
 

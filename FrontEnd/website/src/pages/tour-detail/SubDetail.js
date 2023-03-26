@@ -1,6 +1,7 @@
 import css from './style.module.css';
 import {useState} from 'react';
 import {orderTour} from '../../utils/services';
+import {toast} from 'react-toastify';
 
 function SubDetail({memoizedOptions, idTour}) {
     const data = memoizedOptions;
@@ -17,6 +18,7 @@ function SubDetail({memoizedOptions, idTour}) {
     };
     const handleSubmit = (e) => {
         e.preventDefault();
+        if (!localStorage.token) return toast.error('Vui lòng đăng nhập để đặt tour');
         orderTour(formData);
     };
 

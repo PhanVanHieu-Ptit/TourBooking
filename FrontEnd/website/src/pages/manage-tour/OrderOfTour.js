@@ -14,10 +14,14 @@ function OrderOfTour({tourData}) {
         console.log(index);
 
         if (action == 'order') {
-            confirmOrderTour(listOrderOfTour[index].idTourOrder);
+            confirmOrderTour(listOrderOfTour[index].idTourOrder).then((rs) => {
+                rs.status && getListOrderOfTour(tourData.idTour).then((rs) => setListOrderOfTour(rs.data));
+            });
         }
         if (action == 'cancel') {
-            confirmCancelTour(listOrderOfTour[index].idTourOrder);
+            confirmCancelTour(listOrderOfTour[index].idTourOrder).then((rs) => {
+                rs.status && getListOrderOfTour(tourData.idTour).then((rs) => setListOrderOfTour(rs.data));
+            });
         }
     };
     return (
