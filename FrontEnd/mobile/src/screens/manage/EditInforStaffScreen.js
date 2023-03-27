@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { SafeAreaView, Image, View, Text, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { SafeAreaView, Image, View, Text, TouchableOpacity, TextInput, Alert, PermissionsAndroid } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import stylesButton from '../../components/general/actionButton/styles';
@@ -11,13 +11,15 @@ import { AppContext } from '../../../App';
 import * as request from '../../services/untils';
 import API from '../../res/string';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { uploadImage } from '../../services/untils/uploadImage';
+import COLOR from '../../res/color';
 
 function EditInforStaffScreen({ route, navigation }) {
     const { user, setUser, setIsLogin, setHistoryOrder, setListTour, setListOrder, setListStaff } =
         useContext(AppContext);
     const staff = route.params?.staff;
     const type = route.params?.type == 'add';
-    const [title, setTitle] = useState(type ? 'Thêm nhân viên' : 'Cập nhật thông tin nhân viên');
+    const [title, setTitle] = useState(type ? 'Thêm thông tin nhân viên' : 'Cập nhật thông tin nhân viên');
     const [imageUrl, setImageUrl] = useState(
         staff != undefined ? staff.imageUrl : `https://freesvg.org/img/abstract-user-flat-4.png`,
     );
@@ -88,7 +90,7 @@ function EditInforStaffScreen({ route, navigation }) {
         return false;
     }
 
-    const [responseImage, setResponseImage] = useState('');
+    const [responseImage, setResponseImage] = useState(`https://freesvg.org/img/abstract-user-flat-4.png`);
     const chooseImage = () => {
         let options = {
             title: 'Select Image',
@@ -98,7 +100,7 @@ function EditInforStaffScreen({ route, navigation }) {
                 path: 'images',
             },
         };
-        launchImageLibrary(options, (response) => {
+        launchImageLibrary(options, async (response) => {
             // console.log('Response = ', response);
 
             if (response.didCancel) {
@@ -111,8 +113,61 @@ function EditInforStaffScreen({ route, navigation }) {
             } else {
                 // console.log('source', response.assets[0].uri);
 
+                // setImageUrl(response.assets[0].uri);
+                // setResponseImage(response);
+                const url = await uploadImage(response.assets[0].uri);
                 setImageUrl(response.assets[0].uri);
-                setResponseImage(response);
+                console.log('url: ', url);
+                setResponseImage(url);
+            }
+        });
+    };
+
+    async function requestCameraPermission() {
+        try {
+            const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA, {
+                title: 'Cấp quyền sử dụng',
+                message: 'Ứng dụng cần quyền truy cập vào máy ảnh của bạn.',
+                buttonNeutral: 'Hỏi lại sau',
+                buttonNegative: 'Hủy bỏ',
+                buttonPositive: 'Đồng ý',
+            });
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                console.log('Camera permission granted');
+            } else {
+                console.log('Camera permission denied');
+            }
+        } catch (err) {
+            console.warn(err);
+        }
+    }
+
+    const takePicture = () => {
+        requestCameraPermission();
+        const options = {
+            title: 'Chọn ảnh',
+            storageOptions: {
+                skipBackup: true,
+                path: 'images',
+            },
+        };
+        launchCamera(options, async (response) => {
+            console.log('Response = ', response);
+
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            } else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton);
+                Alert.alert(response.customButton);
+            } else {
+                // console.log('source', response);
+
+                const url = await uploadImage(response.assets[0].uri);
+                setImageUrl(response.assets[0].uri);
+                console.log('url: ', url);
+                setResponseImage(url);
             }
         });
     };
@@ -124,7 +179,7 @@ function EditInforStaffScreen({ route, navigation }) {
                 {
                     name,
                     email,
-                    imageUrl: '',
+                    imageUrl: responseImage,
                 },
                 { 'Content-Type': 'application/json', authorization: user.accessToken },
             )
@@ -156,7 +211,7 @@ function EditInforStaffScreen({ route, navigation }) {
                 {
                     id: staff.idStaff,
                     name,
-                    imageUrl: '',
+                    imageUrl: responseImage,
                 },
                 { 'Content-Type': 'application/json', authorization: user.accessToken },
                 'PUT',
@@ -271,13 +326,23 @@ function EditInforStaffScreen({ route, navigation }) {
                 />
 
                 <Text style={stylesManage.txt_name}>{name}</Text>
-                <TouchableOpacity
-                    onPress={() => {
-                        chooseImage();
-                    }}
-                >
-                    <Text style={[stylesManage.txt_name, { fontSize: 16, fontWeight: 'normal' }]}>Đổi ảnh</Text>
-                </TouchableOpacity>
+                <View style={{ flexDirection: 'row' }}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            takePicture();
+                        }}
+                        style={{ marginRight: 10 }}
+                    >
+                        <AntDesign name="camera" size={20} color={COLOR.primary} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => {
+                            chooseImage();
+                        }}
+                    >
+                        <Text style={[stylesManage.txt_name, { fontSize: 16, fontWeight: 'normal' }]}>Đổi ảnh</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
             <View style={{ marginTop: 20 }}>
                 <Text style={stylesManage.title}>Họ tên</Text>
