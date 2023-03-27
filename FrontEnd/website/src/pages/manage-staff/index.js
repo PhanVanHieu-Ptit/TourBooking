@@ -10,40 +10,30 @@ import css from './style.module.css';
 import {setDisplayLoading} from '../../utils/axiosConfig';
 function ManageStaff() {
     checkRole();
-    const page = 10;
-
     const [listStaff, setListStaff] = useState([]);
+    const [searchValue, setSearchValue] = useState('');
     const [showAddNewPopup, setShowAddNewPopup] = useState(false);
-    const [displayedData, setDisplayedData] = useState([]);
-    let [displayedCount, setDisplayedCount] = useState(page);
-    const containerRef = useRef();
+    let [paging, setPaging] = useState(1);
 
     useEffect(() => {
-        fetchData();
-    }, []);
-    const fetchData = (searchValue) => {
-        setDisplayedCount(page);
         getListStaff(searchValue).then((rs) => {
             setListStaff(rs.data);
-            setDisplayedData(rs.data.slice(0, displayedCount));
         });
-    };
+    }, []);
     const handleSubmitSearch = (e, searchValue) => {
         e.preventDefault();
-        fetchData(searchValue);
+        setPaging(1);
+        setSearchValue(searchValue);
+        getListStaff(searchValue).then((rs) => {
+            setListStaff(rs.data);
+        });
     };
 
-    const handleScroll = () => {
-        const container = containerRef.current;
-        const {scrollTop, offsetHeight, scrollHeight} = container;
-        if (Math.round(scrollTop) + offsetHeight >= scrollHeight - 2) {
-            setDisplayLoading(true);
-            setTimeout(() => {
-                setDisplayedCount(displayedCount + page);
-                setDisplayedData(listStaff.slice(0, displayedCount + page));
-                setDisplayLoading(false);
-            }, 500);
-        }
+    const handleLoadData = () => {
+        setPaging(++paging);
+        getListStaff(searchValue, paging).then((rs) => {
+            setListStaff(listStaff.concat(rs.data));
+        });
     };
     return (
         <>
@@ -64,10 +54,18 @@ function ManageStaff() {
                                 <th />
                             </tr>
                         </thead>
-                        <tbody ref={containerRef} onScroll={handleScroll}>
-                            {displayedData.map((e) => (
+                        <tbody>
+                            {listStaff.map((e) => (
                                 <StaffRowData staffData={e} key={e.idStaff} />
                             ))}
+                            <tr>
+                                <p
+                                    onClick={handleLoadData}
+                                    className='mt--12'
+                                    style={{textAlign: 'center', cursor: 'pointer'}}>
+                                    Xem thêm
+                                </p>
+                            </tr>
                         </tbody>
                     </table>
                 </main>

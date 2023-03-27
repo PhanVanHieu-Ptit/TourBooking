@@ -39,8 +39,8 @@ export async function updateCustomerInfo(data) {
 export async function updateStaffInfo(data, id) {
     return axios.put(`/staff/${id}/update`, data);
 }
-export async function getListStaff(key = '') {
-    return axios.get(`/staff/list?key=${key}`);
+export async function getListStaff(key = '', paging = 1) {
+    return axios.get(`/staff/list?key=${key}&paging=${paging}`);
 }
 export async function addStaff(data) {
     return axios.post('/staff/add', data);

@@ -5,9 +5,6 @@ import formatDate from './../../utils/formatDate';
 function OrderOfTourRowData({orderOfTour, handleConfirm}) {
     return (
         <tr className='value'>
-            <td>
-                <img src={svg.dropDown} alt='' />
-            </td>
             <td className='id-value'>#{orderOfTour.customer.idCustomer}</td>
             <td>{orderOfTour.customer.name}</td>
             <td>{orderOfTour.customer.phoneNumber}</td>
@@ -23,6 +20,7 @@ function OrderOfTourRowData({orderOfTour, handleConfirm}) {
                 )}
             </td>
             <td> {formatMoney(orderOfTour.totalMoney)} </td>
+            <td> {orderOfTour.tour.note} </td>
             <td className='options'>
                 {orderOfTour.status.idStatus == 8 && (
                     <div className='btn-green' onClick={(e) => handleConfirm('order', orderOfTour.index)}>

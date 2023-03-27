@@ -35,14 +35,14 @@ function OrderOfTour({tourData}) {
             <table>
                 <tbody>
                     <tr>
-                        <th />
                         <th>ID KH</th>
                         <th>HỌ TÊN</th>
                         <th>SỐ ĐIỆN THOẠI</th>
-                        <th>SỐ NGƯƠI</th>
+                        <th>SỐ CHỖ ĐẶT</th>
                         <th>NGÀY ĐẶT</th>
                         <th>TRẠNG THÁI</th>
                         <th>TỔNG TIỀN</th>
+                        <th>GHI CHÚ</th>
                         <th />
                     </tr>
                     {listOrderOfTour.map((e, i) => {
