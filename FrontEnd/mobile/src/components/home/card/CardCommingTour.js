@@ -34,7 +34,7 @@ function CardCommingTour(props) {
 
                     <View>
                         <View style={{ flexDirection: 'row', margin: 5 }}>
-                            <Text style={stylesCard.txt3} numberOfLines={2}>
+                            <Text style={[stylesCard.txt3]} numberOfLines={3}>
                                 {tour.name}
                             </Text>
                             <View style={stylesCard.viewStar}>
