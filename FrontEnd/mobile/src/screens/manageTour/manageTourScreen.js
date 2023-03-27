@@ -14,12 +14,23 @@ import * as request from '../../services/untils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function ManageTourScreen({ navigation }) {
-    const { user, setUser, isLogin, setIsLogin, setHistoryOrder, setListTour, listTour, setListOrder, setListStaff } =
-        useContext(AppContext);
+    const {
+        user,
+        setUser,
+        isLogin,
+        setIsLogin,
+        filteredDataSource,
+        setFilteredDataSource,
+        setHistoryOrder,
+        setListTour,
+        listTour,
+        setListOrder,
+        setListStaff,
+    } = useContext(AppContext);
 
     // const [masterDataSource, setMasterDataSource] = useState(listTour);
 
-    const [filteredDataSource, setFilteredDataSource] = useState([]);
+    // const [filteredDataSource, setFilteredDataSource] = useState([]);
     const [isLoading, setLoading] = useState(true);
     const [numberTour, setNumberTour] = useState(0);
     const [isLoadingFooter, setLoadingFooter] = useState(false);
@@ -114,6 +125,7 @@ function ManageTourScreen({ navigation }) {
     useEffect(() => {
         if (!isLogin) navigation.goBack();
     }, [isLogin]);
+
     useEffect(() => {
         getNumberTour();
     }, []);
