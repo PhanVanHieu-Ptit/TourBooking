@@ -61,9 +61,9 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
         }
     };
     return (
-        <form className='col-wrapper' onSubmit={handleSubmit}>
+        <form className={css['tour-form'] + ' col-wrapper'} onSubmit={handleSubmit}>
             <div className='row-wrapper'>
-                <div className='col-wrapper pad-0-12 flex-1 images'>
+                <div className={css['img-col']}>
                     <label htmlFor='file'>
                         <img src={formData.imageUrl[0] || ''} alt='' className={css['big-display']} />
                         <input type='file' id='file' onChange={handleFileChange} style={{display: 'none'}} />
@@ -104,7 +104,7 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
                     <label>Điểm đến</label>
                     <Address formData={formData} name='tourDestination' handleInputChange={handleInputChange} />
                 </div>
-                <div className='col-wrapper pad-0-12 w--30  flex-align-l'>
+                <div className='col-wrapper pad-0-12 w--30  flex-align-l '>
                     <label>Chi tiết điểm đón</label>
                     <input
                         type='text'
@@ -181,13 +181,11 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
                         <input
                             type='checkbox'
                             name='tourGuide'
-                            className='w--10'
+                            style={{width: '20px', marginBottom: '0'}}
                             checked={formData.tourGuide}
                             onChange={(e) => setFormData({...formData, tourGuide: e.target.checked})}
                         />
-                        <label htmlFor='tour-guide' className='flex-1 mt--0'>
-                            Hướng dẫn viên
-                        </label>
+                        <label htmlFor='tour-guide'>Hướng dẫn viên</label>
                     </div>
                 </div>
             </div>

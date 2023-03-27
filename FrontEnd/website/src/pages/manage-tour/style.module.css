@@ -146,10 +146,19 @@
 
 }
 
-.booking-popup .popup-heading {
-  margin-bottom: 0px;
+.tour-form input,
+.tour-form select {
+  width: 100%;
+  border-radius: 16px;
+  border: 2px solid var(--gold);
+  height: 30px;
+  padding: 4px 8px;
+  margin-bottom: 8px;
 }
 
-.booking-popup .popup-content {
-  height: 95vh;
+.tour-form textarea {
+  border-radius: 16px;
+  border: 2px solid var(--gold);
+  height: 120px;
+  padding: 4px 8px;
 }

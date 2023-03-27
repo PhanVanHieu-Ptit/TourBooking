@@ -164,7 +164,7 @@
  }
 
  .w--10 {
-   width: 10%;
+   width: 10% !important;
  }
 
  .w--30 {
@@ -332,7 +332,8 @@
    color: var(--gold);
  }
 
- .admin-form input {
+ .admin-form input,
+ .admin-form select {
    width: 100%;
    border-radius: 16px;
    border: 2px solid var(--gold);
