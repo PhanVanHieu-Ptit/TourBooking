@@ -4,6 +4,8 @@ import Address from './../components/Address';
 import uploadImg from './../../utils/image';
 import css from './style.module.css';
 import {addTour, updateTour} from '../../utils/services';
+import formatMoney from './../../utils/formatMoney';
+import CurrencyInput from '../components/CurrencyInput';
 function TourForm({tourData, setTourData, listTour, setListTour, update = true}) {
     console.log('tourForm');
 
@@ -43,6 +45,7 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
     };
     const handleSubmit = (e) => {
         e.preventDefault();
+        formData.price = formData.price.split(' ')[0].replaceAll(',', '');
         formData.tourPictures = formData.imageUrl;
         formData.startDate =
             formData.startDay || formData.startDate.split(' ')[0] + ' ' + (formData.startTime || '00:00:00');
@@ -181,8 +184,14 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
                         <label className='mt--0 ml--12'> ngày trước ngày khởi hành</label>
                     </div>
                     <label>Đơn giá</label>
-                    min='0'
-                    <input type='number' name='price' value={formData.price} onChange={handleInputChange} />
+
+                    <CurrencyInput
+                        name='price'
+                        value={formData.price}
+                        onChange={handleInputChange}
+                        placeholder='$0.00'
+                        type='text'
+                    />
                     <div className='row-wrapper flex-align-c flex-align-l'>
                         <input
                             type='checkbox'
