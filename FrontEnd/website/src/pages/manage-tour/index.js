@@ -9,6 +9,7 @@ import {getListTour} from '../../utils/services';
 import TourRowData from './TourRowData';
 import Popup from './../../components/Popup';
 import TourForm from './TourForm';
+import {toast} from 'react-toastify';
 function ManageTour() {
     checkRole();
     console.log('manageTour');
@@ -34,6 +35,7 @@ function ManageTour() {
     const handleSeeMore = () => {
         setPaging(++paging);
         getListTour(searchValue, paging).then((rs) => {
+            if (!rs.data.length) return toast.warning('Không còn dữ liệu!');
             setListTour(listTour.concat(rs.data));
         });
     };

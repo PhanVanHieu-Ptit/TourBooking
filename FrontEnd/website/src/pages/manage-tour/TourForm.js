@@ -4,6 +4,8 @@ import Address from './../components/Address';
 import uploadImg from './../../utils/image';
 import css from './style.module.css';
 import {addTour, updateTour} from '../../utils/services';
+import formatMoney from './../../utils/formatMoney';
+import CurrencyInput from '../components/CurrencyInput';
 function TourForm({tourData, setTourData, listTour, setListTour, update = true}) {
     console.log('tourForm');
 
@@ -43,6 +45,7 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
     };
     const handleSubmit = (e) => {
         e.preventDefault();
+        formData.price = formData.price.split(' ')[0].replaceAll(',', '');
         formData.tourPictures = formData.imageUrl;
         formData.startDate =
             formData.startDay || formData.startDate.split(' ')[0] + ' ' + (formData.startTime || '00:00:00');
@@ -93,6 +96,7 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
                     />
                     <label>Độ dài(ngày)</label>
                     <input
+                        min='0'
                         type='number'
                         name='totalDay'
                         value={formData.totalDay}
@@ -123,6 +127,7 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
                         <div className='col-wrapper flex-align-l'>
                             <label className='mt--0'>Số người tối thiểu</label>
                             <input
+                                min='0'
                                 type='number'
                                 className='w--50'
                                 name='minQuantity'
@@ -133,6 +138,7 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
                         <div className='col-wrapper flex-align-l'>
                             <label className='mt--0'>Số người tối đa</label>
                             <input
+                                min='0'
                                 type='number'
                                 name='maxQuantity'
                                 className='w--50'
@@ -145,6 +151,7 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
                         <div className='col-wrapper flex-align-l'>
                             <label>Phí hủy mức 1(%)</label>
                             <input
+                                min='0'
                                 type='number'
                                 name='normalPenaltyFee'
                                 className='w--50'
@@ -155,6 +162,7 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
                         <div className='col-wrapper flex-align-l'>
                             <label>Phí hủy mức 2</label>
                             <input
+                                min='0'
                                 type='number'
                                 name='strictPenaltyFee'
                                 className='w--50'
@@ -166,6 +174,7 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
                     <label>Thời điểm áp dụng phí hủy mức 2:</label>
                     <div className='row-wrapper flex-align-l'>
                         <input
+                            min='0'
                             type='number'
                             name='minDate'
                             className='w--20'
@@ -175,9 +184,15 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
                         <label className='mt--0 ml--12'> ngày trước ngày khởi hành</label>
                     </div>
                     <label>Đơn giá</label>
-                    <input type='number' name='price' value={formData.price} onChange={handleInputChange} />
 
-                    <div className='row-wrapper mt--24 flex-align-c flex-align-l'>
+                    <CurrencyInput
+                        name='price'
+                        value={formData.price}
+                        onChange={handleInputChange}
+                        placeholder='$0.00'
+                        type='text'
+                    />
+                    <div className='row-wrapper flex-align-c flex-align-l'>
                         <input
                             type='checkbox'
                             name='tourGuide'

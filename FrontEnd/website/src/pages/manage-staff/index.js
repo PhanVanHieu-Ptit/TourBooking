@@ -8,6 +8,7 @@ import AddStaff from './AddStaff';
 import StaffRowData from './StaffRowData';
 import css from './style.module.css';
 import {setDisplayLoading} from '../../utils/axiosConfig';
+import {toast} from 'react-toastify';
 function ManageStaff() {
     checkRole();
     const [listStaff, setListStaff] = useState([]);
@@ -32,6 +33,7 @@ function ManageStaff() {
     const handleLoadData = () => {
         setPaging(++paging);
         getListStaff(searchValue, paging).then((rs) => {
+            if (!rs.data.length) return toast.warning('Không còn dữ liệu!');
             setListStaff(listStaff.concat(rs.data));
         });
     };

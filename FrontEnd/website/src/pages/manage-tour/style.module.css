@@ -145,6 +145,8 @@
 
 }
 
+
+
 .tour-form input,
 .tour-form select {
   width: 100%;
@@ -152,12 +154,12 @@
   border: 2px solid var(--gold);
   height: 30px;
   padding: 4px 8px;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .tour-form textarea {
   border-radius: 16px;
   border: 2px solid var(--gold);
-  height: 120px;
+  height: 80px;
   padding: 4px 8px;
 }

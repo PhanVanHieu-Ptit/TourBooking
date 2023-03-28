@@ -149,7 +149,10 @@ const AccountInf = ({setPersonalInfoForm}) => {
                 <img src='../shared/toggle-pass.svg' alt='' className={css['toggle-pass']} />
             </div>
             <div className='row-wrapper flex-align-c'>
-                <p className={'mt--24'} onClick={() => setPersonalInfoForm(true)}>
+                <p
+                    className={'mt--24'}
+                    onClick={() => setPersonalInfoForm(true)}
+                    style={{marginLeft: '12px', textDecoration: 'underline', color: 'var(--gold)', cursor: 'pointer'}}>
                     Trở lại
                 </p>
                 <button className='btn--gold mt--24' type='button' onClick={handleChangePassword}>

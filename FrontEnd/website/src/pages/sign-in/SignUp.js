@@ -85,8 +85,8 @@ const AccountInf = ({formData, setFormData, handleInputChange, setPersonalInfoFo
                 <img src='../shared/toggle-pass.svg' alt='' className={css['toggle-pass']} />
             </div>
             <div className='row-wrapper flex-align-c'>
-                <button className={css.swapper + ' mt--24'} onClick={() => setPersonalInfoForm(true)}>
-                    Trở lại
+                <button className={css.swapper + ' mt--24 w--10'} onClick={() => setPersonalInfoForm(true)}>
+                    &#9664; Trở lại
                 </button>
                 <button className='btn--gold mt--24' type='button' onClick={validateAccForm}>
                     Đăng ký

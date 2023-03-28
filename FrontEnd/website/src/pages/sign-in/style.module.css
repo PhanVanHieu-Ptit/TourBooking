@@ -15,7 +15,7 @@
   position: relative;
   left: 50%;
   transform: translateX(-50%);
-  margin-bottom: 32px;
+  margin-bottom: 16px;
 }
 
 .main form {
@@ -25,7 +25,7 @@
 
 .main h1 {
   text-align: center;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   color: var(--gold);
 }
 
@@ -64,7 +64,7 @@
 }
 
 .main form button {
-  margin: 64px auto 12px;
+  margin: 64px auto 0px;
   width: 50%;
 }
 
@@ -72,7 +72,7 @@
   border: none;
   color: var(--gold);
   background: none;
-  margin: 12px 0;
+  margin: 6px 0;
   width: 100%;
   cursor: pointer;
 }
