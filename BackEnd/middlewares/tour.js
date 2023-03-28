@@ -159,6 +159,6 @@ async function tourInsert(req, res, next) {
   next();
 }
 function checkStartDate(dateStart) {
-  return new Date().getTime() < new Date(dateStart).getTime();
+  return new Date().getTime() > new Date(dateStart).getTime();
 }
 module.exports = { tourInsert };

@@ -69,7 +69,7 @@ Tour.getSlotsLeft = function (id) {
 Tour.findBykey = function (key, paging) {
   return db
     .query("call managetour.sp_get_tour_by_key(?, ?);", [
-      key,
+      "%" + key + "%",
       calculateStart(paging),
     ])
     .then(([rows, fields]) => {
