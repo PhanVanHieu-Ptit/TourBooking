@@ -1,6 +1,6 @@
 import css from './style.module.css';
 import React, {useState, useEffect} from 'react';
-import {getListOrderTour, getOwnInfor, requestCancelTour} from '../../utils/services';
+import {customerCancelTour, getListOrderTour, getOwnInfor, requestCancelTour} from '../../utils/services';
 import formatMoney from '../../utils/formatMoney';
 import svg from './../../assets/svg/index';
 import formatDate from './../../utils/formatDate';
@@ -12,8 +12,17 @@ function BookedToursClient() {
             getListOrderTour(rs.data[0].idCustomer).then((rs) => setTours(rs.data));
         });
     }, []);
-    const handleCancelTour = (idTourOrder, index) => {
+    const handleRequestCancelTour = (idTourOrder, index) => {
         requestCancelTour(idTourOrder).then((rs) => {
+            if (rs.status) {
+                getOwnInfor().then((rs) => {
+                    getListOrderTour(rs.data[0].idCustomer).then((rs) => setTours(rs.data));
+                });
+            }
+        });
+    };
+    const handleCustomerCancelTour = (idTourOrder, index) => {
+        customerCancelTour(idTourOrder).then((rs) => {
             if (rs.status) {
                 getOwnInfor().then((rs) => {
                     getListOrderTour(rs.data[0].idCustomer).then((rs) => setTours(rs.data));
@@ -32,14 +41,31 @@ function BookedToursClient() {
                                 <div className={css.heading}>
                                     <p className={css.name}>{e.tour.name}</p>
                                     <i className={css.id}>
-                                        #{e.tour.idTour} - Trạng thái: {e.status.name}
+                                        #{e.tour.idTour} - Trạng thái:{' '}
+                                        <b>
+                                            <span
+                                                style={{
+                                                    backgroundColor: 'var(--gold)',
+                                                    padding: '2px 8px',
+                                                    borderRadius: '12px',
+                                                }}>
+                                                {e.status.name}
+                                            </span>
+                                        </b>
                                     </i>
                                 </div>
                                 <div className={css['details-body']}>
-                                    {(e.status.idStatus == 9 || e.status.idStatus == 8) && (
+                                    {e.status.idStatus == 9 && (
                                         <button
                                             className='btn--gold'
-                                            onClick={() => handleCancelTour(e.idTourOrder, i)}>
+                                            onClick={() => handleRequestCancelTour(e.idTourOrder, i)}>
+                                            Yêu cầu hủy đặt
+                                        </button>
+                                    )}
+                                    {e.status.idStatus == 8 && (
+                                        <button
+                                            className='btn--gold'
+                                            onClick={() => handleCustomerCancelTour(e.idTourOrder, i)}>
                                             Hủy đặt
                                         </button>
                                     )}

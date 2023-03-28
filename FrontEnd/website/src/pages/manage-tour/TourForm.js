@@ -6,33 +6,38 @@ import css from './style.module.css';
 import {addTour, updateTour} from '../../utils/services';
 import formatMoney from './../../utils/formatMoney';
 import CurrencyInput from '../components/CurrencyInput';
+import formatDate from '../../utils/formatDate';
 function TourForm({tourData, setTourData, listTour, setListTour, update = true}) {
-    console.log('tourForm');
+    const [formData, setFormData] = useState(() => {
+        tourData.startDate = tourData.startDate && formatDate(tourData.startDate)[0];
+        tourData.dateCreate = tourData.dateCreate && formatDate(tourData.dateCreate)[0];
+        return (
+            tourData || {
+                name: 'Tour đà lạt 2 ngày 3 đêm',
+                startDate: '2023-05-09 00:12:00',
+                startDay: '',
+                startTime: '',
+                totalDay: 0,
+                minQuantity: 0,
+                maxQuantity: 10,
+                normalPenaltyFee: 5,
+                strictPenaltyFee: 10,
+                minDate: 5,
+                tourGuide: 1,
+                tourIntro: 'Tour intro',
+                tourDetail: 'Tour details',
+                pickUpPoint: 'Thành phố Hà Nội',
+                detailPickUpPoint: 'detail-pick-up',
+                tourDestination: 'Thành phố Hà Nội',
+                detailTourDestination: 'detail-destination',
+                price: 2000000,
+                featured: 1,
+                imageUrl: [],
+            }
+        );
+    });
+    console.log(formData);
 
-    const [formData, setFormData] = useState(
-        tourData || {
-            name: 'Tour đà lạt 2 ngày 3 đêm',
-            startDate: '2023-05-09 00:12:00',
-            startDay: '',
-            startTime: '',
-            totalDay: 0,
-            minQuantity: 0,
-            maxQuantity: 10,
-            normalPenaltyFee: 5,
-            strictPenaltyFee: 10,
-            minDate: 5,
-            tourGuide: 1,
-            tourIntro: 'Tour intro',
-            tourDetail: 'Tour details',
-            pickUpPoint: 'Thành phố Hà Nội',
-            detailPickUpPoint: 'detail-pick-up',
-            tourDestination: 'Thành phố Hà Nội',
-            detailTourDestination: 'detail-destination',
-            price: 2000000,
-            featured: 1,
-            imageUrl: [],
-        },
-    );
     const handleInputChange = (e) => {
         console.log({[e.target.name]: e.target.value});
         setFormData({...formData, [e.target.name]: e.target.value});
@@ -45,7 +50,8 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
     };
     const handleSubmit = (e) => {
         e.preventDefault();
-        formData.price = formData.price.split(' ')[0].replaceAll(',', '');
+        formData.price =
+            typeof formData.price == 'number' ? formData.price : formData.price.split(' ')[0].replaceAll(',', '');
         formData.tourPictures = formData.imageUrl;
         formData.startDate =
             formData.startDay || formData.startDate.split(' ')[0] + ' ' + (formData.startTime || '00:00:00');
@@ -107,6 +113,16 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
                     <Address formData={formData} name='pickUpPoint' handleInputChange={handleInputChange} />
                     <label>Điểm đến</label>
                     <Address formData={formData} name='tourDestination' handleInputChange={handleInputChange} />
+                    <div className='row-wrapper flex-align-c flex-align-l'>
+                        <input
+                            type='checkbox'
+                            name='featured'
+                            style={{width: '20px', marginBottom: '0'}}
+                            checked={formData.featured}
+                            onChange={(e) => setFormData({...formData, featured: e.target.checked})}
+                        />
+                        <label htmlFor='tour-guide'>Tour nổi bật!</label>
+                    </div>
                 </div>
                 <div className='col-wrapper pad-0-12 w--30  flex-align-l '>
                     <label>Chi tiết điểm đón</label>
