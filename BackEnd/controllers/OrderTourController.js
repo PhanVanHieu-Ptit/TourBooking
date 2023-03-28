@@ -298,20 +298,22 @@ class OrderTourController {
 
   //[PACTH] /order-tours/:id/cancel
   cancel(req, res, next) {
-    Ord.then((rs) => {
-      if (rs.affectedRows != 1)
-        res.send(message([{}], fasle, "Cập nhật thất bại!"));
-      else
-        OrderTour.getById(req.params.id)
-          .then((result) => {
-            res.send(message(result, true, "Cập nhật thành công!"));
-          })
-          .catch((err) => {
-            res.send(message(err, false, "Cập nhật thất bại!"));
-          });
-    }).catch((err) => {
-      res.send(message(err, false, "Cập nhật thất bại!"));
-    });
+    OrderTour.confirm(req.params.id, 11)
+      .then((rs) => {
+        if (rs.affectedRows != 1)
+          res.send(message([{}], fasle, "Cập nhật thất bại!"));
+        else
+          OrderTour.getById(req.params.id)
+            .then((result) => {
+              res.send(message(result, true, "Cập nhật thành công!"));
+            })
+            .catch((err) => {
+              res.send(message(err, false, "Cập nhật thất bại!"));
+            });
+      })
+      .catch((err) => {
+        res.send(message(err, false, "Cập nhật thất bại!"));
+      });
   }
 
   //[PACTH] /order-tours/:id/customer-cancel
