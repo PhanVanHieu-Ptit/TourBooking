@@ -241,16 +241,17 @@ class OrderTourController {
   //[PACTH] /order-tours/:id/confirm-using
   confirmUsing(req, res, next) {
     OrderTour.confirm(req.params.id, 12)
-      .then(() => {
-        OrderTour.getById(req.params.id)
-          .then((result) => {
-            if (result.affectedRows == 1)
+      .then((rs) => {
+        if (rs.affectedRows != 1)
+          res.send(message([{}], fasle, "Cập nhật thất bại!"));
+        else
+          OrderTour.getById(req.params.id)
+            .then((result) => {
               res.send(message(result, true, "Cập nhật thành công!"));
-            else res.send(message([{}], false, "Cập nhật thất bại!"));
-          })
-          .catch((err) => {
-            res.send(message(err, false, "Cập nhật thất bại!"));
-          });
+            })
+            .catch((err) => {
+              res.send(message(err, false, "Cập nhật thất bại!"));
+            });
       })
       .catch((err) => {
         res.send(message(err, false, "Cập nhật thất bại!"));
@@ -278,16 +279,17 @@ class OrderTourController {
   //[PACTH] /order-tours/:id/confirm
   confirm(req, res, next) {
     OrderTour.confirm(req.params.id, 9)
-      .then(() => {
-        OrderTour.getById(req.params.id)
-          .then((result) => {
-            if (result.affectedRows == 1)
+      .then((rs) => {
+        if (rs.affectedRows != 1)
+          res.send(message([{}], fasle, "Cập nhật thất bại!"));
+        else
+          OrderTour.getById(req.params.id)
+            .then((result) => {
               res.send(message(result, true, "Cập nhật thành công!"));
-            else res.send(message([{}], false, "Cập nhật thất bại!"));
-          })
-          .catch((err) => {
-            res.send(message(err, false, "Cập nhật thất bại!"));
-          });
+            })
+            .catch((err) => {
+              res.send(message(err, false, "Cập nhật thất bại!"));
+            });
       })
       .catch((err) => {
         res.send(message(err, false, "Cập nhật thất bại!"));
@@ -296,21 +298,20 @@ class OrderTourController {
 
   //[PACTH] /order-tours/:id/cancel
   cancel(req, res, next) {
-    OrderTour.confirm(req.params.id, 11)
-      .then(() => {
+    Ord.then((rs) => {
+      if (rs.affectedRows != 1)
+        res.send(message([{}], fasle, "Cập nhật thất bại!"));
+      else
         OrderTour.getById(req.params.id)
           .then((result) => {
-            if (result.affectedRows == 1)
-              res.send(message(result, true, "Cập nhật thành công!"));
-            else res.send(message([{}], false, "Cập nhật thất bại!"));
+            res.send(message(result, true, "Cập nhật thành công!"));
           })
           .catch((err) => {
             res.send(message(err, false, "Cập nhật thất bại!"));
           });
-      })
-      .catch((err) => {
-        res.send(message(err, false, "Cập nhật thất bại!"));
-      });
+    }).catch((err) => {
+      res.send(message(err, false, "Cập nhật thất bại!"));
+    });
   }
 
   //[PACTH] /order-tours/:id/customer-cancel
@@ -322,16 +323,17 @@ class OrderTourController {
   //[PACTH] /order-tours/:id/customer-need-cancel
   customerNeedCancel(req, res, next) {
     OrderTour.confirm(req.params.id, 10)
-      .then(() => {
-        OrderTour.getById(req.params.id)
-          .then((result) => {
-            if (result.affectedRows == 1)
+      .then((rs) => {
+        if (rs.affectedRows != 1)
+          res.send(message([{}], fasle, "Cập nhật thất bại!"));
+        else
+          OrderTour.getById(req.params.id)
+            .then((result) => {
               res.send(message(result, true, "Cập nhật thành công!"));
-            else res.send(message([{}], false, "Cập nhật thất bại!"));
-          })
-          .catch((err) => {
-            res.send(message(err, false, "Cập nhật thất bại!"));
-          });
+            })
+            .catch((err) => {
+              res.send(message(err, false, "Cập nhật thất bại!"));
+            });
       })
       .catch((err) => {
         res.send(message(err, false, "Cập nhật thất bại!"));
