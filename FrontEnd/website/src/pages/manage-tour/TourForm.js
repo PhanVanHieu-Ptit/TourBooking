@@ -93,6 +93,7 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
                     />
                     <label>Độ dài(ngày)</label>
                     <input
+                        min='0'
                         type='number'
                         name='totalDay'
                         value={formData.totalDay}
@@ -123,6 +124,7 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
                         <div className='col-wrapper flex-align-l'>
                             <label className='mt--0'>Số người tối thiểu</label>
                             <input
+                                min='0'
                                 type='number'
                                 className='w--50'
                                 name='minQuantity'
@@ -133,6 +135,7 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
                         <div className='col-wrapper flex-align-l'>
                             <label className='mt--0'>Số người tối đa</label>
                             <input
+                                min='0'
                                 type='number'
                                 name='maxQuantity'
                                 className='w--50'
@@ -145,6 +148,7 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
                         <div className='col-wrapper flex-align-l'>
                             <label>Phí hủy mức 1(%)</label>
                             <input
+                                min='0'
                                 type='number'
                                 name='normalPenaltyFee'
                                 className='w--50'
@@ -155,6 +159,7 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
                         <div className='col-wrapper flex-align-l'>
                             <label>Phí hủy mức 2</label>
                             <input
+                                min='0'
                                 type='number'
                                 name='strictPenaltyFee'
                                 className='w--50'
@@ -166,6 +171,7 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
                     <label>Thời điểm áp dụng phí hủy mức 2:</label>
                     <div className='row-wrapper flex-align-l'>
                         <input
+                            min='0'
                             type='number'
                             name='minDate'
                             className='w--20'
@@ -175,9 +181,9 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
                         <label className='mt--0 ml--12'> ngày trước ngày khởi hành</label>
                     </div>
                     <label>Đơn giá</label>
+                    min='0'
                     <input type='number' name='price' value={formData.price} onChange={handleInputChange} />
-
-                    <div className='row-wrapper mt--24 flex-align-c flex-align-l'>
+                    <div className='row-wrapper flex-align-c flex-align-l'>
                         <input
                             type='checkbox'
                             name='tourGuide'

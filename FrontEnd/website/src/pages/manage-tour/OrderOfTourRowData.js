@@ -10,7 +10,7 @@ function OrderOfTourRowData({orderOfTour, handleConfirm}) {
             <td>{orderOfTour.customer.phoneNumber}</td>
             <td>{orderOfTour.quantity}</td>
             <td>{formatDate(orderOfTour.orderDateTime)[1]}</td>
-            <td>
+            <td style={{width: '160px'}}>
                 {(orderOfTour.status.idStatus == 8 ||
                     orderOfTour.status.idStatus == 9 ||
                     orderOfTour.status.idStatus == 12 ||

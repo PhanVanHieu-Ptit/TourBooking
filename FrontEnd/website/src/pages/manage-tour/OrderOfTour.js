@@ -40,7 +40,7 @@ function OrderOfTour({tourData}) {
                         <th>SỐ ĐIỆN THOẠI</th>
                         <th>SỐ CHỖ ĐẶT</th>
                         <th>NGÀY ĐẶT</th>
-                        <th>TRẠNG THÁI</th>
+                        <th style={{width: '160px'}}>TRẠNG THÁI</th>
                         <th>TỔNG TIỀN</th>
                         <th>GHI CHÚ</th>
                         <th />
