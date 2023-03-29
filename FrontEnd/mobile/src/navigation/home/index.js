@@ -16,6 +16,7 @@ import DetailHistoryOrder from '../../screens/historyOrder.js/DetailHistoryOrder
 import ManageOrderFollowStatus from '../../screens/manageOrder/ManageOrderFollowStatus';
 import ChangePassword from '../../screens/manage/ChangePassword';
 import AuthByFinger from '../../screens/auth/Login/authByFinger';
+import BillOrder from '../../screens/historyOrder.js/BillOrder';
 
 const Stack = createStackNavigator();
 function HomeNavigation() {
@@ -42,6 +43,7 @@ function HomeNavigation() {
             {/* <Stack.Screen name="ManageOrderFollowTour" component={ManageOrderFollowTour} />
             <Stack.Screen name="DetailOrderFollowTour" component={DetailOrderFollowTour} /> */}
             {/* <Stack.Screen name="CustomerFollowTour" component={CustomerFollowTour} /> */}
+            <Stack.Screen name="BillOrder" component={BillOrder} />
         </Stack.Navigator>
     );
 }

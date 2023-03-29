@@ -100,7 +100,7 @@ function HistoryOrderScreen({ navigation }) {
     }
 
     useEffect(() => {
-        if (isLogin) {
+        if (user == '' || user == null || user == undefined) {
             Alert.alert('Bạn chưa đăng nhập!', 'Bạn hãy đăng nhập ngay để xem lịch sử đặt của bạn.', [
                 { text: 'OK', onPress: () => navigation.replace('Login') },
             ]);

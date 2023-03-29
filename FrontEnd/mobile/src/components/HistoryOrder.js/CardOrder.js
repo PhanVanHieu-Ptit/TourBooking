@@ -133,7 +133,24 @@ function CardOrder(props) {
                     )}
                 </CollapseHeader>
                 <CollapseBody>
-                    <Text style={styles.title}>Thông tin đơn đặt</Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={styles.title}>Thông tin đơn đặt</Text>
+                        {tourOrder.status.name == 'Đặt thành công' ||
+                        tourOrder.status.name == 'Đang sử dụng' ||
+                        tourOrder.status.name == 'Hoàn thành' ? (
+                            <TouchableOpacity
+                                onPress={() =>
+                                    props.navigation.navigate('BillOrder', {
+                                        tourOrder: tourOrder,
+                                    })
+                                }
+                            >
+                                <FontAwesome name="ticket" size={25} color={COLOR.primary} style={{ marginEnd: 10 }} />
+                            </TouchableOpacity>
+                        ) : (
+                            ''
+                        )}
+                    </View>
                     <Text style={styles.content}>Số lượng: {tourOrder?.quantity}</Text>
                     <Text style={styles.content}>Tổng tiền: {formatMoney(tourOrder?.totalMoney)}</Text>
                     <Text style={styles.content}>Ghi chú: {tourOrder?.note}</Text>
