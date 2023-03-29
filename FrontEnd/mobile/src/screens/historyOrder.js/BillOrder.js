@@ -124,3 +124,4 @@ const style = StyleSheet.create({
         marginTop: 15,
     },
 });
+
