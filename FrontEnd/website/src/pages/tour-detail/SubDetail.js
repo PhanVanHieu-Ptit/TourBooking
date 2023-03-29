@@ -47,7 +47,7 @@ function SubDetail({memoizedOptions, idTour}) {
                         name='quantity'
                         onChange={handleValueChange}
                         value={formData.quantity}
-                        min='0'
+                        min='1'
                     />
                     <label htmlFor='note'>Ghi chú</label>
                     <textarea cols={30} rows={10} name='note' onChange={handleValueChange} value={formData.note} />
