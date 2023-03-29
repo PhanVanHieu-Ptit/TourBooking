@@ -6,12 +6,22 @@ import Popup from './../../components/Popup';
 import TourForm from './TourForm';
 import OrderOfTour from './OrderOfTour';
 import formatDate from './../../utils/formatDate';
+import css from './style.module.css';
+import {cancelTour} from '../../utils/services';
 function TourRowData({tour}) {
     console.log('tourRowData');
     const [showDetail, setShowDetail] = useState(false);
     const [showUpdatePopup, setShowUpdatePopup] = useState(false);
     const [showOrderOfTourPopup, setShowOrderOfTourPopup] = useState(false);
     const [tourData, setTourData] = useState(tour);
+    let typeStatus = 'status-green';
+
+    if (tourData.status.idStatus == 2 || tourData.status.idStatus == 3) typeStatus = 'status-red';
+    const handleCancelTour = () => {
+        cancelTour(tourData.idTour).then((rs) => {
+            if (rs.status) setTourData({...tourData, status: {idStatus: 2, name: 'Đã hủy'}});
+        });
+    };
     return (
         <>
             <tr className='value'>
@@ -23,13 +33,16 @@ function TourRowData({tour}) {
                 <td>{formatDate(tourData.dateCreate)[1]}</td>
                 <td>{tourData.tourDestination}</td>
                 <td>
-                    <p className='status-green'>Hiện hành</p>
+                    <p className={typeStatus}>{tourData.status.name}</p>
                 </td>
                 <td>{formatMoney(tourData.price)}</td>
                 <td className='options'>
-                    <img src={svg.list} alt='' className='option' onClick={() => setShowOrderOfTourPopup(true)} />
+                    <div className={css['has-request-count']}>
+                        {tourData.requestCount && <span>{tourData.requestCount}</span>}
+                        <img src={svg.list} alt='' className='option' onClick={() => setShowOrderOfTourPopup(true)} />
+                    </div>
                     <img src={svg.edit} alt='' className='option' onClick={() => setShowUpdatePopup(true)} />
-                    {/* <img src={ svg.lock } alt='' className='option' onClick={()=> lockTour()} /> */}
+                    <img src={svg.lock} alt='' className='option' onClick={() => handleCancelTour()} />
                 </td>
             </tr>
             {showDetail && (

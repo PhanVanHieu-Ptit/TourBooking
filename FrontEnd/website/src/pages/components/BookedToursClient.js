@@ -4,19 +4,22 @@ import {customerCancelTour, getListOrderTour, getOwnInfor, requestCancelTour} fr
 import formatMoney from '../../utils/formatMoney';
 import svg from './../../assets/svg/index';
 import formatDate from './../../utils/formatDate';
+import {toast} from 'react-toastify';
 
 function BookedToursClient() {
-    const [tours, setTours] = useState();
+    const [listTour, setListTour] = useState();
+    const [paging, setPaging] = useState(1);
+
     useEffect(() => {
         getOwnInfor().then((rs) => {
-            getListOrderTour(rs.data[0].idCustomer).then((rs) => setTours(rs.data));
+            getListOrderTour(rs.data[0].idCustomer).then((rs) => setListTour(rs.data));
         });
     }, []);
     const handleRequestCancelTour = (idTourOrder, index) => {
         requestCancelTour(idTourOrder).then((rs) => {
             if (rs.status) {
                 getOwnInfor().then((rs) => {
-                    getListOrderTour(rs.data[0].idCustomer).then((rs) => setTours(rs.data));
+                    getListOrderTour(rs.data[0].idCustomer).then((rs) => setListTour(rs.data));
                 });
             }
         });
@@ -25,15 +28,25 @@ function BookedToursClient() {
         customerCancelTour(idTourOrder).then((rs) => {
             if (rs.status) {
                 getOwnInfor().then((rs) => {
-                    getListOrderTour(rs.data[0].idCustomer).then((rs) => setTours(rs.data));
+                    getListOrderTour(rs.data[0].idCustomer).then((rs) => setListTour(rs.data));
                 });
             }
         });
     };
+
+    const handleLoadData = () => {
+        setPaging(paging + 1);
+        getOwnInfor().then((rs) => {
+            getListOrderTour(rs.data[0].idCustomer, paging + 1).then((rs) => {
+                if (!rs.data.length) return toast.warning('Không còn dữ liệu!');
+                setListTour(listTour.concat(rs.data));
+            });
+        });
+    };
     return (
         <div className={css['booked-tours-client']}>
-            {tours &&
-                tours.map((e, i) => {
+            {listTour &&
+                listTour.map((e, i) => {
                     return (
                         <div className={css.tour} key={i}>
                             <img src={e.tour.imageUrl[0]} alt='img' className={css.bg} />
@@ -122,6 +135,10 @@ function BookedToursClient() {
                         </div>
                     );
                 })}
+
+            <p onClick={handleLoadData} className='mt--12' style={{textAlign: 'center', cursor: 'pointer'}}>
+                Xem thêm
+            </p>
         </div>
     );
 }

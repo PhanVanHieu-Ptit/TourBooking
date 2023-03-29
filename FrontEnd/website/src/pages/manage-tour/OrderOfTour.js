@@ -3,7 +3,7 @@ import {useEffect} from 'react';
 import OrderOfTourRowData from './OrderOfTourRowData';
 import {confirmCancelTour, confirmOrderTour, getListOrderOfTour} from '../../utils/services';
 
-function OrderOfTour({tourData}) {
+function OrderOfTour({tourData, setTourData}) {
     const [listOrderOfTour, setListOrderOfTour] = useState([]);
 
     useEffect(() => {
@@ -15,12 +15,22 @@ function OrderOfTour({tourData}) {
 
         if (action == 'order') {
             confirmOrderTour(listOrderOfTour[index].idTourOrder).then((rs) => {
-                rs.status && getListOrderOfTour(tourData.idTour).then((rs) => setListOrderOfTour(rs.data));
+                rs.status &&
+                    getListOrderOfTour(tourData.idTour).then((rs) => {
+                        tourData.requestCount -= 1;
+                        setTourData(tourData);
+                        setListOrderOfTour(rs.data);
+                    });
             });
         }
         if (action == 'cancel') {
             confirmCancelTour(listOrderOfTour[index].idTourOrder).then((rs) => {
-                rs.status && getListOrderOfTour(tourData.idTour).then((rs) => setListOrderOfTour(rs.data));
+                rs.status &&
+                    getListOrderOfTour(tourData.idTour).then((rs) => {
+                        tourData.requestCount -= 1;
+                        setTourData(tourData);
+                        setListOrderOfTour(rs.data);
+                    });
             });
         }
     };
@@ -35,14 +45,14 @@ function OrderOfTour({tourData}) {
             <table>
                 <tbody>
                     <tr>
-                        <th>ID KH</th>
+                        <th style={{width: '30px'}}>ID KH</th>
                         <th>HỌ TÊN</th>
                         <th>SỐ ĐIỆN THOẠI</th>
                         <th>SỐ CHỖ ĐẶT</th>
-                        <th>NGÀY ĐẶT</th>
+                        <th style={{width: '100px'}}>NGÀY ĐẶT</th>
                         <th style={{width: '160px'}}>TRẠNG THÁI</th>
+                        <th style={{width: '100px'}}>NGÀY HỦY</th>
                         <th>TỔNG TIỀN</th>
-                        <th>GHI CHÚ</th>
                         <th style={{width: '140px'}} />
                     </tr>
                     {listOrderOfTour.map((e, i) => {

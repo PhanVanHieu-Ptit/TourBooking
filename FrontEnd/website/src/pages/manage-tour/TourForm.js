@@ -9,8 +9,10 @@ import CurrencyInput from '../components/CurrencyInput';
 import formatDate from '../../utils/formatDate';
 function TourForm({tourData, setTourData, listTour, setListTour, update = true}) {
     const [formData, setFormData] = useState(() => {
-        tourData.startDate = tourData.startDate && formatDate(tourData.startDate)[0];
-        tourData.dateCreate = tourData.dateCreate && formatDate(tourData.dateCreate)[0];
+        if (tourData) {
+            tourData.startDate = tourData.startDate && formatDate(tourData.startDate)[0];
+            tourData.dateCreate = tourData.dateCreate && formatDate(tourData.dateCreate)[0];
+        }
         return (
             tourData || {
                 name: 'Tour đà lạt 2 ngày 3 đêm',
@@ -36,6 +38,8 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
             }
         );
     });
+    const [bigDisplay, setBigDisplay] = useState(formData.imageUrl[0] || svg.add);
+
     console.log(formData);
 
     const handleInputChange = (e) => {
@@ -48,6 +52,12 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
             setFormData({...formData});
         });
     };
+    const handleRemoveImg = (i) => {
+        formData.imageUrl.splice(i, 1);
+        console.log(formData);
+        setFormData({...formData});
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
         formData.price =
@@ -74,13 +84,25 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
             <div className='row-wrapper'>
                 <div className={css['img-col']}>
                     <label htmlFor='file'>
-                        <img src={formData.imageUrl[0] || ''} alt='' className={css['big-display']} />
+                        <img src={bigDisplay} alt='' className={css['big-display']} />
                         <input type='file' id='file' onChange={handleFileChange} style={{display: 'none'}} />
                     </label>
                     <div className='row-wrapper flex-align-l'>
-                        {formData.imageUrl.map((e) => (
-                            <img src={e} alt='' className={css['small-display']} />
+                        {formData.imageUrl.map((e, i) => (
+                            <div className={css['has-btn-remove']}>
+                                <button type='button' onClick={() => handleRemoveImg(i)}>
+                                    &times;
+                                </button>
+                                <img src={e} alt='' className={css['small-display']} onClick={() => setBigDisplay(e)} />
+                            </div>
                         ))}
+                        <label htmlFor='file'>
+                            <img
+                                src={svg.add}
+                                className={css['small-display']}
+                                style={{boxShadow: 'none', objectFit: 'fill'}}
+                            />
+                        </label>
                     </div>
                 </div>
                 <div className='col-wrapper pad-0-12 w--30 flex-align-l'>
