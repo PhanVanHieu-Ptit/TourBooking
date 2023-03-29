@@ -77,6 +77,7 @@ function getInforTour(res, result) {
         delete tourOrder.idStatus;
         return tourOrder;
       });
+      console.log("tourOrders: ", tourOrders);
       res.send(message(tourOrders, true, "Thành công!"));
     })
 
