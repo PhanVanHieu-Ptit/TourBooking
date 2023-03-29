@@ -1,19 +1,19 @@
-import React,{ useState,useEffect } from 'react';
-import { SafeAreaView,Image,View,Text,TouchableOpacity,StyleSheet,Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { SafeAreaView, Image, View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import stylesAllTour from '../allTour/style';
 import COLOR from '../../res/color';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Line from '../../components/HistoryOrder.js/Line';
 import stylesTour from '../tourScreen/styles';
-import { formatDate,formatMoney } from '../../res/untils';
+import { formatDate, formatMoney } from '../../res/untils';
 
-function BillOrder({ route,navigation }) {
-    const windowWidth=Dimensions.get('window').width;
-    console.log('route: ',route);
-    const tourOrder=route.params.tourOrder;
-    const customer=tourOrder.customer;
-    const tour=tourOrder.tour;
+function BillOrder({ route, navigation }) {
+    const windowWidth = Dimensions.get('window').width;
+    console.log('route: ', route);
+    const tourOrder = route.params.tourOrder;
+    const customer = tourOrder.customer;
+    const tour = tourOrder.tour;
 
     return (
         <SafeAreaView>
@@ -23,7 +23,7 @@ function BillOrder({ route,navigation }) {
                     alignItems: 'center',
                 }}
             >
-                <Text style={[stylesAllTour.title,{ marginLeft: 0,marginTop: 20 }]}>Hóa đơn</Text>
+                <Text style={[stylesAllTour.title, { marginLeft: 0, marginTop: 20 }]}>Hóa đơn</Text>
             </View>
             <View style={style.banner}>
                 <View style={{}}>
@@ -39,7 +39,7 @@ function BillOrder({ route,navigation }) {
                     alignItems: 'center',
                 }}
             >
-                <Text style={[stylesAllTour.title,{ marginLeft: 0,marginTop: 10 }]}>Thông tin chuyến đi</Text>
+                <Text style={[stylesAllTour.title, { marginLeft: 0, marginTop: 10 }]}>Thông tin chuyến đi</Text>
             </View>
             <View style={{ marginTop: 10 }}>
                 <Line title="Họ tên:" value={customer.name} />
@@ -50,25 +50,25 @@ function BillOrder({ route,navigation }) {
                 <Line
                     title="Ngày kết thúc:"
                     value={formatDate(
-                        new Date(tour.startDate).setDate(new Date(tour.startDate).getDate()+tour.totalDay),
+                        new Date(tour.startDate).setDate(new Date(tour.startDate).getDate() + tour.totalDay),
                     )}
                 />
                 <Line title="Giá vé:" value={formatMoney(tour.price)} />
                 <Line title="Số lượng:" value={tourOrder.quantity} />
-                <View style={{ height: 160,width: windowWidth }}>
-                    <Text style={[style.bold,{ color: COLOR.primary,marginTop: 10,marginLeft: 20 }]}>
+                <View style={{ height: 160, width: windowWidth }}>
+                    <Text style={[style.bold, { color: COLOR.primary, marginTop: 10, marginLeft: 20 }]}>
                         Ảnh minh họa:
                     </Text>
-                    <View style={{ alignItems: 'center',marginTop: 10 }}>
+                    <View style={{ alignItems: 'center', marginTop: 10 }}>
                         <Image
                             source={{ uri: 'https://i.pinimg.com/474x/4d/35/d1/4d35d1817aedd534a81a85cb77d9b25f.jpg' }}
-                            style={{ resizeMode: 'stretch',height: 117,width: 194 }}
+                            style={{ resizeMode: 'stretch', height: 117, width: 194 }}
                         />
                     </View>
                 </View>
-                <View style={{ flexDirection: 'row',alignItems: 'center' }}>
-                    <Text style={[style.bold,style.addBold]}>Thành tiền:</Text>
-                    <Text style={[style.regular,style.addRegular]}>{formatMoney(tourOrder.totalMoney)}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={[style.bold, style.addBold]}>Thành tiền:</Text>
+                    <Text style={[style.regular, style.addRegular]}>{formatMoney(tourOrder.totalMoney)}</Text>
                 </View>
             </View>
             <View style={{ alignItems: 'center' }}>
@@ -77,7 +77,7 @@ function BillOrder({ route,navigation }) {
                         navigation.goBack();
                     }}
                 >
-                    <View style={[stylesTour.btn,{ width: 150 }]}>
+                    <View style={[stylesTour.btn, { width: 150 }]}>
                         <Text style={stylesTour.txt_btn}>Thoát</Text>
                     </View>
                 </TouchableOpacity>
@@ -87,7 +87,7 @@ function BillOrder({ route,navigation }) {
 }
 export default BillOrder;
 
-const style=StyleSheet.create({
+const style = StyleSheet.create({
     banner: {
         marginTop: 10,
         height: 80,
@@ -124,3 +124,4 @@ const style=StyleSheet.create({
         marginTop: 15,
     },
 });
+

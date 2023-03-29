@@ -668,7 +668,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_tour_by_key`(
 	IN findKey text,
     IN page int)
 BEGIN
-	if findKey <> '' then
+	if findKey = '' then
 		SELECT tour.*, GROUP_CONCAT(tourpicture.imageUrl SEPARATOR ',') AS image_list
 		FROM tour
 		JOIN tourpicture ON tour.idTour = tourpicture.idTour
@@ -946,7 +946,7 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_status_order`( IN id1 int,
 								  IN id2 int)
 BEGIN
-	if id1=10 then
+	if id1=10 || id1=11 then
 		UPDATE tourorder SET  idStatus=id1 , cancelDate=NOW() where idTourOrder = id2;
 	else
 	 UPDATE tourorder SET  idStatus=id1  where idTourOrder = id2;
@@ -1141,4 +1141,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-25 21:29:12
+-- Dump completed on 2023-03-28 13:51:50

@@ -39,8 +39,8 @@ export async function updateCustomerInfo(data) {
 export async function updateStaffInfo(data, id) {
     return axios.put(`/staff/${id}/update`, data);
 }
-export async function getListStaff(key = '') {
-    return axios.get(`/staff/list?key=${key}`);
+export async function getListStaff(key = '', paging = 1) {
+    return axios.get(`/staff/list?key=${key}&paging=${paging}`);
 }
 export async function addStaff(data) {
     return axios.post('/staff/add', data);
@@ -53,6 +53,9 @@ export async function updateTour(data, idTour) {
 }
 export async function requestCancelTour(idTourOrder) {
     return axios.patch(`/order-tours/${idTourOrder}/customer-need-cancel`);
+}
+export async function customerCancelTour(idTourOrder) {
+    return axios.patch(`/order-tours/${idTourOrder}/customer-cancel`);
 }
 export async function confirmCancelTour(idTourOrder) {
     return axios.patch(`/order-tours/${idTourOrder}/cancel`);

@@ -4,33 +4,40 @@ import Address from './../components/Address';
 import uploadImg from './../../utils/image';
 import css from './style.module.css';
 import {addTour, updateTour} from '../../utils/services';
+import formatMoney from './../../utils/formatMoney';
+import CurrencyInput from '../components/CurrencyInput';
+import formatDate from '../../utils/formatDate';
 function TourForm({tourData, setTourData, listTour, setListTour, update = true}) {
-    console.log('tourForm');
+    const [formData, setFormData] = useState(() => {
+        tourData.startDate = tourData.startDate && formatDate(tourData.startDate)[0];
+        tourData.dateCreate = tourData.dateCreate && formatDate(tourData.dateCreate)[0];
+        return (
+            tourData || {
+                name: 'Tour đà lạt 2 ngày 3 đêm',
+                startDate: '2023-05-09 00:12:00',
+                startDay: '',
+                startTime: '',
+                totalDay: 0,
+                minQuantity: 0,
+                maxQuantity: 10,
+                normalPenaltyFee: 5,
+                strictPenaltyFee: 10,
+                minDate: 5,
+                tourGuide: 1,
+                tourIntro: 'Tour intro',
+                tourDetail: 'Tour details',
+                pickUpPoint: 'Thành phố Hà Nội',
+                detailPickUpPoint: 'detail-pick-up',
+                tourDestination: 'Thành phố Hà Nội',
+                detailTourDestination: 'detail-destination',
+                price: 2000000,
+                featured: 1,
+                imageUrl: [],
+            }
+        );
+    });
+    console.log(formData);
 
-    const [formData, setFormData] = useState(
-        tourData || {
-            name: 'Tour đà lạt 2 ngày 3 đêm',
-            startDate: '2023-05-09 00:12:00',
-            startDay: '',
-            startTime: '',
-            totalDay: 0,
-            minQuantity: 0,
-            maxQuantity: 10,
-            normalPenaltyFee: 5,
-            strictPenaltyFee: 10,
-            minDate: 5,
-            tourGuide: 1,
-            tourIntro: 'Tour intro',
-            tourDetail: 'Tour details',
-            pickUpPoint: 'Thành phố Hà Nội',
-            detailPickUpPoint: 'detail-pick-up',
-            tourDestination: 'Thành phố Hà Nội',
-            detailTourDestination: 'detail-destination',
-            price: 2000000,
-            featured: 1,
-            imageUrl: [],
-        },
-    );
     const handleInputChange = (e) => {
         console.log({[e.target.name]: e.target.value});
         setFormData({...formData, [e.target.name]: e.target.value});
@@ -43,6 +50,8 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
     };
     const handleSubmit = (e) => {
         e.preventDefault();
+        formData.price =
+            typeof formData.price == 'number' ? formData.price : formData.price.split(' ')[0].replaceAll(',', '');
         formData.tourPictures = formData.imageUrl;
         formData.startDate =
             formData.startDay || formData.startDate.split(' ')[0] + ' ' + (formData.startTime || '00:00:00');
@@ -61,9 +70,9 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
         }
     };
     return (
-        <form className='col-wrapper' onSubmit={handleSubmit}>
+        <form className={css['tour-form'] + ' col-wrapper'} onSubmit={handleSubmit}>
             <div className='row-wrapper'>
-                <div className='col-wrapper pad-0-12 flex-1 images'>
+                <div className={css['img-col']}>
                     <label htmlFor='file'>
                         <img src={formData.imageUrl[0] || ''} alt='' className={css['big-display']} />
                         <input type='file' id='file' onChange={handleFileChange} style={{display: 'none'}} />
@@ -93,6 +102,7 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
                     />
                     <label>Độ dài(ngày)</label>
                     <input
+                        min='0'
                         type='number'
                         name='totalDay'
                         value={formData.totalDay}
@@ -103,8 +113,18 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
                     <Address formData={formData} name='pickUpPoint' handleInputChange={handleInputChange} />
                     <label>Điểm đến</label>
                     <Address formData={formData} name='tourDestination' handleInputChange={handleInputChange} />
+                    <div className='row-wrapper flex-align-c flex-align-l'>
+                        <input
+                            type='checkbox'
+                            name='featured'
+                            style={{width: '20px', marginBottom: '0'}}
+                            checked={formData.featured}
+                            onChange={(e) => setFormData({...formData, featured: e.target.checked})}
+                        />
+                        <label htmlFor='tour-guide'>Tour nổi bật!</label>
+                    </div>
                 </div>
-                <div className='col-wrapper pad-0-12 w--30  flex-align-l'>
+                <div className='col-wrapper pad-0-12 w--30  flex-align-l '>
                     <label>Chi tiết điểm đón</label>
                     <input
                         type='text'
@@ -123,6 +143,7 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
                         <div className='col-wrapper flex-align-l'>
                             <label className='mt--0'>Số người tối thiểu</label>
                             <input
+                                min='0'
                                 type='number'
                                 className='w--50'
                                 name='minQuantity'
@@ -133,6 +154,7 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
                         <div className='col-wrapper flex-align-l'>
                             <label className='mt--0'>Số người tối đa</label>
                             <input
+                                min='0'
                                 type='number'
                                 name='maxQuantity'
                                 className='w--50'
@@ -145,6 +167,7 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
                         <div className='col-wrapper flex-align-l'>
                             <label>Phí hủy mức 1(%)</label>
                             <input
+                                min='0'
                                 type='number'
                                 name='normalPenaltyFee'
                                 className='w--50'
@@ -155,6 +178,7 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
                         <div className='col-wrapper flex-align-l'>
                             <label>Phí hủy mức 2</label>
                             <input
+                                min='0'
                                 type='number'
                                 name='strictPenaltyFee'
                                 className='w--50'
@@ -166,6 +190,7 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
                     <label>Thời điểm áp dụng phí hủy mức 2:</label>
                     <div className='row-wrapper flex-align-l'>
                         <input
+                            min='0'
                             type='number'
                             name='minDate'
                             className='w--20'
@@ -175,19 +200,23 @@ function TourForm({tourData, setTourData, listTour, setListTour, update = true})
                         <label className='mt--0 ml--12'> ngày trước ngày khởi hành</label>
                     </div>
                     <label>Đơn giá</label>
-                    <input type='number' name='price' value={formData.price} onChange={handleInputChange} />
 
-                    <div className='row-wrapper mt--24 flex-align-c flex-align-l'>
+                    <CurrencyInput
+                        name='price'
+                        value={formData.price}
+                        onChange={handleInputChange}
+                        placeholder='$0.00'
+                        type='text'
+                    />
+                    <div className='row-wrapper flex-align-c flex-align-l'>
                         <input
                             type='checkbox'
                             name='tourGuide'
-                            className='w--10'
+                            style={{width: '20px', marginBottom: '0'}}
                             checked={formData.tourGuide}
                             onChange={(e) => setFormData({...formData, tourGuide: e.target.checked})}
                         />
-                        <label htmlFor='tour-guide' className='flex-1 mt--0'>
-                            Hướng dẫn viên
-                        </label>
+                        <label htmlFor='tour-guide'>Hướng dẫn viên</label>
                     </div>
                 </div>
             </div>

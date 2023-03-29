@@ -1,6 +1,7 @@
 import css from './style.module.css';
 import {useState} from 'react';
 import {orderTour} from '../../utils/services';
+import {toast} from 'react-toastify';
 
 function SubDetail({memoizedOptions, idTour}) {
     const data = memoizedOptions;
@@ -17,6 +18,7 @@ function SubDetail({memoizedOptions, idTour}) {
     };
     const handleSubmit = (e) => {
         e.preventDefault();
+        if (!localStorage.token) return toast.error('Vui lòng đăng nhập để đặt tour');
         orderTour(formData);
     };
 
@@ -40,7 +42,13 @@ function SubDetail({memoizedOptions, idTour}) {
                 <p className={css['intro']}>{data.tourIntro}</p>
                 <form className={css['booking-frm']} onSubmit={handleSubmit}>
                     <label htmlFor='quantity'>Số người</label>
-                    <input type='number' name='quantity' onChange={handleValueChange} value={formData.quantity} />
+                    <input
+                        type='number'
+                        name='quantity'
+                        onChange={handleValueChange}
+                        value={formData.quantity}
+                        min='1'
+                    />
                     <label htmlFor='note'>Ghi chú</label>
                     <textarea cols={30} rows={10} name='note' onChange={handleValueChange} value={formData.note} />
                     <button className='btn--gold' type='submit'>

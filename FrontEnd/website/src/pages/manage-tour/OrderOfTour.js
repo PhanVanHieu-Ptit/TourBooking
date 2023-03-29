@@ -14,10 +14,14 @@ function OrderOfTour({tourData}) {
         console.log(index);
 
         if (action == 'order') {
-            confirmOrderTour(listOrderOfTour[index].idTourOrder);
+            confirmOrderTour(listOrderOfTour[index].idTourOrder).then((rs) => {
+                rs.status && getListOrderOfTour(tourData.idTour).then((rs) => setListOrderOfTour(rs.data));
+            });
         }
         if (action == 'cancel') {
-            confirmCancelTour(listOrderOfTour[index].idTourOrder);
+            confirmCancelTour(listOrderOfTour[index].idTourOrder).then((rs) => {
+                rs.status && getListOrderOfTour(tourData.idTour).then((rs) => setListOrderOfTour(rs.data));
+            });
         }
     };
     return (
@@ -31,15 +35,15 @@ function OrderOfTour({tourData}) {
             <table>
                 <tbody>
                     <tr>
-                        <th />
                         <th>ID KH</th>
                         <th>HỌ TÊN</th>
                         <th>SỐ ĐIỆN THOẠI</th>
-                        <th>SỐ NGƯƠI</th>
+                        <th>SỐ CHỖ ĐẶT</th>
                         <th>NGÀY ĐẶT</th>
-                        <th>TRẠNG THÁI</th>
+                        <th style={{width: '160px'}}>TRẠNG THÁI</th>
                         <th>TỔNG TIỀN</th>
-                        <th />
+                        <th>GHI CHÚ</th>
+                        <th style={{width: '140px'}} />
                     </tr>
                     {listOrderOfTour.map((e, i) => {
                         return (

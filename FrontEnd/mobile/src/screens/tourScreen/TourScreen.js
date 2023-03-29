@@ -32,8 +32,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 let nextId = 0;
 function TourScreen({ route, navigation }) {
-    const { user, setUser, setIsLogin, setListTour, setHistoryOrder, setListOrder, setListStaff } =
-        useContext(AppContext);
+    const {
+        user,
+        setUser,
+        setIsLogin,
+        setFilteredDataSource,
+        setListTour,
+        setHistoryOrder,
+        setListOrder,
+        setListStaff,
+    } = useContext(AppContext);
     const type = route.params?.type;
 
     const tour = route.params?.tour;
@@ -228,7 +236,7 @@ function TourScreen({ route, navigation }) {
 
     // const [imgPath, setImgPath] = useState(`https://vnpi-hcm.vn/wp-content/uploads/2018/01/no-image-800x600.png`);
 
-    // const [responseImage, setResponseImage] = useState('');
+    const [responseImage, setResponseImage] = useState([]);
 
     const [listImage, setListImage] = useState([]);
 
@@ -242,7 +250,7 @@ function TourScreen({ route, navigation }) {
                 path: 'images',
             },
         };
-        launchImageLibrary(options, (response) => {
+        launchImageLibrary(options, async (response) => {
             // console.log('Response = ', response);
 
             if (response.didCancel) {
@@ -257,17 +265,21 @@ function TourScreen({ route, navigation }) {
 
                 // setImgPath(response.assets[0].uri);
                 // setListImage(listTemp);
+                const url = await uploadImage(response.assets[0].uri);
                 setListImage(
                     // Replace the state
                     [
                         // with a new array
                         ...listImage, // that contains all the old items
-                        { id: nextId++, uri: response.assets[0].uri }, // and one new item at the end
+                        { id: nextId++, uri: url }, // and one new item at the end
                     ],
                 );
 
                 // console.log('listImage: ', listImage);
-                // setResponseImage(response);
+
+                // setResponseImage((preState) => {
+                //     return [...preState, url];
+                // });
             }
         });
     };
@@ -297,27 +309,42 @@ function TourScreen({ route, navigation }) {
         const updateListImage = () => {
             if (tour != undefined) {
                 let list = [];
+                console.log('tour.imageUrl: ', tour.imageUrl);
                 for (const img in tour.imageUrl) {
                     list.push({ id: nextId++, uri: tour.imageUrl[img] });
                 }
                 setListImage([...list]);
+                // setResponseImage(tour.imageUrl);
             }
         };
         loadProvinces();
         // updateListImage();
     }, []);
 
-    const addImage = async () => {
-        var images = [];
-        for (let i in listImage) {
-            const url = await uploadImage(listImage[i].uri);
-            images.push(url);
-        }
-        return images;
+    // const addImage = async () => {
+    //     var images = [];
+    //     for (let i in listImage) {
+    //         const url = await uploadImage(listImage[i].uri);
+    //         images.push(url);
+    //     }
+    //     return images;
+    // };
+
+    const seperateUrl = () => {
+        let listTemp = [];
+        listImage.forEach((item) => {
+            listTemp.push(item.uri);
+        });
+        setResponseImage(listTemp);
     };
 
+    useEffect(() => {
+        seperateUrl();
+    }, [listImage]);
+
     const addTour = async () => {
-        const listUrlImages = await addImage();
+        // const listUrlImages = await addImage();
+        seperateUrl();
         request
             .postPrivate(
                 API.addTour,
@@ -339,7 +366,7 @@ function TourScreen({ route, navigation }) {
                     detailTourDestination: detailTourDestination,
                     price: price,
                     featured: featured,
-                    tourPictures: listUrlImages,
+                    tourPictures: responseImage,
                     // role: 'staff',
                 },
                 { 'Content-Type': 'application/json', authorization: user.accessToken },
@@ -362,7 +389,8 @@ function TourScreen({ route, navigation }) {
     };
 
     const updateTour = async () => {
-        const listUrlImages = await addImage();
+        // const listUrlImages = await addImage();
+        seperateUrl();
         request
             .postPrivate(
                 '/tour/' + tour.idTour + '/update',
@@ -385,15 +413,13 @@ function TourScreen({ route, navigation }) {
                     detailTourDestination: tourDestination,
                     price: price,
                     featured: featured,
-                    tourPictures: listUrlImages,
+                    tourPictures: responseImage,
                     // role: 'staff',
                 },
                 { 'Content-Type': 'application/json', authorization: user.accessToken },
                 'PUT',
             )
-            .then((response) => {
-                console.log(response.data);
-
+            .then(async (response) => {
                 if (response.data.status == true) {
                     Alert.alert('Thông báo!', 'Cập nhật thành công!', [{ text: 'OK', onPress: () => {} }]);
                 } else {
@@ -402,7 +428,7 @@ function TourScreen({ route, navigation }) {
                     } else
                         Alert.alert('Cập nhật thất bại!', response.data.message, [{ text: 'OK', onPress: () => {} }]);
                 }
-                updateListTour();
+                await updateListTour();
             })
             .catch((err) => {
                 console.log(err);
@@ -440,10 +466,9 @@ function TourScreen({ route, navigation }) {
                 { 'Content-Type': 'application/json', authorization: user.accessToken },
                 'DELETE',
             )
-            .then((response) => {
-                console.log(response.data);
+            .then(async (response) => {
                 navigation.goBack();
-                updateListTour();
+                await updateListTour();
 
                 if (response.data.status == true) {
                     Alert.alert('Thông báo!', 'Xóa thành công!', [{ text: 'OK', onPress: () => {} }]);
@@ -458,29 +483,26 @@ function TourScreen({ route, navigation }) {
             });
     };
 
-    function updateListTour() {
-        request
-            .get(API.listTour, {
+    const updateListTour = async () => {
+        try {
+            const response = await request.get(API.listTour, {
                 headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
-            })
-            .then((response) => {
-                console.log(response.data);
-
-                if (response.status == true) {
-                    setListTour(response.data);
-                } else {
-                    if (response.message == 'Token đã hết hạn') {
-                        getRefreshToken();
-                    } else
-                        Alert.alert('Thông báo!', response.message + '', [
-                            { text: 'OK', onPress: () => console.log('OK Pressed') },
-                        ]);
-                }
-            })
-            .catch((err) => {
-                console.log(err);
             });
-    }
+            if (response.status == true) {
+                setListTour(response.data);
+                setFilteredDataSource(response.data);
+            } else {
+                if (response.message == 'Token đã hết hạn') {
+                    getRefreshToken();
+                } else
+                    Alert.alert('Thông báo!', response.message + '', [
+                        { text: 'OK', onPress: () => console.log('OK Pressed') },
+                    ]);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <ScrollView>
@@ -822,6 +844,7 @@ function TourScreen({ route, navigation }) {
                 <View style={{ width: 320, marginTop: 20 }}>
                     <Text style={stylesTour.title}>Giá</Text>
                     <MaskInput
+                        keyboardType="numeric"
                         style={[stylesTour.input]}
                         placeholder="Nhập giá tour"
                         value={price}

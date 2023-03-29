@@ -2,7 +2,6 @@ import axios from 'axios';
 import {Hypnosis} from 'react-cssfx-loading';
 import {useState} from 'react';
 import {toast} from 'react-toastify';
-import {useNavigate} from 'react-router-dom';
 
 var displayLoading, setDisplayLoading;
 function AxiosLoading() {

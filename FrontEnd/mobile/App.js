@@ -16,6 +16,7 @@ const AppContextProvider = ({ children }) => {
     const [listStaff, setListStaff] = useState([]);
     const [listAllTour, setListAllTour] = useState([]);
     const [isLogin, setIsLogin] = useState(false);
+    const [filteredDataSource, setFilteredDataSource] = useState([]);
 
     const contextValues = {
         user,
@@ -34,6 +35,8 @@ const AppContextProvider = ({ children }) => {
         setListStaff,
         isLogin,
         setIsLogin,
+        filteredDataSource,
+        setFilteredDataSource,
     };
 
     return <AppContext.Provider value={contextValues}>{children}</AppContext.Provider>;

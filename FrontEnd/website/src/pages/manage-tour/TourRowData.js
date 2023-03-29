@@ -5,6 +5,7 @@ import formatMoney from './../../utils/formatMoney';
 import Popup from './../../components/Popup';
 import TourForm from './TourForm';
 import OrderOfTour from './OrderOfTour';
+import formatDate from './../../utils/formatDate';
 function TourRowData({tour}) {
     console.log('tourRowData');
     const [showDetail, setShowDetail] = useState(false);
@@ -19,9 +20,7 @@ function TourRowData({tour}) {
                 </td>
                 <td className='id-value'>#{tourData.idTour}</td>
                 <td>{tourData.name}</td>
-                <td>
-                    {tourData.dateCreate.split(' ')[0]} <br /> {tourData.dateCreate.split(' ')[1]}
-                </td>
+                <td>{formatDate(tourData.dateCreate)[1]}</td>
                 <td>{tourData.tourDestination}</td>
                 <td>
                     <p className='status-green'>Hiện hành</p>

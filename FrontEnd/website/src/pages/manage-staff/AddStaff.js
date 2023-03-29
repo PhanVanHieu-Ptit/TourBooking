@@ -31,9 +31,21 @@ function AddStaff() {
                 <input type='file' id='staffImg' style={{display: 'none'}} onChange={handleUploadImage} />
             </label>
             <label>Họ tên</label>
-            <input type='text' name='name' onChange={handleValueChange} value={formData.name} />
+            <input
+                type='text'
+                name='name'
+                onChange={handleValueChange}
+                value={formData.name}
+                placeholder='Nhập họ tên'
+            />
             <label>Email</label>
-            <input type='email' name='email' onChange={handleValueChange} value={formData.email} />
+            <input
+                type='email'
+                name='email'
+                onChange={handleValueChange}
+                value={formData.email}
+                placeholder='Nhập mail'
+            />
             <button type='submit' className='btn--gold'>
                 Thêm
             </button>
