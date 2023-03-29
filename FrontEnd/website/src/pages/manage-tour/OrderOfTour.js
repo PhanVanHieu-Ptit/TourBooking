@@ -43,7 +43,7 @@ function OrderOfTour({tourData}) {
                         <th style={{width: '160px'}}>TRẠNG THÁI</th>
                         <th>TỔNG TIỀN</th>
                         <th>GHI CHÚ</th>
-                        <th />
+                        <th style={{width: '140px'}} />
                     </tr>
                     {listOrderOfTour.map((e, i) => {
                         return (

@@ -9,7 +9,7 @@ function OrderOfTourRowData({orderOfTour, handleConfirm}) {
             <td>{orderOfTour.customer.name}</td>
             <td>{orderOfTour.customer.phoneNumber}</td>
             <td>{orderOfTour.quantity}</td>
-            <td>{formatDate(orderOfTour.orderDateTime)[1]}</td>
+            <td>{formatDate(orderOfTour.orderDateTime)[1] + '\n' + formatDate(orderOfTour.orderDateTime)[2]}</td>
             <td style={{width: '160px'}}>
                 {(orderOfTour.status.idStatus == 8 ||
                     orderOfTour.status.idStatus == 9 ||
@@ -21,7 +21,7 @@ function OrderOfTourRowData({orderOfTour, handleConfirm}) {
             </td>
             <td> {formatMoney(orderOfTour.totalMoney)} </td>
             <td> {orderOfTour.tour.note} </td>
-            <td className='options'>
+            <td className='options' style={{width: '140px'}}>
                 {orderOfTour.status.idStatus == 8 && (
                     <div className='btn-green' onClick={(e) => handleConfirm('order', orderOfTour.index)}>
                         Xác nhận đặt

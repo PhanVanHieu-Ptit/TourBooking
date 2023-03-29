@@ -226,12 +226,16 @@
  .btn-green {
    background-color: var(--green);
    color: var(--black);
+   padding: 2px 6px;
+   cursor: pointer;
+
  }
 
  .btn-red {
    background-color: var(--red);
    color: var(--black);
    padding: 2px 6px;
+   cursor: pointer;
  }
 
  .btn-purple {
