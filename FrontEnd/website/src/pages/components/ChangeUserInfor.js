@@ -20,6 +20,7 @@ const PersonalInfo = ({setPersonalInfoForm}) => {
         const rs = await (localStorage.role == 'customer'
             ? updateCustomerInfo(formData)
             : updateStaffInfo(formData, localStorage.id));
+        window.location.reload();
     };
     useEffect(() => {
         getOwnInfor().then((rs) => setFormData(rs.data[0]));
