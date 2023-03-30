@@ -7,15 +7,7 @@ import hourglassSvg from '../../assets/svg/hourglass.svg';
 import formatMoney from './../../utils/formatMoney';
 import formatDate from './../../utils/formatDate';
 
-function SearchedTour({searchKey, tours}) {
-    searchKey = searchKey.toLowerCase();
-    tours = tours.filter((e) => {
-        return (
-            e.name.toLowerCase().includes(searchKey) ||
-            e.tourDestination.toLowerCase().includes(searchKey) ||
-            e.tourIntro.toLowerCase().includes(searchKey)
-        );
-    });
+function SearchedTour({searchKey, tours, handleLoadData}) {
     return (
         <div>
             <p class={css['search-heading']}>Kết quả tìm kiếm cho: {searchKey}</p>
@@ -43,6 +35,19 @@ function SearchedTour({searchKey, tours}) {
                         </a>
                     );
                 })}
+                <div>
+                    <p
+                        onClick={handleLoadData}
+                        className='mt--12'
+                        style={{
+                            textAlign: 'center',
+                            cursor: 'pointer',
+                            color: 'var(--gold)',
+                            textDecoration: 'underline',
+                        }}>
+                        Xem thêm
+                    </p>
+                </div>
             </div>
         </div>
     );

@@ -7,6 +7,7 @@ import SignIn from './pages/sign-in';
 import {ToastContainer} from 'react-toastify';
 import ManageTour from './pages/manage-tour/index';
 import ManageStaff from './pages/manage-staff/index';
+import Statistic from './pages/statistic/index';
 
 function App() {
     return (
@@ -18,6 +19,7 @@ function App() {
                     <Route path='/sign-in' element={<SignIn />} />
                     <Route path='/manage-staff' element={<ManageStaff />} />
                     <Route path='/manage-tour' element={<ManageTour />} />
+                    <Route path='/statistic' element={<Statistic />} />
                     <Route path='/sign-up' element={<SignIn initFormType='register' />} />
                 </Routes>
             </Router>

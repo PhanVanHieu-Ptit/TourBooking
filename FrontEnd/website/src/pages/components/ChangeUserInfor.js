@@ -20,6 +20,7 @@ const PersonalInfo = ({setPersonalInfoForm}) => {
         const rs = await (localStorage.role == 'customer'
             ? updateCustomerInfo(formData)
             : updateStaffInfo(formData, localStorage.id));
+        window.location.reload();
     };
     useEffect(() => {
         getOwnInfor().then((rs) => setFormData(rs.data[0]));
@@ -38,7 +39,7 @@ const PersonalInfo = ({setPersonalInfoForm}) => {
             {formData && (
                 <>
                     <label className='col-wrapper' style={{cursor: 'pointer'}} htmlFor='avt'>
-                        <img src={formData.imageUrl || defaultAvtSvg} alt='' className='radius-50' />
+                        <img src={formData.imageUrl || defaultAvtSvg} alt='' className='radius-50 form-avt' />
                         <input
                             type='file'
                             className='avt'

@@ -1,5 +1,5 @@
 function formatDate(date) {
-    if (!date) return '';
+    if (!date) return ['', '', ''];
     if (date.includes('.000Z')) {
         date = date.replace('T', ' ').replace('.000Z', '');
     }

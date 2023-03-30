@@ -33,6 +33,7 @@ import unlock from './unlock.svg';
 import userBlack from './user-black.svg';
 import user from './user.svg';
 import moneyBlack from './money-black.svg';
+import barChart from './bar-chart.svg';
 
 const svg = {
     add,
@@ -70,6 +71,7 @@ const svg = {
     unlock,
     userBlack,
     user,
+    barChart,
 };
 
 export default svg;

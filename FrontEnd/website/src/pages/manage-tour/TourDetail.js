@@ -1,4 +1,5 @@
 import svg from '../../assets/svg';
+import formatDate from '../../utils/formatDate';
 import css from './style.module.css';
 function TourDetail({tourData}) {
     return (
@@ -13,30 +14,30 @@ function TourDetail({tourData}) {
                             ))}
                         </div>
                         <div className='col-wrapper pad-0-12 w--50'>
-                            <div className='row-wrapper flex-align-c'>
+                            <div className='row-wrapper flex-align-c mt--12'>
                                 <img src={svg.hourglass} className={css.icon} alt='icon' />
                                 <label htmlFor>Độ dài(ngày)</label>
                                 <span htmlFor className='value'>
                                     {tourData.totalDay} ngày
                                 </span>
                             </div>
-                            <div className='row-wrapper flex-align-c'>
+                            <div className='row-wrapper flex-align-c mt--12'>
                                 <img src={svg.destination} className={css.icon} alt='icon' />
                                 <label htmlFor>Điểm đón</label>
                                 <span htmlFor className='value'>
                                     {tourData.pickUpPoint}
                                 </span>
                             </div>
-                            <div className='row-wrapper flex-align-c'>
+                            <div className='row-wrapper flex-align-c mt--12'>
                                 <img src={svg.calendar} className={css.icon} alt='icon' />
                                 <label htmlFor className='mt--0'>
                                     Ngày khởi hành
                                 </label>
                                 <span htmlFor className='value'>
-                                    {tourData.startDate}
+                                    {formatDate(tourData.startDate)[0]}
                                 </span>
                             </div>
-                            <div className='row-wrapper flex-align-c'>
+                            <div className='row-wrapper flex-align-c mt--12'>
                                 <img src={svg.user} className={css.icon} alt='icon' />
                                 <label htmlFor className='mt--0'>
                                     Người tạo
@@ -45,7 +46,7 @@ function TourDetail({tourData}) {
                                     {tourData.idStaffCreate}
                                 </span>
                             </div>
-                            <div className='row-wrapper flex-align-c'>
+                            <div className='row-wrapper flex-align-c mt--12'>
                                 <img src={svg.user} className={css.icon} alt='icon' />
                                 <label htmlFor className='mt--0'>
                                     Người hủy
@@ -54,7 +55,7 @@ function TourDetail({tourData}) {
                                     {tourData.idStaffCanel || 'Tour chưa hủy'}
                                 </span>
                             </div>
-                            <div className='row-wrapper flex-align-c'>
+                            <div className='row-wrapper flex-align-c mt--12'>
                                 <img src={svg.tourGuide} className={css.icon} alt='icon' />
                                 <label htmlFor='tour-guide' className='mt--0'>
                                     Hướng dẫn viên
@@ -65,7 +66,7 @@ function TourDetail({tourData}) {
                             </div>
                         </div>
                         <div className='col-wrapper pad-0-12 w--50 col-flex-align-l'>
-                            <div className='row-wrapper flex-align-c'>
+                            <div className='row-wrapper flex-align-c mt--12'>
                                 <img src={svg.groupPerson} className={css.icon} alt='icon' />
                                 <label htmlFor className='mt--0'>
                                     Số người tối thiểu
@@ -74,7 +75,7 @@ function TourDetail({tourData}) {
                                     {tourData.minQuantity || 'Không có'}
                                 </span>
                             </div>
-                            <div className='row-wrapper flex-align-c'>
+                            <div className='row-wrapper flex-align-c mt--12'>
                                 <img src={svg.groupPerson} className={css.icon} alt='icon' />
                                 <label htmlFor className='mt--0'>
                                     Số người tối đa
@@ -83,7 +84,7 @@ function TourDetail({tourData}) {
                                     {tourData.maxQuantity || 'Không có'}
                                 </span>
                             </div>
-                            <div className='row-wrapper flex-align-c'>
+                            <div className='row-wrapper flex-align-c mt--12'>
                                 <img src={svg.money} className={css.icon} alt='icon' />
 
                                 <label htmlFor>Phí hủy mức 1(%)</label>
@@ -91,7 +92,7 @@ function TourDetail({tourData}) {
                                     {tourData.normalPenaltyFee}
                                 </span>
                             </div>
-                            <div className='row-wrapper flex-align-c'>
+                            <div className='row-wrapper flex-align-c mt--12'>
                                 <img src={svg.money} className={css.icon} alt='icon' />
                                 <label htmlFor>Phí hủy mức 2(%)</label>
                                 <span htmlFor className='value'>
@@ -99,7 +100,7 @@ function TourDetail({tourData}) {
                                 </span>
                             </div>
                             <label htmlFor>Thời điểm áp dụng phí hủy mức 2</label>
-                            <div className='row-wrapper flex-align-c flex-align-l'>
+                            <div className='row-wrapper flex-align-c mt--12 flex-align-l'>
                                 <span htmlFor className='value border'>
                                     {tourData.minDate}
                                 </span>

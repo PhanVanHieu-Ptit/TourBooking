@@ -1,6 +1,7 @@
 .booked-tours-client {
     max-height: 90%;
     overflow-y: scroll;
+    padding-right: 12px;
 }
 
 .booked-tours-client .tour {
