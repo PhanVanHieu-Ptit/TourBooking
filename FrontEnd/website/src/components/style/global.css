@@ -353,6 +353,9 @@
 
  .radius-50 {
    border-radius: 50%;
+ }
+
+ .form-avt {
    width: 250px !important;
    height: 250px;
    object-fit: cover;

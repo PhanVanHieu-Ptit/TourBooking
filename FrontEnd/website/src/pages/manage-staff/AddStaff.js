@@ -27,6 +27,7 @@ function AddStaff() {
                     name='imageUrl'
                     onChange={handleValueChange}
                     value={formData.imageUrl}
+                    className='form-avt'
                 />
                 <input type='file' id='staffImg' style={{display: 'none'}} onChange={handleUploadImage} />
             </label>

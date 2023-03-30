@@ -38,7 +38,7 @@ const PersonalInfo = ({setPersonalInfoForm}) => {
             {formData && (
                 <>
                     <label className='col-wrapper' style={{cursor: 'pointer'}} htmlFor='avt'>
-                        <img src={formData.imageUrl || defaultAvtSvg} alt='' className='radius-50' />
+                        <img src={formData.imageUrl || defaultAvtSvg} alt='' className='radius-50 form-avt' />
                         <input
                             type='file'
                             className='avt'

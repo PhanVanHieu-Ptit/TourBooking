@@ -31,7 +31,7 @@ function UpdateStaff({data, setData}) {
     return (
         <form className='admin-form' onSubmit={handleSubmit}>
             <label style={{cursor: 'pointer'}} htmlFor='avt'>
-                <img src={formData.imageUrl || svg.defaultAvt} alt='' className='radius-50' />
+                <img src={formData.imageUrl || svg.defaultAvt} alt='' className='radius-50 form-avt' />
                 <input type='file' className='avt' id='avt' style={{display: 'none'}} onChange={handleImageChange} />
             </label>
             <label>Email</label>

@@ -3,7 +3,7 @@ import svg from './../../assets/svg/index';
 function SideBar() {
     let manageStaff = window.location.pathname == '/manage-staff';
     let manageTour = window.location.pathname == '/manage-tour';
-    console.log(manageTour);
+    let statistic = window.location.pathname == '/statistic';
     return (
         <div className={css['side-bar']}>
             {localStorage.role == 'admin' && (
@@ -14,6 +14,10 @@ function SideBar() {
             <a href='manage-tour' style={manageTour ? {backgroundColor: 'var(--purple)'} : {}}>
                 <img src={svg.tour} alt='' />
                 Quản lý tour
+            </a>
+            <a href='statistic' style={statistic ? {backgroundColor: 'var(--purple)'} : {}}>
+                <img src={svg.barChart} alt='' />
+                Thống kê
             </a>
             <a href='/sign-in' className={css['sign-out']}>
                 <img src={svg.logOut} alt='' />

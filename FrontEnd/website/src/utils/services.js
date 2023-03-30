@@ -70,3 +70,6 @@ export async function confirmOrderTour(idTourOrder) {
 export async function addTour(data) {
     return axios.post('/tour/add', data);
 }
+export async function statistic(year) {
+    return axios.get('/site/statistic?year=' + year);
+}
