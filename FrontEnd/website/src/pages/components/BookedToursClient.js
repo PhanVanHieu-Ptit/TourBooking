@@ -55,16 +55,14 @@ function BookedToursClient() {
                                     <p className={css.name}>{e.tour.name}</p>
                                     <i className={css.id}>
                                         #{e.tour.idTour} - Trạng thái:{' '}
-                                        <b>
-                                            <span
-                                                style={{
-                                                    backgroundColor: 'var(--gold)',
-                                                    padding: '2px 8px',
-                                                    borderRadius: '12px',
-                                                }}>
-                                                {e.status.name}
-                                            </span>
-                                        </b>
+                                        <span
+                                            style={{
+                                                backgroundColor: 'var(--gold)',
+                                                padding: '0px 12px',
+                                                borderRadius: '12px',
+                                            }}>
+                                            {e.status.name}
+                                        </span>
                                     </i>
                                 </div>
                                 <div className={css['details-body']}>

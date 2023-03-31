@@ -34,7 +34,7 @@ export async function changePassword(data) {
     return axios.patch('/account/change-password', data);
 }
 export async function updateCustomerInfo(data) {
-    return axios.patch('/customer/update', data);
+    return axios.put('/customer/update', data);
 }
 export async function updateStaffInfo(data, id) {
     return axios.put(`/staff/${id}/update`, data);

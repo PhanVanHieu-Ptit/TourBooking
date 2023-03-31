@@ -1,0 +1,65 @@
+.select {
+    width: 100%;
+    border-radius: 32px;
+    border: 2px solid var(--gold);
+    width: 120px;
+    padding: 4px 8px;
+    position: relative;
+    margin-bottom: 12px;
+}
+
+.chart-container {
+    width: 800px;
+}
+
+.chart-container h1 {
+    margin-bottom: 12px;
+    font-size: 2.4rem;
+}
+
+.card-container {
+    margin-left: 24px;
+}
+
+.card-container h1 {
+    margin-bottom: 12px;
+}
+
+.card {
+    width: 320px;
+    border-radius: 8px;
+    border: 2.5px solid var(--gold);
+    padding: 12px;
+    position: relative;
+    margin-bottom: 18px;
+}
+
+
+.card p {
+    color: var(--purple-dark);
+    display: inline-block;
+}
+
+.top {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0 6px;
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.destination,
+.quantity {
+    font-size: large;
+    font-weight: bold;
+}
+
+.card div {
+    margin-bottom: 12px;
+}
+
+.card div img {
+    width: 20px;
+    margin-right: 6px;
+}
