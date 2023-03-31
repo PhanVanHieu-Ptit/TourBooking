@@ -131,9 +131,11 @@ function ManageTourScreen({ navigation }) {
     }, []);
 
     useEffect(() => {
-        setListTour([]);
         // setPaging(1);
-        // if (paging == 1) setLoading(true);
+        if (paging == 1) {
+            setLoading(true);
+            // setListTour([]);
+        }
         getListTour();
     }, [paging]);
 
@@ -148,13 +150,23 @@ function ManageTourScreen({ navigation }) {
                 isEmpty = false;
 
                 setLoading(false);
-                setListTour((preState) => {
-                    return [...preState, ...response.data];
-                });
-                // setMasterDataSource(response.data);
-                setFilteredDataSource((preState) => {
-                    return [...preState, ...response.data];
-                });
+                if (paging == 1) {
+                    setListTour((preState) => {
+                        return [...response.data];
+                    });
+
+                    setFilteredDataSource((preState) => {
+                        return [...response.data];
+                    });
+                } else {
+                    setListTour((preState) => {
+                        return [...preState, ...response.data];
+                    });
+
+                    setFilteredDataSource((preState) => {
+                        return [...preState, ...response.data];
+                    });
+                }
                 setLoadingFooter(false);
             } else {
                 setLoading(false);
