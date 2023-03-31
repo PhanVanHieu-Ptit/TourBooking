@@ -44,6 +44,7 @@
 .booked-tours-client .name {
     font-size: x-large;
     text-transform: capitalize;
+    margin-bottom: 8px;
 }
 
 
