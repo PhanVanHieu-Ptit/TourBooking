@@ -26,6 +26,7 @@ function getYear() {
 }
 function Statistic() {
     checkRole();
+    
     const [data, setData] = useState([]);
     const [year, setYear] = useState(2023);
     console.log(data);
