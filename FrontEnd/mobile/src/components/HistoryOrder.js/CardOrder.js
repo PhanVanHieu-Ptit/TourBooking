@@ -76,7 +76,10 @@ function CardOrder(props) {
 
     return (
         <View>
-            <Text style={styles.title}>Ngày {formatDateWithHour(tourOrder.orderDateTime)}</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
+                <Text style={styles.title}>Ngày {formatDateWithHour(tourOrder.orderDateTime)}</Text>
+                <Text>#{tourOrder.idTourOrder}</Text>
+            </View>
             <View style={[stylesCard.card2, { height: 140 }]}>
                 <Image source={{ uri: `${tour.imageUrl[0]}` }} style={stylesCard.img2} />
 
@@ -151,6 +154,8 @@ function CardOrder(props) {
                             ''
                         )}
                     </View>
+                    <Text style={styles.content}>Mã đơn đặt: {tourOrder?.idTourOrder}</Text>
+                    <Text style={styles.content}>Mã tour: {tourOrder?.tour.idTour}</Text>
                     <Text style={styles.content}>Số lượng: {tourOrder?.quantity}</Text>
                     <Text style={styles.content}>Tổng tiền: {formatMoney(tourOrder?.totalMoney)}</Text>
                     <Text style={styles.content}>Ghi chú: {tourOrder?.note}</Text>

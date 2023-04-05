@@ -37,7 +37,7 @@ CREATE TABLE `account` (
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
-INSERT INTO `account` VALUES ('admin','$2a$10$IFJLQTs0bj86ej1zcq6/b.xDwvhMuWvopXqUbYSTg0mG6IR1o/Vci','admin'),('bth@gmail.com','$2a$10$3EV6P0syIDcgj9I8L2CRq.9BdxDPNd6ETUWfLAH4KAQgFFpPes5N6','customer'),('nguyentuanH@gmai.com','$2a$10$aOrBLNhmD.N3CdN.GxvAA.hvNHTEdDncLvqr4iHwfFoOld8BMu9bK','customer'),('nguyenvana@gmail.com','$2a$10$3EV6P0syIDcgj9I8L2CRq.9BdxDPNd6ETUWfLAH4KAQgFFpPes5N6','staff'),('nguyenvanh@gmail.com','$2a$10$3EV6P0syIDcgj9I8L2CRq.9BdxDPNd6ETUWfLAH4KAQgFFpPes5N6','admin'),('ntp@gmail.com ','$2a$10$KD.NG3cy7g0a5wzB1vXs7.GlT0oOSJA1Q4EX9q/sdVmtwxot9hM/i','customer'),('phanvanhieu090201@gmail.com','$2a$10$VKTNB/RXF9qX9HWHuCU5jOZ0LbmNlQVRJ4TExHQ2SdlOonGXUK9qC','staff'),('pvb@gmail.com','$2a$10$3EV6P0syIDcgj9I8L2CRq.9BdxDPNd6ETUWfLAH4KAQgFFpPes5N6','staff'),('pvh9@gmail.com ','$2a$10$n3i31iev0S2RnxXZQnCineOExeSQ.EAGB1AFru4K8Mq8McsvGfIG.','customer'),('pvh9201@gmail.com','$2a$10$IFJLQTs0bj86ej1zcq6/b.xDwvhMuWvopXqUbYSTg0mG6IR1o/Vci','customer');
+INSERT INTO `account` VALUES ('admin@gmail.com','$2a$10$IFJLQTs0bj86ej1zcq6/b.xDwvhMuWvopXqUbYSTg0mG6IR1o/Vci','admin'),('bth@gmail.com','$2a$10$3EV6P0syIDcgj9I8L2CRq.9BdxDPNd6ETUWfLAH4KAQgFFpPes5N6','customer'),('nguyentuanH@gmai.com','$2a$10$aOrBLNhmD.N3CdN.GxvAA.hvNHTEdDncLvqr4iHwfFoOld8BMu9bK','customer'),('nguyenvana@gmail.com','$2a$10$3EV6P0syIDcgj9I8L2CRq.9BdxDPNd6ETUWfLAH4KAQgFFpPes5N6','staff'),('nguyenvanh@gmail.com','$2a$10$3EV6P0syIDcgj9I8L2CRq.9BdxDPNd6ETUWfLAH4KAQgFFpPes5N6','admin'),('ntp@gmail.com ','$2a$10$KD.NG3cy7g0a5wzB1vXs7.GlT0oOSJA1Q4EX9q/sdVmtwxot9hM/i','customer'),('phanvanhieu090201@gmail.com','$2a$10$VKTNB/RXF9qX9HWHuCU5jOZ0LbmNlQVRJ4TExHQ2SdlOonGXUK9qC','staff'),('pvb@gmail.com','$2a$10$3EV6P0syIDcgj9I8L2CRq.9BdxDPNd6ETUWfLAH4KAQgFFpPes5N6','staff'),('pvh9@gmail.com ','$2a$10$n3i31iev0S2RnxXZQnCineOExeSQ.EAGB1AFru4K8Mq8McsvGfIG.','customer'),('pvh9201@gmail.com','$2a$10$IFJLQTs0bj86ej1zcq6/b.xDwvhMuWvopXqUbYSTg0mG6IR1o/Vci','customer');
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -90,7 +90,7 @@ CREATE TABLE `staff` (
   KEY `staff_status_idx` (`idStatus`),
   CONSTRAINT `staff_acc` FOREIGN KEY (`email`) REFERENCES `account` (`username`),
   CONSTRAINT `staff_status` FOREIGN KEY (`idStatus`) REFERENCES `status` (`idStatus`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -99,7 +99,7 @@ CREATE TABLE `staff` (
 
 LOCK TABLES `staff` WRITE;
 /*!40000 ALTER TABLE `staff` DISABLE KEYS */;
-INSERT INTO `staff` VALUES (2,'Nguyễn Văn A','nguyenvana@gmail.com','https://i.ibb.co/QjvgT72/image.jpg',5),(4,'Phan Văn B','pvb@gmail.com','https://e1.pxfuel.com/desktop-wallpaper/559/130/desktop-wallpaper-cute-boys-kids-cutest-boys.jpg',5),(8,'Phan Văn H','phanvanhieu090201@gmail.com','',5);
+INSERT INTO `staff` VALUES (2,'Nguyễn Văn A','nguyenvana@gmail.com','https://i.ibb.co/QjvgT72/image.jpg',5),(4,'Phan Văn B','pvb@gmail.com','https://e1.pxfuel.com/desktop-wallpaper/559/130/desktop-wallpaper-cute-boys-kids-cutest-boys.jpg',5),(8,'Phan Văn H','phanvanhieu090201@gmail.com','https://i.ibb.co/QjvgT72/image.jpg',5),(9,'Quản trị viên','admin@gmail.com','https://i.ibb.co/QjvgT72/image.jpg',5);
 /*!40000 ALTER TABLE `staff` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -174,7 +174,7 @@ CREATE TABLE `tour` (
 
 LOCK TABLES `tour` WRITE;
 /*!40000 ALTER TABLE `tour` DISABLE KEYS */;
-INSERT INTO `tour` VALUES (1,'Du lịch miền tây',1,'2023-03-06 22:28:49',5,1,10,10,20,2,'2023-02-28 19:40:46',1,'Miền tây sông nước','Tham quan các địa danh nổi tiếng và thưởng thức các món ăn dân dã đậm chất miền tây sông nước','Thành phố Hồ Chí Minh','Tỉnh Tiền Giang',250000,2,2,1,'',''),(3,'Khám phá Tây Nguyên ',1,'2023-03-06 21:20:28',5,10,20,10,15,10,'2023-03-06 21:52:00',1,'Khám phá vô vàng điều bí ẩn ','Tham quan khắp các bản làng, bộ tộc từ rừng sâu thẳm đến núi cao chót vót','Thành phố Hà Nội','Tỉnh Lào Cai',2300000,2,NULL,1,'',''),(4,'Du lịch núi Bà Đen',1,'2023-03-15 11:57:33',3,5,10,10,15,5,'2023-03-15 10:32:17',1,'khám phá núi rừng hùng vĩ','tham quan khám phá núi Bà Đen cùng những kiến trúc cổ kính','Thành phố Hà Nội','Tỉnh Tây Ninh',500000,2,NULL,1,'Thành phố Hà Nội','Tỉnh Tây Ninh');
+INSERT INTO `tour` VALUES (1,'Du lịch miền tây',1,'2023-03-06 22:28:49',5,1,10,10,20,2,'2023-02-28 19:40:46',1,'Miền tây sông nước','Tham quan các địa danh nổi tiếng và thưởng thức các món ăn dân dã đậm chất miền tây sông nước','Thành phố Hồ Chí Minh','Tỉnh Tiền Giang',250000,2,2,1,'',''),(3,'Khám phá Tây Nguyên ',1,'2023-03-06 21:20:28',5,10,20,10,15,10,'2023-03-06 21:52:00',1,'Khám phá vô vàng điều bí ẩn ','Tham quan khắp các bản làng, bộ tộc từ rừng sâu thẳm đến núi cao chót vót','Thành phố Hà Nội','Tỉnh Lào Cai',2300000,4,NULL,1,'',''),(4,'Du lịch núi Bà Đen',1,'2023-03-15 11:57:33',3,5,10,10,15,5,'2023-03-15 10:32:17',1,'khám phá núi rừng hùng vĩ','tham quan khám phá núi Bà Đen cùng những kiến trúc cổ kính','Thành phố Hà Nội','Tỉnh Tây Ninh',500000,8,NULL,1,'Thành phố Hà Nội','Tỉnh Tây Ninh');
 /*!40000 ALTER TABLE `tour` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -211,7 +211,7 @@ CREATE TABLE `tourorder` (
 
 LOCK TABLES `tourorder` WRITE;
 /*!40000 ALTER TABLE `tourorder` DISABLE KEYS */;
-INSERT INTO `tourorder` VALUES (1,20,1,'2023-02-28 19:43:13',2,NULL,500000,'2023-03-09 15:59:10',10),(2,20,1,'2023-02-28 20:25:49',4,NULL,100000,'2023-03-06 15:56:39',11),(3,20,1,'2023-03-01 00:00:00',2,NULL,500000,NULL,10),(4,20,1,'2023-03-03 10:44:50',2,'',500000,NULL,11),(5,20,1,'2023-03-03 10:54:14',1,'',250000,NULL,12),(8,20,1,'2023-03-06 14:52:28',3,'đón tại ngã tư Thủ Đức ',750000,NULL,13),(9,20,1,'2023-03-06 14:55:23',4,'đón chỗ cũ',1000000,NULL,9),(10,20,1,'2023-03-06 14:56:05',5,'đón tại ngã tư Thủ Đức ',1250000,NULL,12),(11,20,1,'2023-03-06 14:57:05',6,'đón tại ngã tư Thủ Đức ',1500000,NULL,10),(12,20,1,'2023-03-06 15:00:09',1,'đón tại ngã tư Thủ Đức ',250000,NULL,11),(13,20,1,'2023-03-06 15:02:10',1,'đón tại ngã tư Thủ Đức ',250000,NULL,12);
+INSERT INTO `tourorder` VALUES (1,20,1,'2023-02-28 19:43:13',2,NULL,500000,'2023-03-09 15:59:10',10),(2,20,1,'2023-02-28 20:25:49',4,NULL,100000,'2023-03-06 15:56:39',11),(3,20,1,'2023-03-01 00:00:00',2,NULL,500000,NULL,10),(4,20,1,'2023-03-03 10:44:50',2,'',500000,NULL,11),(5,20,1,'2023-03-03 10:54:14',1,'',250000,NULL,12),(8,20,1,'2023-03-06 14:52:28',3,'đón tại ngã tư Thủ Đức ',750000,NULL,13),(9,20,1,'2023-03-06 14:55:23',4,'đón chỗ cũ',1000000,NULL,9),(10,20,1,'2023-03-06 14:56:05',5,'đón tại ngã tư Thủ Đức ',1250000,NULL,12),(11,20,1,'2023-03-06 14:57:05',6,'đón tại ngã tư Thủ Đức ',1500000,NULL,10),(12,20,1,'2023-03-06 15:00:09',1,'đón tại ngã tư Thủ Đức ',250000,NULL,11),(13,20,1,'2023-03-06 15:02:10',1,'đón tại ngã tư Thủ Đức ',250000,'2023-04-05 22:36:11',12);
 /*!40000 ALTER TABLE `tourorder` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1308,9 +1308,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_status_order`( IN id1 int
 								  IN id2 int)
 BEGIN
 	if id1=10 then
-		UPDATE tourorder SET  idStatus=id1 , cancelDate=NOW() where idTourOrder = id2;
+		UPDATE tourorder SET  idStatus=id1 , cancelDate=NOW() where idTourOrder = id2 and (idStatus=9 || idStatus=8);
+	elseif id1=11 then
+		UPDATE tourorder SET  idStatus=id1 , cancelDate=NOW() where idTourOrder = id2 and (idStatus=10 || idStatus=8);
+	elseif id1=12 then
+		UPDATE tourorder SET  idStatus=id1 , cancelDate=NOW() where idTourOrder = id2 and idStatus=9;
 	else
-	 UPDATE tourorder SET  idStatus=id1  where idTourOrder = id2;
+	 UPDATE tourorder SET  idStatus=id1  where idTourOrder = id2 and idStatus=id1-1;
 	END IF;
 END ;;
 DELIMITER ;
@@ -1471,4 +1475,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-04-05  8:58:08
+-- Dump completed on 2023-04-05 23:14:37

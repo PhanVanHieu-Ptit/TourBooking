@@ -82,7 +82,10 @@ function CardOrder({ props }) {
 
     return (
         <View>
-            <Text style={styles.title}>Ngày {formatDateWithHour(props.orderDateTime)}</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
+                <Text style={styles.title}>Ngày {formatDateWithHour(props.orderDateTime)}</Text>
+                <Text>#{props.idTourOrder}</Text>
+            </View>
             <TouchableOpacity>
                 <View style={[stylesCard.card2, { height: 140 }]}>
                     <Image source={{ uri: `${props.tour.imageUrl[0]}` }} style={stylesCard.img2} />
@@ -145,6 +148,10 @@ function CardOrder({ props }) {
                     <View style={{ flexDirection: 'row' }}>
                         <View>
                             <Text style={styles.title}>Thông tin đơn đặt</Text>
+                            <Text style={styles.content}>Mã đơn đặt: {props?.idTourOrder}</Text>
+                            <Text style={styles.content}>Mã tour: {props?.tour.idTour}</Text>
+                            <Text style={styles.content}>Mã khách hàng: {props?.customer.idCustomer}</Text>
+                            <View style={{ borderBottomWidth: 1, borderBottomColor: COLOR.primary }} />
                             <Text style={styles.content}>Họ tên: {props?.customer.name}</Text>
                             <Text style={styles.content}>Số điện thoại: {props?.customer.phoneNumber}</Text>
                             <Text style={styles.content}>Email: {props?.customer.email}</Text>

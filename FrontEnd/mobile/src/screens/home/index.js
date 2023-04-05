@@ -23,7 +23,7 @@ import * as request from '../../services/untils';
 import API from '../../res/string';
 
 function Home({ navigation }) {
-    const { toursOutStanding, setToursOutStanding, toursComing, setToursComming } = useContext(AppContext);
+    const { toursOutStanding, setToursOutStanding, toursComing, setToursComming, user } = useContext(AppContext);
     const [numberTourFeatured, setNumberTourFeatured] = useState(0);
     const [numberTour, setNumberTour] = useState(0);
     const [isLoading1, setIsLoading1] = useState(true);
