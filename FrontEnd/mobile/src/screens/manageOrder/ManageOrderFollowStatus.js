@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import stylesButton from '../../components/general/actionButton/styles';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import stylesAllTour from '../allTour/style';
@@ -255,40 +256,53 @@ function ManageOrderFollowStatus({ navigation }) {
                 setMasterDataSource={setListOrder}
                 setFilteredDataSource={setFilteredDataSource}
             />
-            <View style={{ marginLeft: 200 }}>
-                <SelectDropdown
-                    data={listStatus}
-                    // defaultValueByIndex={1}
-                    defaultValue={'Tất cả'}
-                    onSelect={(selectedItem, index) => {
-                        setSelected(selectedItem);
-                        console.log(selectedItem, index);
-                    }}
-                    defaultButtonText={'Chọn trạng thái '}
-                    buttonTextAfterSelection={(selectedItem, index) => {
-                        return selectedItem;
-                    }}
-                    rowTextForSelection={(item, index) => {
-                        return item;
-                    }}
-                    buttonStyle={styles.dropdown1BtnStyle}
-                    buttonTextStyle={styles.dropdown1BtnTxtStyle}
-                    renderDropdownIcon={(isOpened) => {
-                        return <FontAwesome name={isOpened ? 'chevron-up' : 'chevron-down'} color={'#444'} size={14} />;
-                    }}
-                    dropdownIconPosition={'right'}
-                    dropdownStyle={styles.dropdown1DropdownStyle}
-                    rowStyle={styles.dropdown1RowStyle}
-                    rowTextStyle={styles.dropdown1RowTxtStyle}
-                    selectedRowStyle={styles.dropdown1SelectedRowStyle}
-                    search
-                    searchInputStyle={styles.dropdown1searchInputStyleStyle}
-                    searchPlaceHolder={'Tìm kiếm ở đây'}
-                    searchPlaceHolderColor={'darkgrey'}
-                    renderSearchInputLeftIcon={() => {
-                        return <FontAwesome name={'search'} color={'#444'} size={14} />;
-                    }}
-                />
+            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
+                <View>
+                    <TouchableOpacity
+                        onPress={() => {
+                            navigation.navigate('ScanScreen', { user });
+                        }}
+                    >
+                        <AntDesign name={'scan1'} color={'#444'} size={30} />
+                    </TouchableOpacity>
+                </View>
+                <View style={{ marginLeft: 150 }}>
+                    <SelectDropdown
+                        data={listStatus}
+                        // defaultValueByIndex={1}
+                        defaultValue={'Tất cả'}
+                        onSelect={(selectedItem, index) => {
+                            setSelected(selectedItem);
+                            console.log(selectedItem, index);
+                        }}
+                        defaultButtonText={'Chọn trạng thái '}
+                        buttonTextAfterSelection={(selectedItem, index) => {
+                            return selectedItem;
+                        }}
+                        rowTextForSelection={(item, index) => {
+                            return item;
+                        }}
+                        buttonStyle={styles.dropdown1BtnStyle}
+                        buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                        renderDropdownIcon={(isOpened) => {
+                            return (
+                                <FontAwesome name={isOpened ? 'chevron-up' : 'chevron-down'} color={'#444'} size={14} />
+                            );
+                        }}
+                        dropdownIconPosition={'right'}
+                        dropdownStyle={styles.dropdown1DropdownStyle}
+                        rowStyle={styles.dropdown1RowStyle}
+                        rowTextStyle={styles.dropdown1RowTxtStyle}
+                        selectedRowStyle={styles.dropdown1SelectedRowStyle}
+                        search
+                        searchInputStyle={styles.dropdown1searchInputStyleStyle}
+                        searchPlaceHolder={'Tìm kiếm ở đây'}
+                        searchPlaceHolderColor={'darkgrey'}
+                        renderSearchInputLeftIcon={() => {
+                            return <FontAwesome name={'search'} color={'#444'} size={14} />;
+                        }}
+                    />
+                </View>
             </View>
 
             {isLoading ? (

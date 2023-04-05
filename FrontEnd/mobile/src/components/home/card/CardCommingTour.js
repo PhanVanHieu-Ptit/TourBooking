@@ -23,12 +23,13 @@ function CardCommingTour(props) {
     }, [tour.status.name]);
 
     return (
-        <View>
+        <View style={{ marginTop: 20 }}>
             <TouchableOpacity
                 onPress={() => {
                     props.navigation.navigate(props.screen, { tour: tour, type: 'edit' });
                 }}
             >
+                <Text style={{ marginLeft: 20 }}>#{tour.idTour}</Text>
                 <View style={[stylesCard.card2, { elevation: 10 }]}>
                     <Image source={{ uri: `${tour.imageUrl[0]}` }} style={stylesCard.img2} />
 
@@ -120,6 +121,7 @@ function CardCommingTour(props) {
                                 }}
                             >
                                 <View>
+                                    <Text style={styles.content}>Mã: {tour?.staffCreate?.idStaff}</Text>
                                     <Text style={styles.content}>Tên: {tour?.staffCreate?.name}</Text>
                                     <Text style={styles.content}>Email: {tour?.staffCreate?.email}</Text>
                                     <Text style={styles.content}>
@@ -147,6 +149,7 @@ function CardCommingTour(props) {
                                         }}
                                     >
                                         <View>
+                                            <Text style={styles.content}>Mã: {tour?.staffCancel?.idStaff}</Text>
                                             <Text style={styles.content}>Tên: {tour?.staffCancel?.name}</Text>
                                             <Text style={styles.content}>Email: {tour?.staffCancel?.email}</Text>
                                             <Text style={styles.content}>

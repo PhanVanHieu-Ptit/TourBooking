@@ -105,7 +105,10 @@ function DetailTourScreen({ route, navigation }) {
                         width: 320,
                     }}
                 >
-                    <Text style={[stylesDetailTour.title, { marginTop: 10 }]}>Tóm tắt chuyến đi</Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={[stylesDetailTour.title, { marginTop: 10 }]}>Tóm tắt chuyến đi</Text>
+                        <Text style={{ marginTop: 10 }}>#{tour.idTour}</Text>
+                    </View>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <MaterialIcons name="date-range" size={30} color={COLOR.primary} style={{ marginTop: 2 }} />

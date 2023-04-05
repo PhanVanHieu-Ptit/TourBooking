@@ -1,4 +1,4 @@
-import React,{ useState,useEffect,useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
     FlatList,
     SafeAreaView,
@@ -24,18 +24,18 @@ import COLOR from '../../res/color';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function HistoryOrderScreen({ navigation }) {
-    const { user,setUser,isLogin,setIsLogin,historyOrder,setHistoryOrder }=useContext(AppContext);
-    const [selected,setSelected]=useState('Tất cả');
-    const [listStatus,setListStatus]=useState(['Tất cả']);
-    const [paging,setPaging]=useState(1);
-    const [isLoading,setIsLoading]=useState(true);
-    const [loadingFooter,setLoadingFooter]=useState(false);
-    const [numberOrderTour,setNumberOrderTour]=useState(0);
+    const { user, setUser, isLogin, setIsLogin, historyOrder, setHistoryOrder } = useContext(AppContext);
+    const [selected, setSelected] = useState('Tất cả');
+    const [listStatus, setListStatus] = useState(['Tất cả']);
+    const [paging, setPaging] = useState(1);
+    const [isLoading, setIsLoading] = useState(true);
+    const [loadingFooter, setLoadingFooter] = useState(false);
+    const [numberOrderTour, setNumberOrderTour] = useState(0);
 
     useEffect(() => {
         getStatus();
         getNumberOrderTour();
-    },[]);
+    }, []);
 
     function clearOldData() {
         setHistoryOrder([]);
@@ -45,10 +45,10 @@ function HistoryOrderScreen({ navigation }) {
 
     async function getRefreshToken() {
         try {
-            const res2=await request.post(API.refeshToken,{ token: user.refreshToken });
-            console.log('res2: ',res2);
-            if (res2.data.status==true) {
-                const newUser={
+            const res2 = await request.post(API.refeshToken, { token: user.refreshToken });
+            console.log('res2: ', res2);
+            if (res2.data.status == true) {
+                const newUser = {
                     id: user.id,
                     name: user.name,
                     imageUrl: user.imageUrl,
@@ -70,15 +70,15 @@ function HistoryOrderScreen({ navigation }) {
                     .catch((error) => {
                         console.error(error);
                     });
-                console.log('user: ',newUser);
-                AsyncStorage.setItem('user',JSON.stringify(newUser))
+                console.log('user: ', newUser);
+                AsyncStorage.setItem('user', JSON.stringify(newUser))
                     .then(() => console.log('Object stored successfully'))
-                    .catch((error) => console.log('Error storing object: ',error));
+                    .catch((error) => console.log('Error storing object: ', error));
                 return true;
             } else {
                 // Alert.alert('Thông báo!', res2.message + '', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
-                console.log('res2.message: ',res2.data.message);
-                if (res2.data.message=='Refesh token không hợp lệ!') {
+                console.log('res2.message: ', res2.data.message);
+                if (res2.data.message == 'Refesh token không hợp lệ!') {
                     setUser(null);
                     setIsLogin(false);
                     clearOldData();
@@ -100,41 +100,41 @@ function HistoryOrderScreen({ navigation }) {
     }
 
     useEffect(() => {
-
         if (user == '' || user == null || user == undefined) {
             Alert.alert('Bạn chưa đăng nhập!', 'Bạn hãy đăng nhập ngay để xem lịch sử đặt của bạn.', [
                 { text: 'OK', onPress: () => navigation.replace('Login') },
-
             ]);
-        } else if (user?.role=='customer') {
+        } else if (user?.role == 'customer') {
             getNumberOrderTour();
-            getListHistoryOrder(true,1);
+            getListHistoryOrder(true, 1);
+        } else {
+            setIsLoading(false);
         }
-    },[selected]);
+    }, [selected]);
 
-    async function getListHistoryOrder(changeStatus=false,page=paging) {
+    async function getListHistoryOrder(changeStatus = false, page = paging) {
         try {
-            if (changeStatus==true) {
+            if (changeStatus == true) {
                 setPaging(1);
                 setHistoryOrder([]);
             }
-            const response=await request.get(
-                API.historyOrder+'?id='+user.id+'&status='+selected+'&paging='+page,
+            const response = await request.get(
+                API.historyOrder + '?id=' + user.id + '&status=' + selected + '&paging=' + page,
                 {
-                    headers: { 'Content-Type': 'application/json',authorization: user.accessToken },
+                    headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
                 },
             );
-            console.log('reponse: ',response);
-            if (response.status==true) {
+            console.log('reponse: ', response);
+            if (response.status == true) {
                 setHistoryOrder((preState) => {
-                    return [...preState,...response.data];
+                    return [...preState, ...response.data];
                 });
             } else {
-                if (response.message=='Token đã hết hạn') {
+                if (response.message == 'Token đã hết hạn') {
                     getRefreshToken();
                 } else
-                    Alert.alert('Thông báo!',response.message+'',[
-                        { text: 'OK',onPress: () => console.log('OK Pressed') },
+                    Alert.alert('Thông báo!', response.message + '', [
+                        { text: 'OK', onPress: () => console.log('OK Pressed') },
                     ]);
             }
             setIsLoading(false);
@@ -143,30 +143,30 @@ function HistoryOrderScreen({ navigation }) {
         }
     }
 
-    const loadMore=() => {
-        if (Math.ceil(Number(numberOrderTour)/5-1)>=paging) {
+    const loadMore = () => {
+        if (Math.ceil(Number(numberOrderTour) / 5 - 1) >= paging) {
             setLoadingFooter(true);
-            getListHistoryOrder(false,paging+1);
-            setPaging((preState) => preState+1);
+            getListHistoryOrder(false, paging + 1);
+            setPaging((preState) => preState + 1);
         }
     };
 
     async function getNumberOrderTour() {
         try {
-            const res=await request.get(
-                API.numberOrderOfCustomer+'?idCustomer='+user.id+'&status='+selected,
+            const res = await request.get(
+                API.numberOrderOfCustomer + '?idCustomer=' + user.id + '&status=' + selected,
                 {
-                    headers: { 'Content-Type': 'application/json',authorization: user.accessToken },
+                    headers: { 'Content-Type': 'application/json', authorization: user.accessToken },
                 },
             );
-            if (res.status===true) {
+            if (res.status === true) {
                 setNumberOrderTour(res.data[0].currentNumber);
             } else {
-                if (res.message=='Token đã hết hạn') {
+                if (res.message == 'Token đã hết hạn') {
                     getRefreshToken();
                 } else
-                    Alert.alert('Thông báo!',res.message+'',[
-                        { text: 'OK',onPress: () => console.log('OK Pressed') },
+                    Alert.alert('Thông báo!', res.message + '', [
+                        { text: 'OK', onPress: () => console.log('OK Pressed') },
                     ]);
             }
         } catch (error) {
@@ -176,12 +176,12 @@ function HistoryOrderScreen({ navigation }) {
 
     async function getStatus() {
         try {
-            const response=await request.get(API.listStatus+'?type=tourorder&paging='+paging);
-            if (response.status==true) {
-                setListStatus([...listStatus,...response.data]);
+            const response = await request.get(API.listStatus + '?type=tourorder&paging=' + paging);
+            if (response.status == true) {
+                setListStatus([...listStatus, ...response.data]);
             } else {
-                Alert.alert('Thông báo!',response.message+'',[
-                    { text: 'OK',onPress: () => console.log('OK Pressed') },
+                Alert.alert('Thông báo!', response.message + '', [
+                    { text: 'OK', onPress: () => console.log('OK Pressed') },
                 ]);
             }
         } catch (error) {
@@ -189,25 +189,25 @@ function HistoryOrderScreen({ navigation }) {
         }
     }
 
-    const handleScroll=(event) => {
-        const { layoutMeasurement,contentOffset,contentSize }=event.nativeEvent;
-        const paddingToBottom=20;
-        if (layoutMeasurement.height+contentOffset.y>=contentSize.height-paddingToBottom) {
+    const handleScroll = (event) => {
+        const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+        const paddingToBottom = 20;
+        if (layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom) {
             loadMore();
         }
     };
 
-    const [isRefreshing,setIsRefreshing]=useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
-    const handleRefresh=() => {
+    const handleRefresh = () => {
         setIsRefreshing(true);
         setIsLoading(true);
-        getListHistoryOrder(true,1);
+        getListHistoryOrder(true, 1);
         setIsRefreshing(false);
     };
 
     return (
-        <SafeAreaView style={{ justifyContent: 'center',alignItems: 'center',flex: 1 }}>
+        <SafeAreaView style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
             <View
                 style={{
                     flexDirection: 'row',
@@ -227,20 +227,20 @@ function HistoryOrderScreen({ navigation }) {
                     data={listStatus}
                     // defaultValueByIndex={1}
                     defaultValue={'Tất cả'}
-                    onSelect={(selectedItem,index) => {
+                    onSelect={(selectedItem, index) => {
                         setSelected(selectedItem);
                     }}
                     defaultButtonText={'Chọn trạng thái '}
-                    buttonTextAfterSelection={(selectedItem,index) => {
+                    buttonTextAfterSelection={(selectedItem, index) => {
                         return selectedItem;
                     }}
-                    rowTextForSelection={(item,index) => {
+                    rowTextForSelection={(item, index) => {
                         return item;
                     }}
                     buttonStyle={styles.dropdown1BtnStyle}
                     buttonTextStyle={styles.dropdown1BtnTxtStyle}
                     renderDropdownIcon={(isOpened) => {
-                        return <FontAwesome name={isOpened? 'chevron-up':'chevron-down'} color={'#444'} size={14} />;
+                        return <FontAwesome name={isOpened ? 'chevron-up' : 'chevron-down'} color={'#444'} size={14} />;
                     }}
                     dropdownIconPosition={'right'}
                     dropdownStyle={styles.dropdown1DropdownStyle}
@@ -256,11 +256,11 @@ function HistoryOrderScreen({ navigation }) {
                     }}
                 />
             </View>
-            {isLoading? (
+            {isLoading ? (
                 <View style={{ flex: 1 }}>
                     <ActivityIndicator size="small" color={COLOR.primary} />
                 </View>
-            ):(
+            ) : (
                 <ScrollView
                     onScroll={handleScroll}
                     refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />}
@@ -268,14 +268,14 @@ function HistoryOrderScreen({ navigation }) {
                     {historyOrder.map((item) => (
                         <CardOrder item={item} key={item.idTourOrder} navigation={navigation} />
                     ))}
-                    {loadingFooter? <ActivityIndicator size="small" color={COLOR.primary} />:''}
+                    {loadingFooter ? <ActivityIndicator size="small" color={COLOR.primary} /> : ''}
                 </ScrollView>
             )}
         </SafeAreaView>
     );
 }
 
-const styles=StyleSheet.create({
+const styles = StyleSheet.create({
     dropdown1BtnStyle: {
         width: 160,
         height: 50,
@@ -284,10 +284,10 @@ const styles=StyleSheet.create({
         borderWidth: 1,
         borderColor: '#444',
     },
-    dropdown1BtnTxtStyle: { color: '#444',textAlign: 'left',fontSize: 14 },
+    dropdown1BtnTxtStyle: { color: '#444', textAlign: 'left', fontSize: 14 },
     dropdown1DropdownStyle: { backgroundColor: '#EFEFEF' },
-    dropdown1RowStyle: { backgroundColor: '#EFEFEF',borderBottomColor: '#C5C5C5' },
-    dropdown1RowTxtStyle: { color: '#444',textAlign: 'left',fontSize: 14 },
+    dropdown1RowStyle: { backgroundColor: '#EFEFEF', borderBottomColor: '#C5C5C5' },
+    dropdown1RowTxtStyle: { color: '#444', textAlign: 'left', fontSize: 14 },
     dropdown1SelectedRowStyle: { backgroundColor: 'rgba(0,0,0,0.1)' },
     dropdown1searchInputStyleStyle: {
         backgroundColor: '#EFEFEF',
